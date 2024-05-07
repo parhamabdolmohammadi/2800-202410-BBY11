@@ -6,6 +6,6 @@ Team Members:
 - Person 2 Parham Abdolmohammadi
 - Person 3 Shayan Nikpour
 - Person 4 Seohyeon Park
-- Person 5
+- Person 5 Jason Lau
 ## More details to come
 TBA
