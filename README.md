@@ -5,7 +5,7 @@ Team Members:
 - Person 1 Coda Miles
 - Person 2 Parham Abdolmohammadi
 - Person 3 Shayan Nikpour
-- Person 4
+- Person 4 Seohyeon Park
 - Person 5
 ## More details to come
 TBA
