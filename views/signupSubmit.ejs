@@ -1,0 +1,9 @@
+<%- include("templates/header") %>
+<p><%= problem %> should not be empty</p>
+<form action="/signup" method="get">
+  <button class="btn btn-secondary rounded-pill px-3" type="submit">
+    Try Again
+  </button>
+</form>
+<input type="text" value="<%= user.username %>" name="usernameInput" />
+<%- include("templates/footer") %>
