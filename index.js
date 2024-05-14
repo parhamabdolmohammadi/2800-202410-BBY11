@@ -104,10 +104,10 @@ function adminAuthorization(req,res,next) {
 
 app.get('/', (req,res) => {
     if (!req.session.authenticated) {
-        res.render('HomePage');
+        res.render('index');
     } else {
         console.log(req.session.user_type);
-        res.render( "userHomePage"
+        res.render( "main"
         , {username: req.session.username});
     }
     
