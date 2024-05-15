@@ -247,7 +247,9 @@ app.get('/members', (req,res) => {
         res.send("Members page shoud be placed here");
 });
 
-
+app.get('/checkout',sessionValidation, (req,res) => {
+    res.render("checkout");
+});
 
 
 app.get("*", (req,res) => {
