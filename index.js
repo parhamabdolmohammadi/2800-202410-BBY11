@@ -60,7 +60,8 @@ var mongoStore = MongoStore.create({
 })
 
 
-app.use(express.static(__dirname + "/css")); 
+app.use(express.static(__dirname + "/css"));
+app.use(express.static(__dirname + "/images")); 
 
 
 app.use(session({ 
@@ -247,7 +248,6 @@ app.get('/members', (req,res) => {
 });
 
 
-app.use(express.static(__dirname + "/images"));
 
 
 app.get("*", (req,res) => {
