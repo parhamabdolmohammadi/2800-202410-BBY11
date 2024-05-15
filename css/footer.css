@@ -1,0 +1,12 @@
+@media screen and (min-width: 1281px) {
+  footer {
+    margin-top: 2rem;
+  }
+}
+
+.footer-content ul {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  list-style-type: none;
+}
