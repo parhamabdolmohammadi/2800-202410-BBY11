@@ -1,0 +1,24 @@
+{
+  "name": "2800-202410-bby11",
+  "version": "1.0.0",
+  "description": "Team Name: BBY-11\r Team Members: \r - Person 1 Coda Miles\r - Person 2 Parham Abdolmohammadi\r - Person 3 Shayan Nikpour\r - Person 4 Seohyeon Park\r - Person 5 Jason Lau\r ## More details to come\r TBA",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "connect": "^3.7.0",
+    "connect-mongo": "^5.1.0",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "joi": "^17.13.1",
+    "node": "^20.13.1",
+    "nodemon": "^3.1.0",
+    "url": "^0.11.3"
+  }
+}
