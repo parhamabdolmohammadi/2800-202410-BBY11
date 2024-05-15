@@ -9,6 +9,7 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
+const encryptjs = require('encryptjs');
 
 // const port = process.env.PORT || 3000;
 const port = 3000;
@@ -43,7 +44,7 @@ const mongodb_session_secret = process.env.MONGODB_SESSION_SECRET;
 
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* END secret section */
-
+const encryptionKey = process.env.ENCRYPTION_KEY;
 var { database } = include('databaseConnection');
 
 const userCollection = database.db(mongodb_database).collection('users');
@@ -259,9 +260,13 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
             let expirydate = req.body.expirydate;
             let cvv = req.body.cvv;
 
+            const encryptedCardNumber = encryptjs.encrypt(cardnumber, encryptionKey, 256)
+            const encryptedExpirydate = encryptjs.encrypt(expirydate, encryptionKey, 256)
+            const encryptedCvv = encryptjs.encrypt(cvv, encryptionKey, 256)
+
         } else if(paymentType ==="paypal"){
             let paypalEmail = req.body.paypalEmail;
-            
+            const encryptedPaypalEmail = encryptjs.encrypt(paypalEmail, encryptionKey, 256)            
         }
     } catch (e) {
         console.log(e);
