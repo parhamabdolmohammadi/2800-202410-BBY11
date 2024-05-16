@@ -1,0 +1,15 @@
+<%-include('templates/header')%>
+
+<form action="/loginfromcode" method="post">
+    <div class="mb-3">
+      <label for="exampleInputEmail1" class="form-label">Enter Login code</label>
+      <input type="code" class="form-control" name="inputCode" id="exampleInputEmail1">
+      <input type="hidden" name="resetCode" value="<%=resetCode %>">
+      <input type="hidden" name="email" value="<%=userEmail %>">
+
+      <div id="emailHelp" class="form-text">Email sent to <%=userEmail %>.</div>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+
+<%-include('templates/footer')%>
