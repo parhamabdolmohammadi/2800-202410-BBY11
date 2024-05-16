@@ -20,11 +20,12 @@ const app = express();
 const Joi = require("joi");
 
 const navLinks = [
-    { name: "Home", link: "/" },
-    { name: "Members", link: "/members" },
-    { name: "Login", link: "/login" },
-    { name: "Admin", link: "/admin" },
-    { name: "404", link: "/*" }
+    {name: "Home", link: "/"},
+    {name: "Members", link: "/members"},
+    {name: "Login", link: "/login"},
+    {name: "Admin", link: "/admin"},
+    {name: "404", link: "/*"},
+    {name: "Setting", link: "/setting"}
 ]
 
 app.use("/", (req, res, next) => {
@@ -122,6 +123,30 @@ app.get('/', (req, res) => {
 
 app.get('/signup', (req, res) => {
     res.render("signup")
+});
+
+app.get('/setting', (req,res) => {
+    res.render("setting")
+});
+
+app.get('/edit-profile', (req,res) => {
+    res.render("edit-profile")
+});
+
+app.get('/edit-password', (req,res) => {
+    res.render("edit-password")
+});
+
+app.get('/setting', (req,res) => {
+    res.render("setting")
+});
+
+app.get('/edit-profile', (req,res) => {
+    res.render("edit-profile")
+});
+
+app.get('/edit-password', (req,res) => {
+    res.render("edit-password")
 });
 
 app.post('/submitUser', async (req, res) => {
