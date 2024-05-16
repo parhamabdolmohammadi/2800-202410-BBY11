@@ -40,6 +40,7 @@ const mongodb_user = process.env.MONGODB_USER;
 const mongodb_password = process.env.MONGODB_PASSWORD;
 const mongodb_database = process.env.MONGODB_DATABASE;
 const mongodb_session_secret = process.env.MONGODB_SESSION_SECRET;
+const mongodb_database2 = process.env.MONGODB_DATABASE2;
 
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* END secret section */
@@ -47,6 +48,7 @@ const node_session_secret = process.env.NODE_SESSION_SECRET;
 var {database} = include('databaseConnection');
 
 const userCollection = database.db(mongodb_database).collection('users');
+const stationsCollection = database.db(mongodb_database2).collection('Stations');
 
 app.set('view engine', 'ejs');
 
@@ -60,7 +62,17 @@ var mongoStore = MongoStore.create({
 })
 
 
+<<<<<<< Updated upstream
 app.use(express.static(__dirname + "/css")); 
+=======
+
+
+app.use(express.static(__dirname + "/css"));
+app.use(express.static(__dirname + "/images")); 
+app.use(express.static(__dirname + "/scripts")); 
+
+
+>>>>>>> Stashed changes
 
 
 app.use(session({ 
@@ -247,7 +259,20 @@ app.get('/members', (req,res) => {
 });
 
 
+<<<<<<< Updated upstream
 app.use(express.static(__dirname + "/images"));
+=======
+app.get('/stations', async (req, res) => {
+    try {
+        const stations = await stationsCollection.find({}).toArray(); 
+        console.log("haha" + stations);
+        res.render("stations", { stations: stations }); 
+    } catch (error) {
+        console.error("Error fetching stations:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+>>>>>>> Stashed changes
 
 
 app.get("*", (req,res) => {
