@@ -1,8 +1,9 @@
 
 /* signup-login page css */
 .signup-login-page-container {
-    min-height: calc(94.9vh - 8rem);
+    min-height: calc(93.1vh - 6rem);
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 }
