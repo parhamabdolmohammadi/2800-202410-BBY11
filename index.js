@@ -14,6 +14,7 @@ const secretKey = "mySecretKey";
 const iv = CryptoJS.lib.WordArray.random(16);
 const salt = CryptoJS.enc.Hex.parse('')
 const ObjectId = require('mongodb').ObjectId;
+const nodemailer = require('nodemailer');
 
 const port = process.env.PORT || 3000;
 
@@ -305,7 +306,7 @@ app.get('/checkout', sessionValidation, (req, res) => {
 app.post('/submit-payment', sessionValidation, async (req, res) => {
     try {
         let paymentType = req.body.paymentType;
-        if(paymentType ==="credit"){
+        if (paymentType === "credit") {
             let cardnumber = req.body.cardnumber;
             let expirydate = req.body.expirydate;
             let cvv = req.body.cvv;
@@ -320,6 +321,76 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
         }
     } catch (e) {
         console.log(e);
+    }
+});
+
+app.get('/forgot-password', async (req, res) => {
+    res.render("forgot-password");
+});
+
+app.post('/sendEmail', async (req, res) => {
+    try {
+        const transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+                user: 'roborental.bcit@gmail.com',
+                pass: process.env.EMAIL_PASSWORD
+            }
+        });
+        if (!req.body.email) {
+            res.render("forgot-password");
+            return;
+        }
+        let email = req.body.email;
+        let resetCode = Math.floor(Math.random() * 1000000);
+        const mailOptions = {
+            from: 'roborental.bcit@gmail.com',
+            to: email,
+            subject: 'Password Reset Request',
+            text: 'This is your one time login code to reset your password: ' + resetCode,
+        };
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent:', info.messageId);
+        res.render("enterCode", {resetCode: resetCode, userEmail: email});
+    } catch (error) {
+        console.error('Error occurred:', error);
+    }
+});
+
+app.post('/loginfromcode', async (req, res) => {
+    try {
+        let code1= req.body.resetCode;
+        let code2 = req.body.inputCode;
+        let email = req.body.email;
+        if (code1 !== code2) {
+            res.send("Invalid code. Please try again.");
+        } else {
+            res.render("reset-password", {email: email});
+        }
+    } catch (error) {
+        console.error('Error occurred:', error);
+    }
+});
+
+app.post('/resetPassword', async (req, res) => {
+    try {
+        let password1 = req.body.password1;
+        let password2 = req.body.password2;
+        let email = req.body.email;
+
+        console.log(password1, password2);
+        if(password1 === password2) {
+            let hashedPassword = await bcrypt.hash(password1, saltRounds);
+            console.log("Email: "+email);
+            console.log("Password: "+hashedPassword);
+
+            await userCollection.updateOne({email: email}, {$set: {password: hashedPassword}});
+            res.redirect("/login");
+        } else {
+            res.send("Passwords do not match. Please try again.");
+        }
+    } catch (error) {
+        console.error('Error occurred:', error);
     }
 });
 
