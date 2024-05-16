@@ -192,8 +192,8 @@ app.post('/submitUser', async (req, res) => {
 
 
     var hashedPassword = await bcrypt.hash(password, saltRounds);
-	
-	await userCollection.insertOne({username: username, password: hashedPassword, email: email, user_type: "user"});
+	var encryptedEmail = CryptoJS.AES.encrypt(email, secretKey, { iv: iv, salt: salt }).toString();
+	await userCollection.insertOne({username: username, password: hashedPassword, email: encryptedEmail, user_type: "user"});
 	console.log("Inserted user");
    
 
@@ -244,8 +244,9 @@ app.post('/loggingin', async (req,res) => {
         return;
     }
 
+    var encryptedEmail = CryptoJS.AES.encrypt(email, secretKey, { iv: iv, salt: salt }).toString();
     // Check if a user account with the entered email and password exists in the MongoDB database
-    const result = await userCollection.find({email: email}).project({username: 1, email: 1, password: 1, user_type: 1, _id: 1}).toArray();
+    const result = await userCollection.find({email: encryptedEmail}).project({username: 1, email: 1, password: 1, user_type: 1, _id: 1}).toArray();
     
     // If a user with the entered email and password combination was NOT found (result array length = 1)
     if (result.length != 1) {
