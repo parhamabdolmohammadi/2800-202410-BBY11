@@ -24,78 +24,78 @@
   </symbol>
 </svg>
 
-<main
-  style="
-    max-width: 504px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
-    box-sizing: border-box;
-  "
-  class="form-signin w-100 m-auto"
->
-  <form
-    style="
-      margin: 10px, 10px;
-      border: 1px solid rgba(0, 0, 0, 0.3);
-      border-radius: 10px;
-      padding: 10px 10px;
-    "
-    action="/submitUser"
-    method="post"
-  >
-    <h1 class="h3 mb-3 fw-normal">Please sign in:</h1>
+<div class="signup-login-page-container">
+  <main style="max-width: 504px;" class="form-signin py-3 px-3 w-100 m-auto signup-login-form-container">
+    <form action="/submitUser" method="post">
+      <h4 class="h4 mb-3 fw-bold text-center">Sign up</h4>
+      <h6 class="mb-3 fw-normal text-center">Already have an account? <a href='/login' class="btn btn-sm" style="color: black; background-color: orange !important">Login</a></h6>
+      <div>
+        <label for="signupUsername" class="form-label">Username</label>
+        <br/>
+        
+        <input
+          name="username"
+          type="text"
+          placeholder="Username"
+          class="signup-login-form-input-style"
+          id="signupUsername"
+        />      
+      </div>
+      <br/>
+      
+      <div>
+        <label for="signupEmail" class="form-label">Email address</label>
+        <br/>
+        
+        <input
+          name="email"
+          type="email"
+          placeholder="name@example.com"
+          class="signup-login-form-input-style"
+          id="signupEmail"
+        />      
+      </div>
+      <br/>
+      
+      <div style="position: relative;">
+        <label for="signupPassword" class="form-label">Password</label>
+        <br/>
 
-    <div class="form-floating">
-      <input
-        type="text"
-        name="username"
-        placeholder="Username"
-        class="form-control"
-        id="floatingInput"
-      />
-      <label for="floatingInput">Username</label>
-      <br />
-    </div>
-    <div class="form-floating">
-      <input
-        name="email"
-        type="email"
-        placeholder="Email"
-        class="form-control"
-        id="floatingInput"
-      />
-      <label for="floatingInput">Email address</label>
-      <br />
-    </div>
-    <div class="form-floating">
-      <input
-        name="password"
-        type="password"
-        placeholder="Password"
-        class="form-control"
-        id="floatingPassword"
-      />
-      <label for="floatingPassword">Password</label>
-    </div>
+        <input
+          name="password"
+          type="password"
+          placeholder="Password"
+          class="signup-login-form-input-style"
+          id="signupPassword"
+        />
+        <span class="material-symbols-outlined showPswdButton" id="signupShowPswdButton" onclick="togglePasswordVisability('signupPassword', 'signupShowPswdButton')">visibility_off</span>
+      </div>
+      <br/>
+      
+      <!-- Remove this
 
-    <div class="form-check text-start my-3">
-      <input
-        class="form-check-input"
-        type="checkbox"
-        value="remember-me"
-        id="flexCheckDefault"
-      />
-      <label class="form-check-label" for="flexCheckDefault">
-        Remember me
-      </label>
-    </div>
-    <button
-      style="background-color: #003249 !important"
-      class="btn btn-primary w-100 py-2"
-      type="submit"
-    >
-      Sign in
-    </button>
-  </form>
-</main>
+      <div class="form-check text-start my-3">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          value="remember-me"
+          id="flexCheckDefault"
+        />
+        <label class="form-check-label" for="flexCheckDefault">
+          Remember me
+        </label>
+      </div>
+      -->
+
+      <button
+        style="background-color: #003249 !important; color: white;"
+        class="btn w-100 py-2"
+        type="submit"
+      >
+        Sign up
+      </button>
+    </form>
+  </main>
+</div>
+
 <%- include("templates/footer") %>

@@ -1,0 +1,24 @@
+.material-symbols-outlined {
+    font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
+/* For the signup and login pages, Jason can change the class name later if needed */
+.showPswdButton {
+    padding: 0.3em;
+    border-radius: 50%;
+
+    /* To move the show password element icon into the password input form field (for both signup and login pages)*/
+    position: absolute;
+    top: 45%;
+    right: 0;
+}
+
+/* For the signup and login pages, Jason can change the class name later if needed */
+.showPswdButton:hover {
+    cursor: pointer;
+    background-color: #cccc;
+}
