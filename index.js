@@ -127,6 +127,14 @@ app.get('/setting', (req,res) => {
     res.render("setting")
 });
 
+app.get('/edit-profile', (req,res) => {
+    res.render("edit-profile")
+});
+
+app.get('/edit-password', (req,res) => {
+    res.render("edit-password")
+});
+
 app.post('/submitUser', async (req,res) => {
     var username = req.body.username;
     var password = req.body.password;
