@@ -1,0 +1,35 @@
+.setting-link {
+    background-color: #007EA7;
+}
+
+.setting-link-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top:50px;
+}
+
+.setting-link {
+    width: 250px;
+    padding: 18px;
+    margin-bottom: 20px;
+    text-align: center;
+    text-decoration: none;
+    color: black;
+    border: 3px solid #001845;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    font-size: 1.5em;
+    font-weight: bold;
+    display: block;
+    /* text-transform: uppercase; */
+}
+
+.setting-link:hover {
+    background-color: #003249 ;
+    color: white;
+}
+
+#setting-h1 {
+    font-size:40px;
+}
