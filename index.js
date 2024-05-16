@@ -9,7 +9,10 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
-const encryptjs = require('encryptjs');
+const CryptoJS = require('crypto-js')
+const secretKey = "mySecretKey";
+const iv = CryptoJS.lib.WordArray.random(16);
+const salt = CryptoJS.enc.Hex.parse('')
 const ObjectId = require('mongodb').ObjectId;
 
 const port = process.env.PORT || 3000;
@@ -45,8 +48,8 @@ const mongodb_session_secret = process.env.MONGODB_SESSION_SECRET;
 
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* END secret section */
-const encryptionKey = process.env.ENCRYPTION_KEY;
-var { database } = include('databaseConnection');
+
+var {database} = include('databaseConnection');
 
 const userCollection = database.db(mongodb_database).collection('users');
 
@@ -190,10 +193,10 @@ app.post('/submitUser', async (req, res) => {
 
 
     var hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    await userCollection.insertOne({ username: username, password: hashedPassword, email: email, user_type: "user" });
-    console.log("Inserted user");
-
+	
+	await userCollection.insertOne({username: username, password: hashedPassword, email: email, user_type: "user"});
+	console.log("Inserted user");
+   
 
     var html = "successfully created user";
     console.log(html);
@@ -305,39 +308,14 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
             let cardnumber = req.body.cardnumber;
             let expirydate = req.body.expirydate;
             let cvv = req.body.cvv;
-            const schema = Joi.object(
-                {
-                    cardnumber: Joi.string().creditCard().required(),
-                    expirydate: Joi.string().max(5).required(),
-                    cvv: Joi.number().max(999).required()
-                });
-            const validationResult = schema.validate({ cardnumber, expirydate, cvv });
-            if (validationResult.error != null) {
-                console.log(validationResult.error);
-                res.redirect("/checkout");
-                return;
-            }
+
             const encryptedCardNumber = encryptjs.encrypt(cardnumber, encryptionKey, 256)
             const encryptedExpirydate = encryptjs.encrypt(expirydate, encryptionKey, 256)
             const encryptedCvv = encryptjs.encrypt(cvv, encryptionKey, 256)
-            let userId = new ObjectId(req.session._id);
-            await userCollection.updateOne({ _id: userId },
-                { $set: { cardnumber: encryptedCardNumber, expirydate: encryptedExpirydate, cvv: encryptedCvv }});
-                res.render("confirmation");
+
         } else if(paymentType ==="paypal"){
             let paypalEmail = req.body.paypalEmail;
-            const schema = Joi.object({ paypalEmail: Joi.string().max(20).required() });
-            const validationResult = schema.validate({ paypalEmail });
-            if (validationResult.error != null) {
-                console.log(validationResult.error);
-                res.redirect("/checkout");
-                return;
-            }
-            const encryptedPaypalEmail = encryptjs.encrypt(paypalEmail, encryptionKey, 256)   
-            let userId = new ObjectId(req.session._id);
-
-            await userCollection.updateOne({ _id: userId }, { $set: { paypalEmail: encryptedPaypalEmail}});
-                res.render("confirmation");
+            const encryptedPaypalEmail = encryptjs.encrypt(paypalEmail, encryptionKey, 256)            
         }
     } catch (e) {
         console.log(e);
