@@ -10,6 +10,7 @@ const MongoStore = require('connect-mongo');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
 const encryptjs = require('encryptjs');
+const ObjectId = require('mongodb').ObjectId;
 
 // const port = process.env.PORT || 3000;
 const port = 3000;
@@ -211,6 +212,8 @@ app.post('/loggingin', async (req, res) => {
         console.log("correct password");
         req.session.authenticated = true;
         req.session.username = result[0].username;
+        req.session._id = result[0]._id;
+
         req.session.cookie.maxAge = expireTime;
         req.session.user_type = result[0].user_type;
 
@@ -259,14 +262,39 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
             let cardnumber = req.body.cardnumber;
             let expirydate = req.body.expirydate;
             let cvv = req.body.cvv;
-
+            const schema = Joi.object(
+                {
+                    cardnumber: Joi.string().creditCard().required(),
+                    expirydate: Joi.string().max(5).required(),
+                    cvv: Joi.number().max(999).required()
+                });
+            const validationResult = schema.validate({ cardnumber, expirydate, cvv });
+            if (validationResult.error != null) {
+                console.log(validationResult.error);
+                res.redirect("/checkout");
+                return;
+            }
             const encryptedCardNumber = encryptjs.encrypt(cardnumber, encryptionKey, 256)
             const encryptedExpirydate = encryptjs.encrypt(expirydate, encryptionKey, 256)
             const encryptedCvv = encryptjs.encrypt(cvv, encryptionKey, 256)
-
+            let userId = new ObjectId(req.session._id);
+            await userCollection.updateOne({ _id: userId },
+                { $set: { cardnumber: encryptedCardNumber, expirydate: encryptedExpirydate, cvv: encryptedCvv }});
+                res.render("confirmation");
         } else if(paymentType ==="paypal"){
             let paypalEmail = req.body.paypalEmail;
-            const encryptedPaypalEmail = encryptjs.encrypt(paypalEmail, encryptionKey, 256)            
+            const schema = Joi.object({ paypalEmail: Joi.string().max(20).required() });
+            const validationResult = schema.validate({ paypalEmail });
+            if (validationResult.error != null) {
+                console.log(validationResult.error);
+                res.redirect("/checkout");
+                return;
+            }
+            const encryptedPaypalEmail = encryptjs.encrypt(paypalEmail, encryptionKey, 256)   
+            let userId = new ObjectId(req.session._id);
+
+            await userCollection.updateOne({ _id: userId }, { $set: { paypalEmail: encryptedPaypalEmail}});
+                res.render("confirmation");
         }
     } catch (e) {
         console.log(e);
