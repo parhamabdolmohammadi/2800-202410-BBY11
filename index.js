@@ -9,6 +9,8 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
+const encryptjs = require('encryptjs');
+const ObjectId = require('mongodb').ObjectId;
 
 const port = process.env.PORT || 3000;
 
@@ -21,14 +23,15 @@ const navLinks = [
     {name: "Main", link: "/main"},
     {name: "Login", link: "/login"},
     {name: "Admin", link: "/admin"},
-    {name: "404", link: "/*"}
+    {name: "404", link: "/*"},
+    {name: "Setting", link: "/setting"}
 ]
 
-app.use("/", (req,res,next) => {
+app.use("/", (req, res, next) => {
     app.locals.navLinks = navLinks;
     app.locals.currentURL = url.parse(req.url).pathname;
     next();
-}) 
+})
 
 
 const expireTime = 24 * 60 * 60 * 1000; //expires after 1 day  (hours * minutes * seconds * millis)
@@ -42,25 +45,25 @@ const mongodb_session_secret = process.env.MONGODB_SESSION_SECRET;
 
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* END secret section */
-
-var {database} = include('databaseConnection');
+const encryptionKey = process.env.ENCRYPTION_KEY;
+var { database } = include('databaseConnection');
 
 const userCollection = database.db(mongodb_database).collection('users');
 
 app.set('view engine', 'ejs');
 
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({ extended: false }));
 
 var mongoStore = MongoStore.create({
-	mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
-	crypto: {
-		secret: mongodb_session_secret
-	}
+    mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
+    crypto: {
+        secret: mongodb_session_secret
+    }
 })
 
 // WILL NEED TO REMOVE THESE TWO IF WE PUT CSS AND IMAGES FOLDER INTO PUBLIC FOLDER, see footer.ejs line 30 for how to link-------------------------------------------------
 app.use(express.static(__dirname + "/css"));
-app.use(express.static(__dirname + "/images")); 
+app.use(express.static(__dirname + "/images"));
 
 // Map the file system paths to the app's virtual paths
 // Parameters: The root parameter describes the root directory from which to serve static assets.
@@ -71,11 +74,11 @@ app.use("/js", express.static("./public/js")); // Need this middleware since js 
 // app.use("/css", express.static("./public/css"));
 // app.use("/img", express.static("./public/images"));
 
-app.use(session({ 
+app.use(session({
     secret: node_session_secret,
-	store: mongoStore, 
-	saveUninitialized: false, 
-	resave: true
+    store: mongoStore,
+    saveUninitialized: false,
+    resave: true
 }
 ));
 
@@ -103,10 +106,10 @@ function isAdmin(req) {
     return false;
 }
 
-function adminAuthorization(req,res,next) {
+function adminAuthorization(req, res, next) {
     if (!isAdmin(req)) {
         res.status(403);
-        res.render("errorMessage", {error: "Not Authorized"});
+        res.render("errorMessage", { error: "Not Authorized" });
         return;
     }
     else {
@@ -114,21 +117,45 @@ function adminAuthorization(req,res,next) {
     }
 }
 
-app.get('/', (req,res) => {
+app.get('/', (req, res) => {
     if (!req.session.authenticated) {
         res.render('index', {username: req.session.username});
     } else {
         console.log(req.session.user_type);
         res.render("main", {username: req.session.username});
     }
-    
+
 });
 
-app.get('/signup', (req,res) => {
+app.get('/signup', (req, res) => {
     res.render("signup")
 });
 
-app.post('/submitUser', async (req,res) => {
+app.get('/setting', (req,res) => {
+    res.render("setting")
+});
+
+app.get('/edit-profile', (req,res) => {
+    res.render("edit-profile")
+});
+
+app.get('/edit-password', (req,res) => {
+    res.render("edit-password")
+});
+
+app.get('/setting', (req,res) => {
+    res.render("setting")
+});
+
+app.get('/edit-profile', (req,res) => {
+    res.render("edit-profile")
+});
+
+app.get('/edit-password', (req,res) => {
+    res.render("edit-password")
+});
+
+app.post('/submitUser', async (req, res) => {
     var username = req.body.username;
     var password = req.body.password;
     var email = req.body.email;
@@ -146,26 +173,26 @@ app.post('/submitUser', async (req,res) => {
         return;
     }
 
-	const schema = Joi.object(
-		{
-			username: Joi.string().alphanum().max(20).required(),
-			password: Joi.string().max(20).required(),
+    const schema = Joi.object(
+        {
+            username: Joi.string().alphanum().max(20).required(),
+            password: Joi.string().max(20).required(),
             email: Joi.string().max(40).required()
-		});
-	
-	const validationResult = schema.validate({username, password, email});
-	if (validationResult.error != null) {
-	   console.log(validationResult.error);
-	   res.redirect("/signup");
-	   return;
-   }
+        });
+
+    const validationResult = schema.validate({ username, password, email });
+    if (validationResult.error != null) {
+        console.log(validationResult.error);
+        res.redirect("/signup");
+        return;
+    }
 
 
     var hashedPassword = await bcrypt.hash(password, saltRounds);
-	
-	await userCollection.insertOne({username: username, password: hashedPassword, email: email, user_type: "user"});
-	console.log("Inserted user");
-   
+
+    await userCollection.insertOne({ username: username, password: hashedPassword, email: email, user_type: "user" });
+    console.log("Inserted user");
+
 
     var html = "successfully created user";
     console.log(html);
@@ -250,9 +277,9 @@ app.get("/loginSubmit", (req, res) => {
 
 
 
-app.get('/logout', (req,res) => {
-	req.session.destroy();
-    
+app.get('/logout', (req, res) => {
+    req.session.destroy();
+
     res.redirect('/');
 });
 
@@ -266,14 +293,61 @@ app.get('/main', (req,res) => {
         res.render("main");
 });
 
+app.get('/checkout', sessionValidation, (req, res) => {
+    res.render("checkout", { query: req.query });
+});
 
+app.post('/submit-payment', sessionValidation, async (req, res) => {
+    try {
+        let paymentType = req.body.paymentType;
+        if(paymentType ==="credit"){
+            let cardnumber = req.body.cardnumber;
+            let expirydate = req.body.expirydate;
+            let cvv = req.body.cvv;
+            const schema = Joi.object(
+                {
+                    cardnumber: Joi.string().creditCard().required(),
+                    expirydate: Joi.string().max(5).required(),
+                    cvv: Joi.number().max(999).required()
+                });
+            const validationResult = schema.validate({ cardnumber, expirydate, cvv });
+            if (validationResult.error != null) {
+                console.log(validationResult.error);
+                res.redirect("/checkout");
+                return;
+            }
+            const encryptedCardNumber = encryptjs.encrypt(cardnumber, encryptionKey, 256)
+            const encryptedExpirydate = encryptjs.encrypt(expirydate, encryptionKey, 256)
+            const encryptedCvv = encryptjs.encrypt(cvv, encryptionKey, 256)
+            let userId = new ObjectId(req.session._id);
+            await userCollection.updateOne({ _id: userId },
+                { $set: { cardnumber: encryptedCardNumber, expirydate: encryptedExpirydate, cvv: encryptedCvv }});
+                res.render("confirmation");
+        } else if(paymentType ==="paypal"){
+            let paypalEmail = req.body.paypalEmail;
+            const schema = Joi.object({ paypalEmail: Joi.string().max(20).required() });
+            const validationResult = schema.validate({ paypalEmail });
+            if (validationResult.error != null) {
+                console.log(validationResult.error);
+                res.redirect("/checkout");
+                return;
+            }
+            const encryptedPaypalEmail = encryptjs.encrypt(paypalEmail, encryptionKey, 256)   
+            let userId = new ObjectId(req.session._id);
 
+            await userCollection.updateOne({ _id: userId }, { $set: { paypalEmail: encryptedPaypalEmail}});
+                res.render("confirmation");
+        }
+    } catch (e) {
+        console.log(e);
+    }
+});
 
-app.get("*", (req,res) => {
-	res.status(404);
-	res.render("404",);
+app.get("*", (req, res) => {
+    res.status(404);
+    res.render("404",);
 })
 
 app.listen(port, () => {
-	console.log("Node application listening on port "+port);
+    console.log("Node application listening on port " + port);
 }); 

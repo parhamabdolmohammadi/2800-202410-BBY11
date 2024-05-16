@@ -1,0 +1,32 @@
+<%- include("templates/header") %>
+<div class="my-3">
+    <a href='/setting' class="btn btn-secondary back-btn">Back</a>
+</div>
+
+<div class="container">
+    <h1 id="profile-h1">Edit profile</h1>
+    
+    <div class="edit-account-form">
+        <form>
+            <div class="mb-3">
+                <label for="edit-user-email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="edit-user-email" aria-describedby="emailHelp" required>
+                <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+            </div>
+            <div class="mb-3">
+                <label for="edit-user-name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="edit-user-name" aria-describedby="nameHelp" required>
+            </div>
+            <div class="mb-3">
+                <label for="current-password" class="form-label">Current Password</label>
+                <input type="password" class="form-control" id="current-password" required>
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="apply-changes">
+                <label class="form-check-label" for="apply-changes">Apply</label>
+            </div>
+            <button type="submit" class="button">Submit</button>
+        </form>
+    </div>
+  </div>
+  <%- include("templates/footer") %>
