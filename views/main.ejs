@@ -1,6 +1,17 @@
 <%- include("templates/header") %>
-
-<br>
-<p>Main page shoud be placed here</p>
+<script>
+       document.addEventListener('DOMContentLoaded', function() {
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = '/main.css';
+        document.head.appendChild(link);
+    });
+</script>
+<div class="input-group rounded search search-bar">
+    <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+    <span class="input-group-text border-0" id="search-addon">
+      <i class="fas fa-search"></i>
+    </span>
+  </div>
 
 <%- include("templates/footer") %>
