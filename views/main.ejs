@@ -1,8 +1,15 @@
 <%- include("templates/header") %>
-
 <!-- <p>Main page shoud be placed here</p> -->
 <div class="main-page-container">
     <div style="margin-bottom: 7em;">
+		
+		<div class="input-group rounded search search-bar">
+			<input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+			<span class="input-group-text border-0" id="search-addon">
+			  <i class="fas fa-search"></i>
+			</span>
+		</div>
+
 		<div class="row mb-3 text-center row-gap-3">
 			<!-- <div class="col-md-4 themed-grid-col">Item 1</div>
 			<div class="col-md-4 themed-grid-col">Item 2</div>
@@ -11,6 +18,15 @@
 		<button type='submit' class="btn btn-light btn-outline-secondary" onclick="window.location.href = '/logout';">Sign out</button>
 		</div>
 </div>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+	 var link = document.createElement('link');
+	 link.rel = 'stylesheet';
+	 link.href = '/main.css';
+	 document.head.appendChild(link);
+ });
+</script>
 
 <%- include("templates/footer") %>
 
