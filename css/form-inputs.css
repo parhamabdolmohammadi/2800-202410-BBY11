@@ -1,0 +1,46 @@
+
+/* signup-login page css */
+.signup-login-page-container {
+    min-height: calc(94.9vh - 8rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.signup-login-form-container {
+    border: 1px solid #cccc;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+    box-sizing: border-box;
+}
+
+.signup-login-form-input-style {
+    border-left: none !important;
+    border-top: none !important;
+    border-right: none !important;
+    border-radius: 0px !important;
+    border-color: #cccc;
+    box-shadow: none !important;
+
+    padding-left: 0 !important;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    padding-right: 0 !important;
+
+    min-width: 100%;
+}
+
+/*  For preventing outline on form when clicked/focused on */
+.signup-login-form-input-style:focus{
+    outline: none !important;
+    border-color: black !important;
+    box-shadow: none !important;
+}
+
+/* index page css */
+.index-page-container { /* Will adjust later to add some information about our website to the index page */
+    min-height: calc(94.9vh - 8rem);
+    display: flex;
+    justify-content: center;
+}

@@ -1,2 +1,14 @@
-<%- include("templates/header") %> Hello World <%- include("templates/footer")
-%>
+<%- include("templates/header") %>
+<div class="index-page-container">
+<div class="signup-login-form-container" style="min-width: 400px;
+            max-width: 504px;
+            height: 200px;"
+>
+    <h3>Hello, <%=username %>!</h3>
+    <br>
+    <button type='button' onclick="window.location.href = '/signup';" class="btn w-100 py-2 mb-2" style="background-color: #003249 !important; color: white;">Sign up</button>
+    <br>
+    <button type='button' onclick="window.location.href = '/login';" class="btn btn-light btn-outline-secondary w-100 py-2 mb-2">Log in</button>
+</div>
+</div>
+<%- include("templates/footer")%>
