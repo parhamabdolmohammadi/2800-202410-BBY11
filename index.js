@@ -64,6 +64,7 @@ var mongoStore = MongoStore.create({
 // WILL NEED TO REMOVE THESE TWO IF WE PUT CSS AND IMAGES FOLDER INTO PUBLIC FOLDER, see footer.ejs line 30 for how to link-------------------------------------------------
 app.use(express.static(__dirname + "/css"));
 app.use(express.static(__dirname + "/images"));
+app.use(express.static(__dirname + "/js"));
 
 // Map the file system paths to the app's virtual paths
 // Parameters: The root parameter describes the root directory from which to serve static assets.
