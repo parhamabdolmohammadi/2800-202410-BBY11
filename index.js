@@ -9,7 +9,10 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
-const encryptjs = require('encryptjs');
+const CryptoJS = require('crypto-js')
+const secretKey = "mySecretKey";
+const iv = CryptoJS.lib.WordArray.random(16);
+const salt = CryptoJS.enc.Hex.parse('')
 
 // const port = process.env.PORT || 3000;
 const port = 3000;
@@ -44,8 +47,8 @@ const mongodb_session_secret = process.env.MONGODB_SESSION_SECRET;
 
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* END secret section */
-const encryptionKey = process.env.ENCRYPTION_KEY;
-var { database } = include('databaseConnection');
+
+var {database} = include('databaseConnection');
 
 const userCollection = database.db(mongodb_database).collection('users');
 
@@ -157,10 +160,10 @@ app.post('/submitUser', async (req, res) => {
 
 
     var hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    await userCollection.insertOne({ username: username, password: hashedPassword, email: email, user_type: "user" });
-    console.log("Inserted user");
-
+	
+	await userCollection.insertOne({username: username, password: hashedPassword, email: email, user_type: "user"});
+	console.log("Inserted user");
+   
 
     var html = "successfully created user";
     console.log(html);
@@ -191,27 +194,27 @@ app.post('/loggingin', async (req, res) => {
     var email = req.body.email;
     var password = req.body.password;
 
-    const schema = Joi.string().max(40).required();
-    const validationResult = schema.validate(email);
-    if (validationResult.error != null) {
-        console.log(validationResult.error);
-        res.redirect("/login");
-        return;
-    }
+	const schema = Joi.string().max(40).required();
+	const validationResult = schema.validate(email);
+	if (validationResult.error != null) {
+	   console.log(validationResult.error);
+	   res.redirect("/login");
+	   return;
+	}
 
-    const result = await userCollection.find({ email: email }).project({ username: 1, password: 1, _id: 1, user_type: 1 }).toArray();
+	const result = await userCollection.find({email: email}).project({username: 1, password: 1, _id: 1, user_type: 1}).toArray();
 
-    console.log(result);
-    if (result.length != 1) {
-        console.log("user not found");
-        res.redirect("/login");
-        return;
-    }
-    if (await bcrypt.compare(password, result[0].password)) {
-        console.log("correct password");
-        req.session.authenticated = true;
-        req.session.username = result[0].username;
-        req.session.cookie.maxAge = expireTime;
+	console.log(result);
+	if (result.length != 1) {
+		console.log("user not found");
+		res.redirect("/login");
+		return;
+	}
+	if (await bcrypt.compare(password, result[0].password)) {
+		console.log("correct password");
+		req.session.authenticated = true;
+		req.session.username = result[0].username;
+		req.session.cookie.maxAge = expireTime;
         req.session.user_type = result[0].user_type;
 
         res.redirect('/members');
@@ -248,34 +251,12 @@ app.get('/members', (req, res) => {
     res.send("Members page shoud be placed here");
 });
 
-app.get('/checkout', sessionValidation, (req, res) => {
-    res.render("checkout", { query: req.query });
-});
 
-app.post('/submit-payment', sessionValidation, async (req, res) => {
-    try {
-        let paymentType = req.body.paymentType;
-        if(paymentType ==="credit"){
-            let cardnumber = req.body.cardnumber;
-            let expirydate = req.body.expirydate;
-            let cvv = req.body.cvv;
 
-            const encryptedCardNumber = encryptjs.encrypt(cardnumber, encryptionKey, 256)
-            const encryptedExpirydate = encryptjs.encrypt(expirydate, encryptionKey, 256)
-            const encryptedCvv = encryptjs.encrypt(cvv, encryptionKey, 256)
 
-        } else if(paymentType ==="paypal"){
-            let paypalEmail = req.body.paypalEmail;
-            const encryptedPaypalEmail = encryptjs.encrypt(paypalEmail, encryptionKey, 256)            
-        }
-    } catch (e) {
-        console.log(e);
-    }
-});
-
-app.get("*", (req, res) => {
-    res.status(404);
-    res.render("404",);
+app.get("*", (req,res) => {
+	res.status(404);
+	res.render("404",);
 })
 
 app.listen(port, () => {
