@@ -16,14 +16,6 @@ station.forEach(station => {
    newcard.querySelector(".card-address").innerHTML = address;
    newcard.querySelector(".card-availability").innerHTML = availability;
 
-   
-   
-//    newcard.querySelector(".star-image").src = '/star2.png';
-   
-  
-   
-
-   
 
    if (currentUser) {
       var bookmarks = currentUser[0].bookmarks;
@@ -32,8 +24,7 @@ station.forEach(station => {
         return;
       }
       
-    
-         
+     
    }
 
    document.getElementById("stations-placeholder").appendChild(newcard);
