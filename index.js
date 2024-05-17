@@ -139,14 +139,14 @@ app.get('/', (req, res) => {
         // Set global variable atIndexPage to true
         atIndexPage = true;
 
-        res.render('index', { username: req.session.username, atIndexPage: atIndexPage });
+        res.render('index', { atIndexPage: atIndexPage });
 
         // Reset atIndexPage to false
         atIndexPage = false;
 
     } else {
-        console.log(req.session.user_type);
-        res.render("main", { username: req.session.username });
+        // console.log(req.session.user_type);
+        res.redirect("/main");
     }
 
 });
@@ -326,7 +326,7 @@ app.get('/main', async (req, res) => {
     console.log('this is ' + services);
     var username = req.session.username;
     console.log('username is ' +  username);
-    res.render("main", { services, username});
+    res.render("main", {services, username});
 });
 
 
