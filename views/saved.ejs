@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Add Map</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+   
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
+    <link href="/footer.css" rel="stylesheet" />
+    <style>
+      #map {
+        width: 100%;
+        height: 400px; /* 400px*/
+        background-color: grey;
+        grid-area: map;
+      }
+
+      .icon-container {
+        padding-top: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 126, 167, 1);
+        border-radius: 5px;
+      }
+
+      .link-style {
+        text-decoration: none;
+        color: black;
+      }
+
+      .link-style:hover {
+        color: silver;
+      }
+
+      .card-style {
+        border: 1px solid rgba(0, 50, 73, 0.5);
+        border-radius: 10px;
+        padding: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+        transform: scale(0.95);
+        margin-top: 10px !important;
+      }
+
+      .icon-size {
+        width: 30px;
+        height: 30px;
+      }
+
+   
+    </style>
+  </head>
+  <body>
+    <%- include("templates/svgs") %>
+    <header
+      style="background-color: #007ea7"
+      class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom"
+    >
+      <a
+        href="/"
+        class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
+      >
+        <!-- <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>  -->
+        <span class="fs-4"
+          >&nbsp;Robo Rental
+          <p style="display: inline; position: relative; bottom: 1px">|</p>
+          <img
+            style="position: relative; bottom: 3px"
+            width="34px;"
+            src="robot.png"
+          />&nbsp; &nbsp;&nbsp;&nbsp;</span
+        >
+      </a>
+
+      <ul class="nav nav-pills">
+        <% for(var i = 0; i < locals.navLinks.length; i++) { %>
+        <li class="nav-item">
+          <a
+            href="<%= locals.navLinks[i].link %>"
+            style="color: black"
+            class="nav-link <% if (locals.navLinks[i].link == currentURL) { %> active <% }%>"
+            aria-current="page"
+            onmouseover="this.style.color='silver'"
+            onmouseout="this.style.color='black'"
+          >
+            <%= locals.navLinks[i].name %>
+          </a>
+        </li>
+
+        <% } %>
+      </ul>
+    </header>
+  
+
+
+      <h3>Robot Stations</h3>
+      <!--The div element for the map -->
+      
+       
+        <div class="stations-placeholder" id="stations-placeholder">
+          
+        </div>
+      
+
+
+
+
+      <!--
+        TEMPLATE comp1800
+      -->
+
+      <template id="StationCardTemplate">
+        <div class="card-style form-signin w-100 m-auto">
+            <div class="card-header">
+              <img
+                style="position: relative; bottom: 3px"
+                src="/robot2.png"
+                alt=""
+              />
+              <p style="display: inline; font-weight: 500; font-size: 25px">
+                Station name:
+              </p> <span id="card-name" class="card-name"></span>
+              <span
+                style="float: right; transform: scale(1.5)"
+                
+              >
+                <img style="width: 20px; font-weight: 500;" class="star-image" alt="">
+              </span>
+            </div>
+            <hr style="color: rgba(0, 50, 73, 1)" />
+            <div style="padding: 0 5px">
+              <ul style="list-style-type: none">
+                <li>
+                  <img src="/maps-and-flags.png" style="width: 20px" alt="" />
+                  <span id="card-address" class="card-address"
+                    ></span
+                  >
+                </li>
+                <li>
+                  <img src="/robot3.png" style="width: 20px" alt="" />
+                  <span>Robots Available:</span><span class="card-availability" id="card-availability"></span>
+                </li>
+                <li></li>
+              </ul>
+              <div class="container text-center">
+                <div class="row row-cols-4">
+                  <div class="col">
+                    <a class="p-3 link-style"
+                      ><span class="icon-container"
+                        ><img class="icon-size" id src="/call.png" alt="" />
+                        <p>Call</p>
+                      </span></a
+                    >
+                  </div>
+                  <div class="col">
+                    <a class="p-3 link-style"
+                      ><span class="icon-container"
+                        ><img class="icon-size"  src="/website.png" alt="" />
+                        <p>Website</p>
+                      </span></a
+                    >
+                  </div>
+                  <div class="col">
+                    <a class="p-3 link-style link-style"
+                      ><span class="icon-container"
+                        ><img class="icon-size" id src="/info.png" alt="" />
+                        <p>More Info</p>
+                      </span></a
+                    >
+                  </div>
+                  <div class="col">
+                    <a class="p-3 link-style"
+                      ><span
+                        class="icon-container"
+                        style="background-color: rgba(0, 50, 73, 0.9)"
+                        ><img class="icon-size" src="/select.png" alt="" />
+                        <p>Select</p>
+                      </span></a
+                    >
+                  </div>
+                </div>
+                <form style="display: none;" action="/editBookmark" method="POST">
+                  
+                  <input type="text" class="id-placeholder" name="data" required><br><br>
+                  
+                  <button class="id-button" type="submit">Submit</button>
+              </form>
+              </div>
+            </div>
+          </div>
+      </template>
+      <script>
+        const station = <%- JSON.stringify(stations) %>;
+        console.log(station);
+        
+
+        const currentUser = <%- JSON.stringify(currentUserName) %>;
+        console.log(currentUser);
+
+        // Additional client-side scripts can go here
+      </script>
+      
+
+      <script src="saved.js"></script>
+      <%- include("templates/footer") %>
+    </body>
+  </body>
+</html>
