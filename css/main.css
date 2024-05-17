@@ -13,7 +13,7 @@
 }
 
 #main-welcome-container {
-    height: 15vh;
+    height: 15em;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -42,6 +42,14 @@
 }
 
 .service-container {
-    background-color: orange;
+    padding: 1em;
     border: solid;
+    border-radius: 20px;
+    border-width: 1px;
+    min-height: 20em;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }

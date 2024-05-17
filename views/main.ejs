@@ -21,20 +21,25 @@
 
 	<h2 id="main-welcome-message">Welcome <%= username %>!</h2>
 
-	</div>
+</div>
 
 	<!-- Services list of cards -->
 	<div id="main-content-container">
 		<h3 id="services-header">Find services</h3>
 		<div id="main-service-list-container" class="row mb-3 text-center">
-			<div class="col-md-4 themed-grid-col service-container">service_placeholder</div>
-			<div class="col-md-4 themed-grid-col service-container">service_placeholder</div>
-			<div class="col-md-4 themed-grid-col service-container">service_placeholder</div>
+
+			<% for(let i=0; i < services.length; i++) {%>
+			<div class="col-md-4 g-2 themed-grid-col service-container">
+				<img src="placeholder-image.png" alt="Placeholder Image" width="80%" height="70%" style="margin-bottom: 2em;";/>
+				<div style="display: inline-block;"><h4 style="display: inline;"><%= services[i].name %></h4></div>
+				<div style="display: inline-block;"><h4 style="display: inline;"><%= services[i].description%></h4></div>
+			</div>
+			<% } %>
 			
 		</div>
 	</div>
 
-	<div id="servicesContainer">
+	<!-- <div id="servicesContainer">
 
 		<% for(let i=0; i < services.length; i++) {%>
 			<div class="col-md-4 themed-grid-col service-container">
@@ -44,7 +49,7 @@
 		
 			<br>
 			<% } %>
-	</div>
+	</div> -->
 
 	<script>
 		document.addEventListener('DOMContentLoaded', function () {
@@ -91,7 +96,7 @@
 			});
 		});
 		function renderServices(services) {
-			const servicesContainer = document.getElementById('servicesContainer');
+			const servicesContainer = document.getElementById('main-service-list-container');
 			servicesContainer.innerHTML = '';
 
 			services.result.forEach((service) => {
