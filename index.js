@@ -308,12 +308,12 @@ app.get('/main', async (req, res) => {
         res.redirect('/');
         return;
     }
-
+    // console.log('finding...');
     const services = await general.find({}).project({ name: 1, description: 1 }).toArray();
     console.log('this is ' + services);
     var username = req.session.username;
     console.log('username is ' +  username);
-    res.render("main", { services }, { username: username });
+    res.render("main", { services, username});
 });
 
 app.get('/checkout', sessionValidation, (req, res) => {
