@@ -1,6 +1,6 @@
 <%- include("templates/header") %>
 	<!-- <p>Main page shoud be placed here</p> -->
-	<div class="main-page-container">
+	<!-- <div class="main-page-container">
 		<div class="main-greeting-container">
 			hello
 		</div>
@@ -14,7 +14,6 @@
 					<input id="search-text" class="form-control" type="search" placeholder="Search" aria-label="Search"
 						aria-describedby="search-addon" />
 
-					<!-- Filter button and dropdown menu -->
 					<div class="dropdown d-flex justify-content-center">
 						<button type="button" id="filter-button" class="btn btn-light dropdown-toggle"
 							data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
@@ -30,82 +29,140 @@
 			<input type="search" class="form-control rounded" id="searchInput" placeholder="Search" aria-label="Search"
 				aria-describedby="search-addon" />
 			<span class="input-group-text border-0" id="search-addon">
-				<button id="searchIcon">Search</button>
+			  <i class="fas fa-search"></i>
+			</span>
 		</div>
+
+		<div class="row mb-3 text-center row-gap-3">
+			<div class="col-md-4 themed-grid-col">Item 1</div>
+			<div class="col-md-4 themed-grid-col">Item 2</div>
+			<div class="col-md-4 themed-grid-col">Item 3</div> 
+		  </div>
+		<button type='submit' class="btn btn-light btn-outline-secondary" onclick="window.location.href = '/logout';">Sign out</button>
+		</div>
+</div>
+
+<img src="images/search.png" alt="Search" id="searchIcon" />
+</span>
+</div> 
+
+<div id="main-welcome-container">
+<form id="main-search-form" class="d-flex mx-auto" role="search">
+Filter button and dropdown menu -->
+<div class="dropdown d-flex justify-content-center">
+	<button type="button" id="filter-button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"
+		aria-expanded="false" data-bs-auto-close="outside">
+		<span class="material-symbols-outlined">filter_list</span>
+	</button>
 	</div>
-	<div id="servicesContainer">
+<!-- Search bar text input -->
+<input id="search-text" class="form-control" type="search" placeholder="Search for services" aria-label="Search" aria-describedby="search-addon"/>
+<!-- Search button -->
+<button id="search-button" class="btn btn-light" type="submit">
+	<span class="material-symbols-outlined">search</span>
+</button>
+</form>
 
-		<% for(let i=0; i < services.length; i++) {%>
-			<div>
-				Service name: <%= services[i].name %>
-			</div>
-			<div>
-				Service description: <%= services[i].description%>
-			</div>
-			<br>
-			<% } %>
-	</div>
-	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-			var link = document.createElement('link');
-			link.rel = 'stylesheet';
-			link.href = '/main.css';
-			document.head.appendChild(link);
-		});
+<h2 id="main-welcome-message">Welcome <%=username%>!</h2>
 
-		document.addEventListener('DOMContentLoaded', function () {
-			// Get references to the search input and icon
-			const searchInput = document.getElementById('searchInput');
-			const searchIcon = document.getElementById('searchIcon');
+</div>
 
-			// Add event listener to the search icon for click events
-			searchIcon.addEventListener('click', function (event) {
-				console.log('clicked');
-				// event.preventDefault(); // Prevent default action (e.g., form submission)
+<!-- Services list of cards -->
+<div id="main-content-container">
+<h3 id="services-header">Find services</h3>
+<div id="main-service-list-container" class="row mb-3 text-center">
+<div class="col-md-4 themed-grid-col service-container">service_placeholder</div>
+<div class="col-md-4 themed-grid-col service-container">service_placeholder</div>
+<div class="col-md-4 themed-grid-col service-container">service_placeholder</div>
+</div>
+</div>
 
-				// Get the search query from the input field
-				const query = searchInput.value;
-				console.log(query);
+<div id="servicesContainer">
 
-				// Send a POST request to the server
-				fetch('/search', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({ query: query })
-				})
-					.then(response => response.json())
-					.then(data => {
-						data.result.forEach(item => {
-							console.log(item.name); // Accessing the 'name' property of each item
-							console.log(item.description); // Accessing the 'description' property of each item
-						});
+	<% for(let i=0; i < services.length; i++) {%>
+		<div>
+			Service name: <%= services[i].name %>
+		</div>
+		<div>
+			Service description: <%= services[i].description%>
+		</div>
+		<br>
+		<% } %>
+<!-- <div class="row mb-3 text-center row-gap-3">
+<div class="col-md-4 themed-grid-col">Item 1</div>
+<div class="col-md-4 themed-grid-col">Item 2</div>
+<div class="col-md-4 themed-grid-col">Item 3</div> -->
+<!-- <br>
+<button type='submit' class="btn btn-light btn-outline-secondary" onclick="window.location.href = '/logout';">Sign out</button> -->
+</div>
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+	 var link = document.createElement('link');
+	 link.rel = 'stylesheet';
+	 link.href = '/main.css';
+	 document.head.appendChild(link);
+ });
+</script>
 
-						renderServices(data)
-					})
-					.catch(error => {
-						console.error('Error sending search request:', error);
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+		var link = document.createElement('link');
+		link.rel = 'stylesheet';
+		link.href = '/main.css';
+		document.head.appendChild(link);
+	});
+
+	document.addEventListener('DOMContentLoaded', function () {
+		// Get references to the search input and icon
+		const searchInput = document.getElementById('searchInput');
+		const searchIcon = document.getElementById('searchIcon');
+
+		// Add event listener to the search icon for click events
+		searchIcon.addEventListener('click', function (event) {
+			console.log('clicked');
+			// event.preventDefault(); // Prevent default action (e.g., form submission)
+
+			// Get the search query from the input field
+			const query = searchInput.value;
+			console.log(query);
+
+			// Send a POST request to the server
+			fetch('/search', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ query: query })
+			})
+				.then(response => response.json())
+				.then(data => {
+					data.result.forEach(item => {
+						console.log(item.name); // Accessing the 'name' property of each item
+						console.log(item.description); // Accessing the 'description' property of each item
 					});
-			});
+
+					renderServices(data)
+				})
+				.catch(error => {
+					console.error('Error sending search request:', error);
+				});
 		});
-		function renderServices(services) {
-			const servicesContainer = document.getElementById('servicesContainer');
-			servicesContainer.innerHTML = '';
+	});
+	function renderServices(services) {
+		const servicesContainer = document.getElementById('servicesContainer');
+		servicesContainer.innerHTML = '';
 
-			services.result.forEach((service) => {
-				const name = document.createElement('div');
-				name.innerHTML = 'Service name: ' + service.name;
-				servicesContainer.appendChild(name);
+		services.result.forEach((service) => {
+			const name = document.createElement('div');
+			name.innerHTML = 'Service name: ' + service.name;
+			servicesContainer.appendChild(name);
 
-				const des = document.createElement('div');
-				des.innerHTML = service.description;
-				servicesContainer.appendChild(des);
-			});
-		}
-	</script>
-
-
+			const des = document.createElement('div');
+			des.innerHTML = service.description;
+			servicesContainer.appendChild(des);
+		});
+	}
+</script>
 	<%- include("templates/footer") %>
 
 		<!-- 

@@ -31,9 +31,14 @@ const navLinks = [
     { name: "Setting", link: "/setting" }
 ]
 
+// To determine if the user is at the index page
+// Header.ejs uses to determine if it should load the navbar side panel or not
+var atIndexPage = false;
+
 app.use("/", (req, res, next) => {
     app.locals.navLinks = navLinks;
     app.locals.currentURL = url.parse(req.url).pathname;
+    app.locals.atIndexPage = false;
     next();
 })
 
@@ -124,7 +129,14 @@ function adminAuthorization(req, res, next) {
 
 app.get('/', (req, res) => {
     if (!req.session.authenticated) {
-        res.render('index', { username: req.session.username });
+        // Set global variable atIndexPage to true
+        atIndexPage = true;
+
+        res.render('index', { username: req.session.username, atIndexPage: atIndexPage });
+
+        // Reset atIndexPage to false
+        atIndexPage = false;
+
     } else {
         console.log(req.session.user_type);
         res.render("main", { username: req.session.username });
@@ -291,14 +303,17 @@ app.get('/logout', (req, res) => {
 
 
 
-app.get('/main', async(req, res) => {
+app.get('/main', async (req, res) => {
     if (!req.session.authenticated) {
         res.redirect('/');
         return;
     }
-    const services = await general.find({}).project({ name:1, description:1}).toArray();
+
+    const services = await general.find({}).project({ name: 1, description: 1 }).toArray();
     console.log('this is ' + services);
-    res.render("main", {services});
+    var username = req.session.username;
+    console.log('username is ' +  username);
+    res.render("main", { services }, { username: username });
 });
 
 app.get('/checkout', sessionValidation, (req, res) => {
@@ -342,7 +357,7 @@ if (isNewDataInserted) {
         } else {
             // console.log('Data already exists, skipping:', data);
         }
-    });    
+    });
 }
 
 
@@ -350,7 +365,7 @@ app.post('/search', async (req, res) => {
     const query = req.body.query;
     const regex = new RegExp(query, 'i'); // 'i' flag for case-insensitive matching
 
-    const result = await general.find({ name: { $regex: regex } }).project({ name: 1, description:1 }).toArray();
+    const result = await general.find({ name: { $regex: regex } }).project({ name: 1, description: 1 }).toArray();
 
     // Iterate through the result array and display the name of each object
     result.forEach(item => {

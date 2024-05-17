@@ -1,9 +1,47 @@
 
-.search-bar {
-    max-width: 50%;
+/* Welcome container */
+
+#main-page-container {
+    /* min-height: calc(93.1vh - 6rem); */
+    min-height: calc(93.1vh - 6rem);
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+
+    /* position: relative; */
+    
 }
 
-.main-page-container {
-    background-color: #ccdbdc;
-    padding: 3rem;
+#main-welcome-container {
+    height: 15vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background-color: #9AD1D4;
+}
+
+#main-welcome-message {
+    /* position: absolute;
+    top: 7%; */
+    z-index: 2;
+}
+
+#main-content-container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 2em;
+    margin-right: 2em;
+}
+
+/* Service list container */
+
+#main-service-list-container {
+    min-height: 50vh;
+}
+
+.service-container {
+    background-color: orange;
+    border: solid;
 }
