@@ -30,9 +30,14 @@ const navLinks = [
     {name: "Setting", link: "/setting"}
 ]
 
+// To determine if the user is at the index page
+// Header.ejs uses to determine if it should load the navbar side panel or not
+var atIndexPage = false;
+
 app.use("/", (req, res, next) => {
     app.locals.navLinks = navLinks;
     app.locals.currentURL = url.parse(req.url).pathname;
+    app.locals.atIndexPage = false;
     next();
 })
 
@@ -123,7 +128,14 @@ function adminAuthorization(req, res, next) {
 
 app.get('/', (req, res) => {
     if (!req.session.authenticated) {
-        res.render('index', {username: req.session.username});
+        // Set global variable atIndexPage to true
+        atIndexPage = true;
+
+        res.render('index', {username: req.session.username, atIndexPage: atIndexPage});
+
+        // Reset atIndexPage to false
+        atIndexPage = false;
+        
     } else {
         console.log(req.session.user_type);
         res.render("main", {username: req.session.username});
@@ -295,7 +307,9 @@ app.get('/main', (req,res) => {
         res.redirect('/');
         return;
     }
-        res.render("main");
+
+    var username = req.session.username;
+    res.render("main", {username: username});
 });
 
 app.get('/checkout', sessionValidation, (req, res) => {

@@ -1,13 +1,5 @@
 
-/* signup-login page css */
-.signup-login-page-container {
-    min-height: calc(93.1vh - 6rem);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
+/* Forms in sign up and login pages */
 .signup-login-form-container {
     border: 1px solid #cccc;
     border-radius: 10px;
@@ -37,11 +29,4 @@
     outline: none !important;
     border-color: black !important;
     box-shadow: none !important;
-}
-
-/* index page css */
-.index-page-container { /* Will adjust later to add some information about our website to the index page */
-    min-height: calc(94.9vh - 8rem);
-    display: flex;
-    justify-content: center;
 }
