@@ -24,6 +24,7 @@
     "nodemailer": "^6.9.13",
     "nodemon": "^3.1.0",
     "sweetalert2": "^11.11.0",
+    "require": "^2.4.20",
     "url": "^0.11.3"
   }
 }

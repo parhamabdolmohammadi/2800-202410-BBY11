@@ -46,6 +46,7 @@ const mongodb_user = process.env.MONGODB_USER;
 const mongodb_password = process.env.MONGODB_PASSWORD;
 const mongodb_database = process.env.MONGODB_DATABASE;
 const mongodb_session_secret = process.env.MONGODB_SESSION_SECRET;
+const mongodb_database2 = process.env.MONGODB_DATABASE2;
 
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* END secret section */
@@ -53,6 +54,7 @@ const node_session_secret = process.env.NODE_SESSION_SECRET;
 var {database} = include('databaseConnection');
 
 const userCollection = database.db(mongodb_database).collection('users');
+const stationsCollection = database.db(mongodb_database2).collection('Stations');
 
 app.set('view engine', 'ejs');
 
@@ -72,6 +74,10 @@ app.use(express.static(__dirname + "/js"));
 
 // Map the file system paths to the app's virtual paths
 // Parameters: The root parameter describes the root directory from which to serve static assets.
+
+app.use(express.static(__dirname + "/scripts")); 
+
+
 
 app.use("/js", express.static("./public/js")); // Need this middleware since js files are not accessible unless they are in a folder called "public"
 
@@ -299,6 +305,7 @@ app.get('/main', (req,res) => {
         res.render("main");
 });
 
+
 app.get('/checkout', sessionValidation, (req, res) => {
     res.render("checkout", { query: req.query });
 });
@@ -314,6 +321,7 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
             const encryptedCardNumber = encryptjs.encrypt(cardnumber, encryptionKey, 256)
             const encryptedExpirydate = encryptjs.encrypt(expirydate, encryptionKey, 256)
             const encryptedCvv = encryptjs.encrypt(cvv, encryptionKey, 256)
+
 
         } else if(paymentType ==="paypal"){
             let paypalEmail = req.body.paypalEmail;
@@ -393,6 +401,57 @@ app.post('/resetPassword', async (req, res) => {
         console.error('Error occurred:', error);
     }
 });
+
+
+
+app.get('/stations', async (req, res) => {
+    try {
+        const stations = await stationsCollection.find({}).toArray(); 
+        const users = await userCollection.find({}).toArray();
+        currentUserName = await userCollection.find({username: "Parham"}).project({username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1}).toArray();
+
+        console.log("haha" + currentUserName);
+        res.render("stations", { stations: stations, users: users, currentUserName: currentUserName}); 
+    } catch (error) {
+        console.error("Error fetching stations:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+app.post('/editBookmark', async (req, res) => {
+    const cardId = req.body.data;
+    const currentUserName = await userCollection.findOne({ username: "Parham" });
+
+    if (currentUserName) {
+        if (currentUserName.bookmarks && currentUserName.bookmarks.includes(cardId)) {
+            const updatedBookmarks = currentUserName.bookmarks.filter(bookmark => bookmark !== cardId);
+            await userCollection.updateOne({ username: 'Parham' }, { $set: { bookmarks: updatedBookmarks } });
+        } else {
+            const updatedBookmarks = currentUserName.bookmarks ? [...currentUserName.bookmarks, cardId] : [cardId];
+            await userCollection.updateOne({ username: 'Parham' }, { $set: { bookmarks: updatedBookmarks } });
+        }
+    } else {
+        console.log("User not found");
+    }
+
+    res.redirect('/stations');
+});
+
+
+app.get('/saved', async (req, res) => {
+    try {
+        const stations = await stationsCollection.find({}).toArray(); 
+        const users = await userCollection.find({}).toArray();
+        currentUserName = await userCollection.find({username: "Parham"}).project({username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1}).toArray();
+
+        console.log("haha" + currentUserName);
+        res.render("saved", { stations: stations, users: users, currentUserName: currentUserName}); 
+    } catch (error) {
+        console.error("Error fetching stations:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
 
 app.get("*", (req, res) => {
     res.status(404);
