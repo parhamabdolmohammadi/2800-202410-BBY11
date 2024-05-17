@@ -2,3 +2,8 @@
 .search-bar {
     max-width: 50%;
 }
+
+.main-page-container {
+    background-color: #ccdbdc;
+    padding: 3rem;
+}

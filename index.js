@@ -20,14 +20,15 @@ const port = process.env.PORT || 3000;
 const app = express();
 
 const Joi = require("joi");
+const { resourceLimits } = require("worker_threads");
 
 const navLinks = [
-    {name: "Home", link: "/"},
-    {name: "Main", link: "/main"},
-    {name: "Login", link: "/login"},
-    {name: "Admin", link: "/admin"},
-    {name: "404", link: "/*"},
-    {name: "Setting", link: "/setting"}
+    { name: "Home", link: "/" },
+    { name: "Main", link: "/main" },
+    { name: "Login", link: "/login" },
+    { name: "Admin", link: "/admin" },
+    { name: "404", link: "/*" },
+    { name: "Setting", link: "/setting" }
 ]
 
 app.use("/", (req, res, next) => {
@@ -49,7 +50,7 @@ const mongodb_session_secret = process.env.MONGODB_SESSION_SECRET;
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* END secret section */
 
-var {database} = include('databaseConnection');
+var { database } = include('databaseConnection');
 
 const userCollection = database.db(mongodb_database).collection('users');
 
@@ -123,10 +124,10 @@ function adminAuthorization(req, res, next) {
 
 app.get('/', (req, res) => {
     if (!req.session.authenticated) {
-        res.render('index', {username: req.session.username});
+        res.render('index', { username: req.session.username });
     } else {
         console.log(req.session.user_type);
-        res.render("main", {username: req.session.username});
+        res.render("main", { username: req.session.username });
     }
 
 });
@@ -135,27 +136,27 @@ app.get('/signup', (req, res) => {
     res.render("signup")
 });
 
-app.get('/setting', (req,res) => {
+app.get('/setting', (req, res) => {
     res.render("setting")
 });
 
-app.get('/edit-profile', (req,res) => {
+app.get('/edit-profile', (req, res) => {
     res.render("edit-profile")
 });
 
-app.get('/edit-password', (req,res) => {
+app.get('/edit-password', (req, res) => {
     res.render("edit-password")
 });
 
-app.get('/setting', (req,res) => {
+app.get('/setting', (req, res) => {
     res.render("setting")
 });
 
-app.get('/edit-profile', (req,res) => {
+app.get('/edit-profile', (req, res) => {
     res.render("edit-profile")
 });
 
-app.get('/edit-password', (req,res) => {
+app.get('/edit-password', (req, res) => {
     res.render("edit-password")
 });
 
@@ -193,10 +194,10 @@ app.post('/submitUser', async (req, res) => {
 
 
     var hashedPassword = await bcrypt.hash(password, saltRounds);
-	var encryptedEmail = CryptoJS.AES.encrypt(email, secretKey, { iv: iv, salt: salt }).toString();
-	await userCollection.insertOne({username: username, password: hashedPassword, email: encryptedEmail, user_type: "user"});
-	console.log("Inserted user");
-   
+    var encryptedEmail = CryptoJS.AES.encrypt(email, secretKey, { iv: iv, salt: salt }).toString();
+    await userCollection.insertOne({ username: username, password: hashedPassword, email: encryptedEmail, user_type: "user" });
+    console.log("Inserted user");
+
 
     var html = "successfully created user";
     console.log(html);
@@ -211,14 +212,14 @@ app.post('/submitUser', async (req, res) => {
 });
 
 app.get("/signupSubmit", (req, res) => {
-    res.render("signupSubmit", {problem : req.query.problem});
+    res.render("signupSubmit", { problem: req.query.problem });
 });
 
-app.get('/login', (req,res) => {
+app.get('/login', (req, res) => {
     res.render("login");
 });
 
-app.post('/loggingin', async (req,res) => {
+app.post('/loggingin', async (req, res) => {
     var email = req.body.email;
     var password = req.body.password;
 
@@ -232,27 +233,27 @@ app.post('/loggingin', async (req,res) => {
         {
             email: Joi.string().max(20).required(),
             password: Joi.string().max(20).required()
-    });
-    
+        });
+
     // Validate the email entered by the user
-    const validationResult = schema.validate({email, password});
+    const validationResult = schema.validate({ email, password });
     // If the email and password are not valid,
     // redirect back to signup page
     if (validationResult.error != null) {
         console.log(validationResult.error);
         validationError = true;
-        res.render("loginSubmit", {validationError: validationError, userDoesNotExist: userDoesNotExist, incorrectFields: incorrectFields});
+        res.render("loginSubmit", { validationError: validationError, userDoesNotExist: userDoesNotExist, incorrectFields: incorrectFields });
         return;
     }
 
     var encryptedEmail = CryptoJS.AES.encrypt(email, secretKey, { iv: iv, salt: salt }).toString();
     // Check if a user account with the entered email and password exists in the MongoDB database
-    const result = await userCollection.find({email: encryptedEmail}).project({username: 1, email: 1, password: 1, user_type: 1, _id: 1}).toArray();
-    
+    const result = await userCollection.find({ email: encryptedEmail }).project({ username: 1, email: 1, password: 1, user_type: 1, _id: 1 }).toArray();
+
     // If a user with the entered email and password combination was NOT found (result array length = 1)
     if (result.length != 1) {
         userDoesNotExist = true;
-        res.render("loginSubmit", {validationError: validationError, userDoesNotExist: userDoesNotExist, incorrectFields: incorrectFields});
+        res.render("loginSubmit", { validationError: validationError, userDoesNotExist: userDoesNotExist, incorrectFields: incorrectFields });
         return;
     }
 
@@ -260,19 +261,19 @@ app.post('/loggingin', async (req,res) => {
     // then store the user's name in a session and log the 
     // user in by redirecting to 'members' page
     if (await bcrypt.compare(password, result[0].password)) {
-		req.session.authenticated = true;
+        req.session.authenticated = true;
         // Store the user's name and user_type values
-		req.session.username = result[0].username;
+        req.session.username = result[0].username;
         req.session.user_type = result[0].user_type;
-		req.session.cookie.maxAge = expireTime;
+        req.session.cookie.maxAge = expireTime;
 
         res.redirect('/main');
         return;
     } else {
         incorrectFields = true;
-        res.render("loginSubmit", {validationError: validationError, userDoesNotExist: userDoesNotExist, incorrectFields: incorrectFields});
-		return;
-	}
+        res.render("loginSubmit", { validationError: validationError, userDoesNotExist: userDoesNotExist, incorrectFields: incorrectFields });
+        return;
+    }
 });
 
 app.get("/loginSubmit", (req, res) => {
@@ -290,12 +291,14 @@ app.get('/logout', (req, res) => {
 
 
 
-app.get('/main', (req,res) => {
+app.get('/main', async(req, res) => {
     if (!req.session.authenticated) {
         res.redirect('/');
         return;
     }
-        res.render("main");
+    const services = await general.find({}).project({ name:1, description:1}).toArray();
+    console.log('this is ' + services);
+    res.render("main", {services});
 });
 
 app.get('/checkout', sessionValidation, (req, res) => {
@@ -305,7 +308,7 @@ app.get('/checkout', sessionValidation, (req, res) => {
 app.post('/submit-payment', sessionValidation, async (req, res) => {
     try {
         let paymentType = req.body.paymentType;
-        if(paymentType ==="credit"){
+        if (paymentType === "credit") {
             let cardnumber = req.body.cardnumber;
             let expirydate = req.body.expirydate;
             let cvv = req.body.cvv;
@@ -314,14 +317,48 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
             const encryptedExpirydate = encryptjs.encrypt(expirydate, encryptionKey, 256)
             const encryptedCvv = encryptjs.encrypt(cvv, encryptionKey, 256)
 
-        } else if(paymentType ==="paypal"){
+        } else if (paymentType === "paypal") {
             let paypalEmail = req.body.paypalEmail;
-            const encryptedPaypalEmail = encryptjs.encrypt(paypalEmail, encryptionKey, 256)            
+            const encryptedPaypalEmail = encryptjs.encrypt(paypalEmail, encryptionKey, 256)
         }
     } catch (e) {
         console.log(e);
     }
 });
+app.use(express.json());
+
+const general = database.db('Services').collection('General')
+const fs = require('fs')
+let isNewDataInserted = false;
+if (isNewDataInserted) {
+    const jsonData = fs.readFileSync('service.json', 'utf8');
+    const dataArray = JSON.parse(jsonData);
+    dataArray.forEach(async (data) => {
+        const existingData = await general.findOne(data);
+        if (!existingData) {
+            // Data does not exist, insert it
+            await general.insertOne(data);
+            console.log('Inserted new data:', data);
+        } else {
+            // console.log('Data already exists, skipping:', data);
+        }
+    });    
+}
+
+
+app.post('/search', async (req, res) => {
+    const query = req.body.query;
+    const regex = new RegExp(query, 'i'); // 'i' flag for case-insensitive matching
+
+    const result = await general.find({ name: { $regex: regex } }).project({ name: 1, description:1 }).toArray();
+
+    // Iterate through the result array and display the name of each object
+    result.forEach(item => {
+        console.log("found it: " + item.name);
+    });
+
+    res.json({ result });
+})
 
 app.get("*", (req, res) => {
     res.status(404);
