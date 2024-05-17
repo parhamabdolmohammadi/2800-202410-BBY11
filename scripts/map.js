@@ -3,6 +3,8 @@
   let user_lat;
   let User_lng;
   let User_Position;
+  var closest = 100;
+  var closestID;
 
   getLocation();
 
@@ -22,18 +24,18 @@
       lng: User_lng,
     };
 
-    // db.collection("hospitals").get().then((allHospitals) => {
-    //     allHospitals.forEach((doc) => {
-    //         let d = distance(doc.data().lat, doc.data().lng);
-    //         if (d < closest) {
-    //             closest = d;
-    //             closestID = doc.data().name;
-    //         }
-    //     });
-    //     document.getElementById("display-loc").innerHTML = "The closest hospital is " + closestID + ", " +
-    //         closest.toFixed(2) + " km";
-    // });
 
+    station.forEach(station => {
+      let d = distance(station.lat, station.lng);
+      if (d < closest) {
+        closest = d;
+        closestID = station._id;
+    }
+    
+    closest.toFixed(2) + " km";
+    });
+
+    
     await initMap();
   }
   async function initMap() {
@@ -59,53 +61,31 @@
 
 
     station.forEach(station => {
- 
-   
-   
-      console.log("parham" + address);
-      
-   
-      markers.push()
-   
-   
-   
-      document.getElementById("stations-placeholder").appendChild(newcard);
-   
-   });
-   
-    var markers = [
-      {
-        coords: {
-          // Corrected
-          lat: 49.26460221189821,
-          lng: -123.01684403084168,
-        },
-        content: "<h1> Lynn MA </h1>",
-      },
-      {
-        coords: position,
-        content: "<h1> Lynn MA </h1>",
-      },
+      let coords = { lat: station.lat, lng: station.lng };
+    
+      addMarker(station._id,{
+        coords: coords,
+        content: `<h1>${station.station_name}</h1>`,
+      }); 
 
-      {
-        coords: {
-          lat: 49.24853057650836,
-          lng: -123.02976263551658,
-        },
-        content: "<h1> Lynn MA </h1>",
-      },
-    ];
+    });
+  
+   
 
-    for (var i = 0; i < markers.length; i++) {
-      addMarker(markers[i]);
-    }
-
-    function addMarker(props) {
+    function addMarker(station_ID, props) {
       const icon = document.createElement("div");
-      icon.setAttribute(
+      if(station_ID == closestID) {
+        icon.setAttribute(
+          "style",
+          "background-color: green; border-top: 8px solid #e14242;border: 2px solid white;  clip-path: polygon(50% 4%, 69% 10%, 82% 21%, 86% 35%, 84% 52%, 79% 66%, 71% 79%, 60% 92%, 52% 100%, 43% 91%, 31% 77%, 24% 64%, 18% 51%, 17% 37%, 22% 21%, 33% 10%); "
+        );
+      } else {
+        icon.setAttribute(
         "style",
         "background-color: rgba(0, 126, 167, 1); border-top: 8px solid #e14242;border: 2px solid white;  clip-path: polygon(50% 4%, 69% 10%, 82% 21%, 86% 35%, 84% 52%, 79% 66%, 71% 79%, 60% 92%, 52% 100%, 43% 91%, 31% 77%, 24% 64%, 18% 51%, 17% 37%, 22% 21%, 33% 10%); "
       );
+    }
+      
       icon.innerHTML =
         '<img src="/robot.png" style="position: relative; bottom:3px; width: 40px; height: 40px;  ;"> ';
 
@@ -144,3 +124,20 @@
       content: pinUser.element,
     });
   }
+
+
+  function toRad(degrees) {
+    return degrees * (Math.PI / 180);
+}
+
+function distance(latHosp, lngHosp) {
+    let R = 6371; // Radius of the earth in km
+    let dLat = toRad(user_lat - latHosp);  // Javascript functions in radians
+    let dLon = toRad(User_lng - lngHosp);
+    let a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRad(user_lat)) * Math.cos(toRad(latHosp)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    let d = R * c; // Distance in km
+    return d;
+}

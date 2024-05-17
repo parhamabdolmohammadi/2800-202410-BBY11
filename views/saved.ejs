@@ -57,27 +57,7 @@
         height: 30px;
       }
 
-      @media screen and (min-width: 1000px) {
-        #map {
-          width: 100%;
-          height: 100%; /* 400px*/
-          background-color: grey;
-          grid-area: map;
-        }
-
-        .stations-placeholder {
-          grid-area: stations-placeholder;
-          height: 100%;
-          overflow: scroll;
-        }
-
-        .content-div {
-          display: grid;
-          grid-template-columns: 40vw 60vw;
-          grid-template-rows: 100vh;
-          grid-template-areas: "stations-placeholder map";
-        }
-      }
+   
     </style>
   </head>
   <body>
@@ -121,16 +101,16 @@
       </ul>
     </header>
   
-      <script src="/mapAPI.js"></script>
+
 
       <h3>Robot Stations</h3>
       <!--The div element for the map -->
-      <div class="content-div">
-        <div id="map"></div>
+      
+       
         <div class="stations-placeholder" id="stations-placeholder">
           
         </div>
-      </div>
+      
 
 
 
@@ -229,10 +209,9 @@
 
         // Additional client-side scripts can go here
       </script>
-       <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+      
 
-      <script src="stations.js"></script>
-      <script src="/map.js"></script>
+      <script src="saved.js"></script>
       <%- include("templates/footer") %>
     </body>
   </body>

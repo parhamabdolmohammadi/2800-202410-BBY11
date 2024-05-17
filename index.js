@@ -62,17 +62,11 @@ var mongoStore = MongoStore.create({
 })
 
 
-<<<<<<< Updated upstream
-app.use(express.static(__dirname + "/css")); 
-=======
-
-
 app.use(express.static(__dirname + "/css"));
 app.use(express.static(__dirname + "/images")); 
 app.use(express.static(__dirname + "/scripts")); 
 
 
->>>>>>> Stashed changes
 
 
 app.use(session({ 
@@ -258,22 +252,53 @@ app.get('/members', (req,res) => {
         res.send("Members page shoud be placed here");
 });
 
-
-<<<<<<< Updated upstream
-app.use(express.static(__dirname + "/images"));
-=======
 app.get('/stations', async (req, res) => {
     try {
         const stations = await stationsCollection.find({}).toArray(); 
-        console.log("haha" + stations);
-        res.render("stations", { stations: stations }); 
+        const users = await userCollection.find({}).toArray();
+        currentUserName = await userCollection.find({username: "Parham"}).project({username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1}).toArray();
+
+        console.log("haha" + currentUserName);
+        res.render("stations", { stations: stations, users: users, currentUserName: currentUserName}); 
     } catch (error) {
         console.error("Error fetching stations:", error);
         res.status(500).send("Internal Server Error");
     }
 });
->>>>>>> Stashed changes
 
+app.post('/editBookmark', async (req, res) => {
+    const cardId = req.body.data;
+    const currentUserName = await userCollection.findOne({ username: "Parham" });
+
+    if (currentUserName) {
+        if (currentUserName.bookmarks && currentUserName.bookmarks.includes(cardId)) {
+            const updatedBookmarks = currentUserName.bookmarks.filter(bookmark => bookmark !== cardId);
+            await userCollection.updateOne({ username: 'Parham' }, { $set: { bookmarks: updatedBookmarks } });
+        } else {
+            const updatedBookmarks = currentUserName.bookmarks ? [...currentUserName.bookmarks, cardId] : [cardId];
+            await userCollection.updateOne({ username: 'Parham' }, { $set: { bookmarks: updatedBookmarks } });
+        }
+    } else {
+        console.log("User not found");
+    }
+
+    res.redirect('/stations');
+});
+
+
+app.get('/saved', async (req, res) => {
+    try {
+        const stations = await stationsCollection.find({}).toArray(); 
+        const users = await userCollection.find({}).toArray();
+        currentUserName = await userCollection.find({username: "Parham"}).project({username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1}).toArray();
+
+        console.log("haha" + currentUserName);
+        res.render("saved", { stations: stations, users: users, currentUserName: currentUserName}); 
+    } catch (error) {
+        console.error("Error fetching stations:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
 app.get("*", (req,res) => {
 	res.status(404);
