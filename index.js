@@ -237,7 +237,7 @@ app.post('/loggingin', async (req,res) => {
     // using joi to prevent noSQL injection attacks
     const schema = Joi.object(
         {
-            email: Joi.string().max(20).required(),
+            email: Joi.string().max(40).required(),
             password: Joi.string().max(20).required()
     });
     
