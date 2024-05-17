@@ -37,11 +37,12 @@
 
 		<% for(let i=0; i < services.length; i++) {%>
 			<div>
-				<%= services[i].name %>
+				Service name: <%= services[i].name %>
 			</div>
 			<div>
-				<%= services[i].description%>
+				Service description: <%= services[i].description%>
 			</div>
+			<br>
 			<% } %>
 	</div>
 	<script>
@@ -94,7 +95,7 @@
 
 			services.result.forEach((service) => {
 				const name = document.createElement('div');
-				name.innerHTML = service.name;
+				name.innerHTML = 'Service name: ' + service.name;
 				servicesContainer.appendChild(name);
 
 				const des = document.createElement('div');
