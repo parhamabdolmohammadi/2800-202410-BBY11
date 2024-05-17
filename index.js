@@ -322,6 +322,10 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
     }
 });
 
+app.get('/confirmation', sessionValidation, (req, res) => {
+    res.render("confirmation");
+});
+
 app.get("*", (req, res) => {
     res.status(404);
     res.render("404",);
