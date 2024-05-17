@@ -16,17 +16,24 @@
     
     <!-- CSS files -->
     <link href= "/all-pages.css" rel="stylesheet">
-  <link href="/footer.css" rel="stylesheet">
+    <link href="/header.css" rel="stylesheet">
+    <link href="/footer.css" rel="stylesheet">
     <link href="/form-inputs.css" rel="stylesheet">
     <link href="/icons.css" rel="stylesheet">
+    <link href="/main.css" rel="stylesheet">
+    <link href="/index.css" rel="stylesheet">
+    <link href="/signup-login.css" rel="stylesheet">
+    <link href="/buttons.css" rel="stylesheet">
+    <link href="/search-bar.css" rel="stylesheet">
+    <link href="/setting.css" rel="stylesheet">
 
-    <!-- In file styling -->
-  <link href="/header.css" rel="stylesheet">
-  <link href="/setting.css" rel="stylesheet">
+  <!-- Script libraries -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- In file styling -->
   <style>
     .active {
       background-color: #003249 !important;
@@ -51,6 +58,11 @@
           <span class="fs-4">&nbsp;Robo Rental <p style="display:inline; position: relative; bottom:1px">|</p><img
               style="position: relative; bottom:3px;" width="34px;" src="robot.png">&nbsp; &nbsp;&nbsp;&nbsp;</span>
         </a>
+
+        <!-- Check if at the index page or not (variable atIndexPage passed in in '/' route handler) -->
+        <% if (atIndexPage == false) { %>
+        <!-- If not at index page, don't load the navbar options -->
+
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
           aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -77,6 +89,15 @@
             </ul>
           </div>
         </div>
+
+        <!-- If at the index page, load signup and login buttons -->
+        <% } else { %>
+          <!-- <div id="index-login-signup-button-container">
+            <button type='button' onclick="window.location.href = '/login';" class="btn btn-light btn-outline-secondary py-2 rounded-pill index-signup-login-buttons">Log in</button>
+            <button type='button' onclick="window.location.href = '/signup';" class="btn py-2 rounded-pill index-signup-login-buttons" style="background-color: #003249 !important; color: white;">Sign up</button>
+          </div> -->
+        <% } %>
+
       </div>
     </nav>
   </header>
