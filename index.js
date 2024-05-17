@@ -462,7 +462,7 @@ app.get('/stations', async (req, res) => {
         const users = await userCollection.find({}).toArray();
         currentUserName = await userCollection.find({username: req.session.username}).project({username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1}).toArray();
 
-        console.log("haha" + currentUserName);
+        console.log("haha" +  JSON.stringify(currentUserName));
         res.render("stations", { stations: stations, users: users, currentUserName: currentUserName}); 
     } catch (error) {
         console.error("Error fetching stations:", error);
@@ -494,7 +494,7 @@ app.get('/saved', async (req, res) => {
     try {
         const stations = await stationsCollection.find({}).toArray(); 
         const users = await userCollection.find({}).toArray();
-        currentUserName = await userCollection.find({username: "Parham"}).project({username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1}).toArray();
+        currentUserName = await userCollection.find({username: req.session.username }).project({username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1}).toArray();
 
         console.log("haha" + currentUserName);
         res.render("saved", { stations: stations, users: users, currentUserName: currentUserName}); 
