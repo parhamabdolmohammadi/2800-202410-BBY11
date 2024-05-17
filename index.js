@@ -147,7 +147,7 @@ app.get('/edit-profile', async (req,res) => {
     const decryptedBytes = CryptoJS.AES.decrypt(email, secretKey, { iv: iv });
     const decryptedEmail = decryptedBytes.toString(CryptoJS.enc.Utf8);
     console.log("decrypted email: "+decryptedEmail);
-    res.render("edit-profile", {name : req.session.username, email : decryptedEmail, userId : id});
+    res.render("edit-profile", {name : req.session.username, email : cryptedEmail, userId : id});
 });
 
 app.get('/edit-password', (req,res) => {
