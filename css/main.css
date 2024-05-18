@@ -1,0 +1,55 @@
+
+/* Welcome container */
+
+#main-page-container {
+    /* min-height: calc(93.1vh - 6rem); */
+    min-height: calc(93.1vh - 6rem);
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+
+    /* position: relative; */
+    
+}
+
+#main-welcome-container {
+    height: 15em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background-color: #9AD1D4;
+}
+
+#main-welcome-message {
+    /* position: absolute;
+    top: 7%; */
+    z-index: 2;
+}
+
+#main-content-container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 2em;
+    margin-right: 2em;
+}
+
+/* Service list container */
+
+#main-service-list-container {
+    min-height: 50vh;
+}
+
+.service-container {
+    padding: 1em;
+    border: solid;
+    border-radius: 20px;
+    border-width: 1px;
+    min-height: 20em;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

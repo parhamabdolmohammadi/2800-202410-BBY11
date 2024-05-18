@@ -1,0 +1,28 @@
+/* .body-conf {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+} */
+.container-conf {
+    margin-top: 7%;
+    background-color: #9AD1D4;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(29, 107, 162, 0.577);
+    text-align: center;
+}
+.tracking-number-conf {
+    font-weight: bold;
+    font-size: 24px;
+    color: black;
+    margin-bottom: 10px;
+}
+.purchase-info-conf {
+    font-size: 18px;
+    color: black;
+}

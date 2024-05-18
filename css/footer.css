@@ -1,0 +1,21 @@
+footer {
+  /* margin-top: 2rem; */
+  padding-top: 2rem;
+  padding-bottom: 1rem;
+
+  border-top: solid;
+  border-color: #a6a6a6cc;
+  border-width: 1px;
+}
+
+.footer-content {
+margin-left: 3rem; 
+margin-right: 3rem;
+}
+
+.footer-content ul {
+  display: flex;
+  gap: 1rem;
+  flex-direction: row;
+  justify-content: space-evenly;
+}

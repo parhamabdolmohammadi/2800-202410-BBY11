@@ -1,0 +1,30 @@
+[
+    {
+        "name": "Plumbing",
+        "description": "plumbing description"
+    },
+    {
+        "name": "Health",
+        "description": "health description"
+    },
+    {
+        "name": "Cleaning",
+        "description": "cleaning description"
+    },
+    {
+        "name": "Cooking",
+        "description": "cooking description"
+    },
+    {
+        "name": "Middle school education",
+        "description": "middle school education description"
+    },
+    {
+        "name": "High school education ",
+        "description": "high school education description"
+    },
+    {
+        "name": "Education for adult",
+        "description": "education for adult description"
+    }
+]

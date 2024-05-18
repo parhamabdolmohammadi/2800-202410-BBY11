@@ -1,0 +1,17 @@
+body, html {
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* Need this container in order to fill all the space between the main content container and footer */
+#content-and-footer-flex-container {
+    min-height: 94.9vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Main content container for each page */
+#all-pages-content-container {
+    flex: 1;
+}
