@@ -275,6 +275,7 @@ app.post('/loggingin', async (req, res) => {
         req.session.authenticated = true;
         // Store the user's name and user_type values
         req.session._id = result[0]._id;
+        req.session.email = result[0].email;
         req.session.username = result[0].username;
         req.session.user_type = result[0].user_type;
         req.session.cookie.maxAge = expireTime;
