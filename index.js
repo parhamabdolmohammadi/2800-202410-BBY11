@@ -86,6 +86,7 @@ app.use(express.static(__dirname + "/scripts"));
 
 
 app.use("/js", express.static("./public/js")); // Need this middleware since js files are not accessible unless they are in a folder called "public"
+app.use("/img", express.static("./public/img"));
 
 // WILL NEED TO UNCOMMENT THESE TWO IF WE PUT CSS AND IMAGES FOLDER INTO PUBLIC FOLDER, see footer.ejs line 30 for how to link-------------------------------------------------
 // app.use("/css", express.static("./public/css"));
@@ -139,14 +140,14 @@ app.get('/', (req, res) => {
         // Set global variable atIndexPage to true
         atIndexPage = true;
 
-        res.render('index', { username: req.session.username, atIndexPage: atIndexPage });
+        res.render('index', { atIndexPage: atIndexPage });
 
         // Reset atIndexPage to false
         atIndexPage = false;
 
     } else {
-        console.log(req.session.user_type);
-        res.render("main", { username: req.session.username });
+        // console.log(req.session.user_type);
+        res.redirect("/main");
     }
 
 });
@@ -314,7 +315,7 @@ app.get('/main', async (req, res) => {
     console.log('this is ' + services);
     var username = req.session.username;
     console.log('username is ' +  username);
-    res.render("main", { services, username});
+    res.render("main", {services, username});
 });
 
 
@@ -498,6 +499,10 @@ app.get('/saved', async (req, res) => {
     }
 });
 
+
+app.get('/confirmation', sessionValidation, (req, res) => {
+    res.render("confirmation");
+});
 
 app.get("*", (req, res) => {
     res.status(404);
