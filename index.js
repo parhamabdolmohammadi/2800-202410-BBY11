@@ -155,17 +155,6 @@ app.get('/signup', (req, res) => {
     res.render("signup")
 });
 
-app.get('/setting', (req, res) => {
-    res.render("setting")
-});
-
-app.get('/edit-profile', (req, res) => {
-    res.render("edit-profile")
-});
-
-app.get('/edit-password', (req, res) => {
-    res.render("edit-password")
-});
 
 app.get('/setting', (req, res) => {
     res.render("setting")
@@ -174,11 +163,8 @@ app.get('/setting', (req, res) => {
 app.get('/edit-profile', async (req,res) => {
     let id = await req.session._id;
     let email = await req.session.email;
-    console.log("Email: "+email);
-    const decryptedBytes = CryptoJS.AES.decrypt(email, secretKey, { iv: iv });
-    const decryptedEmail = decryptedBytes.toString(CryptoJS.enc.Utf8);
-    console.log("decrypted email: "+decryptedEmail);
-    res.render("edit-profile", {name : req.session.username, email : cryptedEmail, userId : id});
+    console.log("id: " + id);
+    res.render("edit-profile", {name : req.session.username, email : email, userId : id});
 });
 
 app.get('/edit-password', (req, res) => {
@@ -288,6 +274,7 @@ app.post('/loggingin', async (req, res) => {
     if (await bcrypt.compare(password, result[0].password)) {
         req.session.authenticated = true;
         // Store the user's name and user_type values
+        req.session._id = result[0]._id;
         req.session.username = result[0].username;
         req.session.user_type = result[0].user_type;
         req.session.cookie.maxAge = expireTime;
