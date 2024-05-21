@@ -6,7 +6,7 @@
     document.addEventListener("DOMContentLoaded", function () {
       var link = document.createElement("link");
       link.rel = "stylesheet";
-      link.href = "/stations.css";
+      link.href = "/station.css";
       document.head.appendChild(link);
 
       var link2 = document.createElement("link");
@@ -25,4 +25,50 @@
       document.head.appendChild(link3);
     });
   </script>
+
+  <div class="covering">
+    <div class="card-style">
+      <div class="card-header1">
+        <img style="position: relative; bottom: 3px" src="/robot2.png" alt="" />
+        <p style="display: inline; font-weight: 500; font-size: 25px">
+          Station name:
+        </p>
+        <span id="card-name" class="card-name"></span>
+      </div>
+      <hr style="color: rgba(0, 50, 73, 1)" />
+      <div class="actual-content">
+        <div style="padding: 0 5px">
+          <div style="list-style-type: none">
+            <div>
+              <img src="/maps-and-flags.png" style="width: 20px" alt="" />
+              <span id="card-address" class="card-address"></span>
+            </div>
+            <div>
+              <img src="/robot3.png" style="width: 20px" alt="" />
+              <span>Robots Available:</span
+              ><span class="card-availability" id="card-availability"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="text-center buttons">
+        <div class="button">
+          <a class="link-style"
+            ><span class="icon-container">
+              <p style="margin-bottom: 0">Call</p>
+            </span></a
+          >
+        </div>
+        <div class="button">
+          <a class="link-style"
+            ><span class="icon-container">
+              <p style="margin-bottom: 0">Select</p>
+            </span></a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- include("templates/footer") %>
 </body>

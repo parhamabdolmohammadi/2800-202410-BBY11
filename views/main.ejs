@@ -46,20 +46,15 @@
 </div>
 
 <!-- Services list of cards -->
-<div id="main-service-list-container">
+<div id="main-service-list-container"">
   <h3 style="position: relative; left: 10px; top: 10px" id="services-header">
     Find services:
   </h3>
   <hr />
   <div
     id="main-service-list-container-2"
-    class="row mb-3 text-center"
-    style="
-      display: flex;
-      flex-direction: row;
-      overflow: auto;
-      flex-wrap: nowrap;
-    "
+    class="row mb-3 text-center service"
+   
   >
     <% for(let i=0; i < services.length; i++) {%>
     <%console.log(services[i].description);%>
