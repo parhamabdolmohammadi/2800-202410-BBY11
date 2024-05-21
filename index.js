@@ -500,6 +500,7 @@ app.get('/saved', async (req, res) => {
 });
 
 
+
 app.get('/confirmation', sessionValidation, (req, res) => {
     res.render("confirmation");
 });
