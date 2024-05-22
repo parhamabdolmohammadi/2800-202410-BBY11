@@ -1,6 +1,48 @@
 <%- include("templates/header") %>
 
 
+<div
+  id="main-welcome-container"
+  style="
+    background: url(./hi.jpg) center / cover no-repeat;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    height: 400px;
+  "
+>
+  <form id="main-search-form" class="d-flex mx-auto" role="search">
+    <div class="dropdown d-flex justify-content-center"></div>
+    <button
+      type="button"
+      id="filter-button"
+      class="btn btn-light dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+      data-bs-auto-close="outside"
+    >
+      <span class="material-symbols-outlined">filter_list</span>
+    </button>
+    <!-- Search bar text input -->
+    <input
+      id="search-text"
+      class="form-control"
+      type="search"
+      placeholder="Search for services"
+      aria-label="Search"
+      aria-describedby="search-addon"
+    />
+    <!-- Search button -->
+    <button id="search-button" class="btn btn-light" type="submit">
+      <span class="material-symbols-outlined">search</span>
+    </button>
+  </form>
+
+  <h2 id="main-welcome-message" style="color: white">
+    Welcome <%= username %>!
+  </h2>
+</div>
 
 
 <!-- Services list of cards -->
@@ -54,7 +96,7 @@
     </div>
   </div>
 
-
+ 
 
 <!-- <div> -->
   <!-- <div id="servicesContainer">
