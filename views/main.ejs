@@ -46,14 +46,32 @@
 
 
 
-
+<!-- Section for AI -->
 <div class="div-body">
 <div class="search-box">
   <button class="btn-search"><i class="fas fa-search"></i><img src="chatbot.png" style="width: 30px; height: 30px;"></button>
-  <input type="text" class="input-search" placeholder="Type to Search...">
+  <input type="text" class="input-search" placeholder="Ask AI">
 </div>
+<button class="btn-submit">Submit</button>
 </div>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+  const searchBox = document.querySelector('.search-box');
+  const submitButton = document.querySelector('.btn-submit');
+
+  searchBox.addEventListener('mouseover', function() {
+    submitButton.style.display = 'block';
+  });
+
+  document.addEventListener('click', function(event) {
+    if (!searchBox.contains(event.target) && !submitButton.contains(event.target)) {
+      submitButton.style.display = 'none';
+    }
+  });
+});
+
+</script>
 <!-- Services list of cards -->
 
   <div id="main-service-list-container">
@@ -189,6 +207,11 @@
         servicesContainer.appendChild(des);
       });
     }
+
+
+
+
+
   </script>
   <script src="/main.js"></script>
   <%- include("templates/footer") %>
