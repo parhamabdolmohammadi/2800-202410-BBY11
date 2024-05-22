@@ -312,7 +312,7 @@ app.get('/main', async (req, res) => {
         return;
     }
     // console.log('finding...');
-    const services = await general.find({}).project({ name: 1, description: 1 }).toArray();
+    const services = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1 }).toArray();
     console.log('this is ' + services);
     var username = req.session.username;
     console.log('username is ' +  username);

@@ -35,7 +35,7 @@
       aria-describedby="search-addon"
     />
     <!-- Search button -->
-    <button id="search-button" class="btn btn-light" type="submit">
+    <button id="search-button" class="btn btn-light " type="submit">
       <span class="material-symbols-outlined">search</span>
     </button>
   </form>
@@ -45,58 +45,65 @@
   </h2>
 </div>
 
+
 <!-- Services list of cards -->
-<div id="main-service-list-container"">
-  <h3 style="position: relative; left: 10px; top: 10px" id="services-header">
-    Find services:
-  </h3>
-  <hr />
-  <div
-    id="main-service-list-container-2"
-    class="row mb-3 text-center service"
-   
-  >
-    <% for(let i=0; i < services.length; i++) {%>
-    <%console.log(services[i].description);%>
-    <div class="card cardi">
-      <div
-        class="card-bg cardi2"
-        style="
-          background-image: url(<%= services[i].description%>);
-          background-size: cover;
-          background-repeat: no-repeat;
-          background-position: center;
-        "
-      ></div>
-      <div class="card-body cardi3">
-        <div>
-          <h5 class="card-title">Card title</h5>
-          <h6 class="card-subtitle mb-2"><%= services[i].name %></h6>
-          <p class="card-text"><%= services[i].description%></p>
-          <a href="#" class="card-link">Card link</a>
-          <a href="#" class="card-link">Another link</a>
-        </div>
-        <div>
-          <button
-            style="float: right"
-            type="button"
-            class="btn btn-outline-secondary fluid-button"
-          >
-            <img
-              class=".hover-img fluid-image"
-              style="height: 30px"
-              src="/location.png"
-              alt=""
-            />
-          </button>
+  <div id="main-service-list-container">
+    <h3 style="position: relative; left: 10px; top: 10px" id="services-header">
+      Find services:
+    </h3>
+    <hr />
+    <div
+      id="main-service-list-container-2"
+      class="row mb-3 text-center service"
+     
+    >
+    <template id="ServiceCardTemplate">
+
+  
+      <div class="card cardi">
+        <div
+          class="card-bg cardi2 card-background"
+          style="
+            background-image: url(./hi.png); 
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+          "
+        ></div>
+        <div class="card-body cardi3">
+          <div>
+            <h5 class="card-title">Card title</h5>
+            <h6 class="card-subtitle mb-2 service-name"></h6><!--///////////////////////////// -->
+            <p class="card-text service-description"></p><!--///////////////////////////// -->
+            <a href="#" class="card-link">Card link</a>
+            <a href="#" class="card-link">Another link</a>
+          </div>
+          <div> <form action="/stations" method="GET" >
+            <button
+              style="float: right"
+              type="submit"
+              class="btn btn-outline-secondary fluid-button button-location"
+            >
+              <img
+                class=".hover-img fluid-image "
+                style="height: 30px"
+                src="/location.png"
+                alt=""
+              />
+            </button>
+          </form>
+          </div>
         </div>
       </div>
-    </div>
-    <% } %>
-  </div>
-</div>
 
-<div>
+
+      </template>
+    </div>
+  </div>
+
+
+
+<!-- <div> -->
   <!-- <div id="servicesContainer">
 
 		<% for(let i=0; i < services.length; i++) {%>
@@ -109,6 +116,15 @@
 			<% } %>
 	</div> -->
 
+  <script>
+    const services = <%- JSON.stringify(services) %>;
+    console.log(services);
+    
+
+    
+
+    // Additional client-side scripts can go here
+  </script>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       var link = document.createElement("link");
@@ -170,6 +186,7 @@
       });
     }
   </script>
+  <script src="/main.js"></script>
   <%- include("templates/footer") %>
 
   <!-- 
