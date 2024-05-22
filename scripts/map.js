@@ -89,8 +89,19 @@
       );
     }
       
-      icon.innerHTML =
-        '<img src="/robot.png" style="position: relative; bottom:3px; width: 40px; height: 40px;  ;"> ';
+    icon.innerHTML = `
+    <a href="#" onclick="scrollToSection('id-button${station_ID}'); return false;">
+        <img src="/robot.png" style="position: relative; bottom: 3px; width: 40px; height: 40px;">
+    </a>
+`;
+
+function scrollToSection(sectionId) {
+    // Scroll to the target section
+    document.getElementById(sectionId).scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+    });
+}
 
       const marker = new AdvancedMarkerElement({
         map: map,

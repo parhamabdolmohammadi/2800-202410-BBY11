@@ -8,8 +8,7 @@ services.forEach(service => {
    var background = service.background;
    let serviceID = service._id;
 
-   console.log("haha" , serviceID)
-   console.log(background)
+
 
    let newcard = cardTemplate.content.cloneNode(true);
 
