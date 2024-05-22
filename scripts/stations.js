@@ -21,9 +21,13 @@ station.forEach(station => {
    newcard.querySelector(".star-image").src = '/star1.png';
    
    newcard.querySelector(".id-placeholder").id = "id-placeholder" + CardId;
+   newcard.querySelector(".id-placeholder11").id = "id-placeholder11" + CardId;
    newcard.querySelector(".id-button").id = "id-button" + CardId;
    
-   
+ 
+   newcard.querySelector(".id-placeholder2").id = "id-placeholder2" + CardId;
+   newcard.querySelector(".id-button2").id = "id-button2" + CardId;
+    newcard.querySelector(".select-button").onclick = () => transfer(CardId);
    
 
    if (currentUser) {
@@ -32,10 +36,7 @@ station.forEach(station => {
       if(bookmarks && bookmarks.includes(CardId)) {
          newcard.querySelector(".star-image").src = '/star2.png';
          isBookmarked = true;
-      }
-      
-    
-         
+      } 
    }
 
    document.getElementById("stations-placeholder").appendChild(newcard);
@@ -75,4 +76,11 @@ function updateBookmark1(id, isBookmarked) {
 
    document.getElementById("id-button" + id).click();
    
+   }
+
+  function transfer(id)  {
+
+   document.getElementById('id-placeholder2' + id).value = id;
+
+      document.getElementById("id-button2" + id).click();
    }

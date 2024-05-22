@@ -31,7 +31,13 @@
       <div class="card-header1">
         <img style="position: relative; bottom: 3px" src="/robot2.png" alt="" />
         <p style="display: inline; font-weight: 500; font-size: 25px">
-          Station name:
+          <span id="station-name" dis></span>
+        </p>
+        <p style="margin-left: 50px">
+          - Selected Service: <span id="Selected-service"></span>
+        </p>
+        <p style="margin-left: 50px">
+          - distanceFromLocation: <span id="station-distance"></span>
         </p>
         <span id="card-name" class="card-name"></span>
       </div>
@@ -39,14 +45,25 @@
       <div class="actual-content">
         <div style="padding: 0 5px">
           <div style="list-style-type: none">
-            <div>
+            <div class="list">
               <img src="/maps-and-flags.png" style="width: 20px" alt="" />
+              <span>location:</span>
               <span id="card-address" class="card-address"></span>
             </div>
-            <div>
+            <div class="list">
               <img src="/robot3.png" style="width: 20px" alt="" />
               <span>Robots Available:</span
               ><span class="card-availability" id="card-availability"></span>
+            </div>
+            <div class="list">
+              <img src="/call.png" style="width: 20px" alt="" />
+              <span>Contact Number: </span
+              ><span class="card-availability" id="card-phone"></span>
+            </div>
+            <div class="list">
+              <img src="/price.png" style="width: 20px" alt="" />
+              <span>Price Per Robot based on selected Service: </span
+              ><span class="card-availability" id="card-phone"></span>
             </div>
           </div>
         </div>
@@ -55,20 +72,31 @@
         <div class="button">
           <a class="link-style"
             ><span class="icon-container">
-              <p style="margin-bottom: 0">Call</p>
+              <p style="margin-bottom: 0">Add</p>
             </span></a
           >
         </div>
         <div class="button">
           <a class="link-style"
             ><span class="icon-container">
-              <p style="margin-bottom: 0">Select</p>
+              <p style="margin-bottom: 0">Order</p>
             </span></a
           >
         </div>
       </div>
     </div>
   </div>
+  <script>
+    const station = <%- JSON.stringify(station1) %>;
+    console.log(station);
 
+    const distance1 = <%- JSON.stringify(distance) %>;
+    console.log(distance1);
+
+
+
+    // Additional client-side scripts can go here
+  </script>
+  <script src="/station.js"></script>
   <%- include("templates/footer") %>
 </body>

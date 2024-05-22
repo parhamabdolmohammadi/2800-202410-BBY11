@@ -16,6 +16,7 @@ const salt = CryptoJS.enc.Hex.parse('')
 const ObjectId = require('mongodb').ObjectId;
 const nodemailer = require('nodemailer');
 
+
 const port = process.env.PORT || 3000;
 
 const app = express();
@@ -499,6 +500,17 @@ app.get('/saved', async (req, res) => {
     }
 });
 
+
+app.post('/displayStation', async (req, res) => {
+    const cardId = req.body.data;
+    const distance = req.body.data2;
+    console.log(cardId);
+    
+    const objectId = new ObjectId(cardId);
+    console.log(distance);
+    const currentStation = await stationsCollection.findOne({_id: objectId});
+    res.render('station', {station1: currentStation , distance: distance });
+});
 
 app.get('/station', async (req, res) => {
         res.render("station"); 

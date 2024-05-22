@@ -52,10 +52,10 @@
                 alt=""
               />
               <p style="display: inline; font-weight: 500; font-size: 25px">
-                Station name:
-              </p> <span id="card-name" class="card-name"></span>
+                Station name: 
+              </p> <span id="card-name" class="card-name"></span> 
               <span
-                style="float: right; transform: scale(1.5)"
+                style="float: right; display: block;  transform: scale(1.5)"
                 
               >
                 <img style="width: 20px; font-weight: 500;" class="star-image" alt="">
@@ -103,7 +103,7 @@
                     >
                   </div>
                   <div class="col">
-                    <a class="p-3 link-style"
+                    <a class="p-3 link-style select-button"
                       ><span
                         class="icon-container"
                         style="background-color: rgba(0, 50, 73, 0.9)"
@@ -116,9 +116,17 @@
                 <form style="display: none;" action="/editBookmark" method="POST">
                   
                   <input type="text" class="id-placeholder" name="data" required><br><br>
+                
                   
                   <button class="id-button" type="submit">Submit</button>
               </form>
+              <form style="display: none;" action="/displayStation" method="POST">
+               
+                <input type="text" class="id-placeholder2" name="data" required><br><br>
+                <input type="text" class="id-placeholder11" name="data2" required><br><br>
+                
+                <button class="id-button2" type="submit">Submit</button>
+            </form>
               </div>
             </div>
           </div>

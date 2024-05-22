@@ -27,6 +27,8 @@
 
     station.forEach(station => {
       let d = distance(station.lat, station.lng);
+      let id = "id-placeholder11" + station._id;
+      document.getElementById(id).value = d;
       if (d < closest) {
         closest = d;
         closestID = station._id;
@@ -63,6 +65,7 @@
     station.forEach(station => {
       let coords = { lat: station.lat, lng: station.lng };
     
+      
       addMarker(station._id,{
         coords: coords,
         content: `<h1>${station.station_name}</h1>`,

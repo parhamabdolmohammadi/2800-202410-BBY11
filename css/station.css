@@ -1,12 +1,14 @@
 body {
-  width: 100vw;
-  height: 100vh;
+  min-width: 100vw;
+  min-height: 100vh;
 }
 
 .covering {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
   align-items: center;
+  justify-items: center;
   height: 100vh;
 }
 .card-style {
@@ -17,9 +19,9 @@ body {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
   transform: scale(0.95);
   margin-top: 10px !important;
-  max-width: min(1000px, 70%);
-
-  background-color: #003249;
+  max-width: min(600px, 70%);
+  /* margin: 0 1q; */
+  background-color: #ccdbdc;
 }
 
 .icon-container {
@@ -35,7 +37,7 @@ body {
 .actual-content {
   padding: 10px;
   border-radius: 10px;
-  background-color: antiquewhite;
+  background-color: white;
   margin: 5%;
 }
 .link-style {
@@ -68,4 +70,8 @@ body {
 .button {
   display: flex;
   flex-direction: row;
+}
+
+.list {
+  margin-bottom: 10px;
 }
