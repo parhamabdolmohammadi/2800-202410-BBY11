@@ -348,22 +348,32 @@ app.use(express.json());
 
 const general = database.db('Services').collection('General')
 const fs = require('fs')
-let isNewDataInserted = false;
+let isNewDataInserted = true;
 if (isNewDataInserted) {
     const jsonData = fs.readFileSync('service.json', 'utf8');
     const dataArray = JSON.parse(jsonData);
+    // console.log('this is data array');
+    // console.log(dataArray);
     dataArray.forEach(async (data) => {
-        const existingData = await general.findOne(data);
+        // console.log('this is data' + data.name);
+        const existingData = await general.findOne({name: data.name});
         if (!existingData) {
-            // Data does not exist, insert it
+            data.background = `${data.name.trim().replace(/\s+/g, '')}.png`;
             await general.insertOne(data);
             console.log('Inserted new data:', data);
         } else {
-            // console.log('Data already exists, skipping:', data);
+            if (existingData.description !== data.description) {
+                await general.updateOne({ name: data.name}, {$set: {description: data.description}})
+            }
         }
     });
 }
+// to delete all data in general database
+// general.deleteMany({})
 
+ 
+// background
+// "/plumbing.png"
 
 app.post('/search', async (req, res) => {
     const query = req.body.query;

@@ -62,12 +62,11 @@
     "
   >
     <% for(let i=0; i < services.length; i++) {%>
-    <%console.log(services[i].description);%>
     <div class="card cardi">
       <div
         class="card-bg cardi2"
         style="
-          background-image: url(<%= services[i].description%>);
+          background-image: url(<%= services[i].name.replace(/\s+/g, '') %>.png);
           background-size: cover;
           background-repeat: no-repeat;
           background-position: center;
@@ -77,7 +76,7 @@
         <div>
           <h5 class="card-title">Card title</h5>
           <h6 class="card-subtitle mb-2"><%= services[i].name %></h6>
-          <p class="card-text"><%= services[i].description%></p>
+          <p class="card-text"><%= services[i].description %></p>
           <a href="#" class="card-link">Card link</a>
           <a href="#" class="card-link">Another link</a>
         </div>
@@ -129,7 +128,7 @@
 
       // Add event listener to the search icon for click events
       searchIcon.addEventListener("click", function (event) {
-        console.log("clicked");
+        // console.log("clicked");
         event.preventDefault(); // Prevent default action (e.g., form submission)
 
         // Get the search query from the input field
