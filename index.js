@@ -10,9 +10,11 @@ const MongoStore = require('connect-mongo');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
 const CryptoJS = require('crypto-js')
-const secretKey = "mySecretKey";
-const iv = CryptoJS.lib.WordArray.random(16);
-const salt = CryptoJS.enc.Hex.parse('')
+// const secretKey = "mySecretKey";
+// const iv = CryptoJS.lib.WordArray.random(16);
+// const salt = CryptoJS.enc.Hex.parse('')
+var key = CryptoJS.enc.Utf8.parse('b75524255a7f54d2726a951bb39204df');
+var iv  = CryptoJS.enc.Utf8.parse('1583288699248111');
 const ObjectId = require('mongodb').ObjectId;
 const nodemailer = require('nodemailer');
 
@@ -167,9 +169,11 @@ app.get('/setting', (req, res) => {
 
 app.get('/edit-profile', async (req,res) => {
     let id = await req.session._id;
+    console.log(id);
     let email = await req.session.email;
-    console.log("id: " + id);
-    res.render("edit-profile", {name : req.session.username, email : email, userId : id});
+    let unencryptedEmail = CryptoJS.AES.decrypt(email, key, { iv: iv}).toString(CryptoJS.enc.Utf8);
+    console.log(unencryptedEmail);
+    res.render("edit-profile", {name : req.session.username, email : unencryptedEmail, userId : id});
 });
 
 app.get('/edit-password', (req, res) => {
@@ -210,9 +214,10 @@ app.post('/submitUser', async (req, res) => {
 
 
     var hashedPassword = await bcrypt.hash(password, saltRounds);
-    var encryptedEmail = CryptoJS.AES.encrypt(email, secretKey, { iv: iv, salt: salt }).toString();
+    var encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString()
     await userCollection.insertOne({ username: username, password: hashedPassword, email: encryptedEmail, user_type: "user" });
     console.log("Inserted user");
+    // console.log(CryptoJS.AES.decrypt(encryptedEmail, key, { iv: iv}).toString(CryptoJS.enc.Utf8));
 
 
     var html = "successfully created user";
@@ -262,7 +267,8 @@ app.post('/loggingin', async (req, res) => {
         return;
     }
 
-    var encryptedEmail = CryptoJS.AES.encrypt(email, secretKey, { iv: iv, salt: salt }).toString();
+    var encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString()
+    // console.log(encryptedEmail === 'WTfm6CGGEKx6XwoGKopaRg==');
     // Check if a user account with the entered email and password exists in the MongoDB database
     const result = await userCollection.find({ email: encryptedEmail }).project({ username: 1, email: 1, password: 1, user_type: 1, _id: 1 }).toArray();
 
@@ -316,7 +322,7 @@ app.get('/main', async (req, res) => {
         return;
     }
     // console.log('finding...');
-    const services = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1 }).toArray();
+    const services = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
     // console.log('this is ' + services);
     // services.forEach(service => {
     //     console.log(service.name);
@@ -331,30 +337,77 @@ app.get('/main', async (req, res) => {
 });
 
 
-app.get('/checkout', sessionValidation, (req, res) => {
-    res.render("checkout", { query: req.query });
+app.get('/checkout', sessionValidation, async (req, res) => {
+    let userId = new ObjectId(req.session._id);
+    let result = await userCollection.findOne({ _id: userId }, { projection: { remember: 1 } });
+    let remember = result.remember;
+
+    if(remember) {
+        let paypalEmail = "";
+        let cardnumber = "";
+        let expirydate = "";
+        let cvv = "";
+        const user = await userCollection.findOne({ _id: userId }, {projection: { cardnumber: 1, expirydate: 1, cvv: 1, paypalEmail: 1 }});
+        try {
+            paypalEmail = CryptoJS.AES.decrypt(user.paypalEmail, key, { iv: iv}).toString(CryptoJS.enc.Utf8);
+        } catch (error) {
+            console.error("Cannot find paypalEmail", error.message);
+        }
+        
+        try {
+            cardnumber = CryptoJS.AES.decrypt(user.cardnumber, key, { iv: iv}).toString(CryptoJS.enc.Utf8);
+        } catch (error) {
+            console.error("Cannot find cardnumber", error.message);
+        }
+        
+        try {
+            expirydate = CryptoJS.AES.decrypt(user.expirydate, key, { iv: iv}).toString(CryptoJS.enc.Utf8);
+        } catch (error) {
+            console.error("Cannot find expirydate", error.message);
+        }
+        
+        try {
+            cvv = CryptoJS.AES.decrypt(user.cvv, key, { iv: iv}).toString(CryptoJS.enc.Utf8);
+        } catch (error) {
+            console.error("Cannot find cvv", error.message);
+        }
+        res.render("checkout", { query: req.query, remember: true, paypalEmail: paypalEmail, cardnumber: cardnumber, expirydate: expirydate, cvv: cvv});
+    } else {
+        res.render("checkout", { query: req.query, remember: false});
+    }
 });
 
 app.post('/submit-payment', sessionValidation, async (req, res) => {
     try {
         let paymentType = req.body.paymentType;
+        let userId = new ObjectId(req.session._id);
+        let remember = req.body.remember;
+        if(remember === "on") {
+            await userCollection.findOneAndUpdate({_id: userId}, {$set: {remember: true}});
+        } else {
+            await userCollection.findOneAndUpdate({_id: userId}, {$set: {remember: false}});
+        }
         if (paymentType === "credit") {
             let cardnumber = req.body.cardnumber;
             let expirydate = req.body.expirydate;
             let cvv = req.body.cvv;
 
-            const encryptedCardNumber = encryptjs.encrypt(cardnumber, encryptionKey, 256)
-            const encryptedExpirydate = encryptjs.encrypt(expirydate, encryptionKey, 256)
-            const encryptedCvv = encryptjs.encrypt(cvv, encryptionKey, 256)
+            const encryptedCardNumber = CryptoJS.AES.encrypt(cardnumber, key, {iv: iv}).toString();
+            const encryptedExpirydate = CryptoJS.AES.encrypt(expirydate, key, {iv: iv}).toString();
+            const encryptedCvv = CryptoJS.AES.encrypt(cvv, key, {iv: iv}).toString();
+            await userCollection.findOneAndUpdate({_id: userId}, 
+                {$set: {cardnumber: encryptedCardNumber, expirydate: encryptedExpirydate, cvv: encryptedCvv}});
+            
 
-
-        } else if(paymentType ==="paypal"){
+        } else if (paymentType === "paypal") {
             let paypalEmail = req.body.paypalEmail;
-            const encryptedPaypalEmail = encryptjs.encrypt(paypalEmail, encryptionKey, 256)
+            const encryptedPaypalEmail = CryptoJS.AES.encrypt(paypalEmail, key, {iv: iv}).toString();
+            await userCollection.findOneAndUpdate({_id: userId}, {$set: {paypalEmail: encryptedPaypalEmail}});
         }
     } catch (e) {
         console.log(e);
     }
+    res.render("confirmation");
 });
 app.use(express.json());
 
@@ -479,7 +532,7 @@ app.get('/stations', async (req, res) => {
         const users = await userCollection.find({}).toArray();
         currentUserName = await userCollection.find({username: req.session.username}).project({username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1}).toArray();
 
-        console.log("haha" +  JSON.stringify(currentUserName));
+        // console.log("haha" +  JSON.stringify(currentUserName));
         res.render("stations", { stations: stations, users: users, currentUserName: currentUserName}); 
     } catch (error) {
         console.error("Error fetching stations:", error);

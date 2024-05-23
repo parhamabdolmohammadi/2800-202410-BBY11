@@ -90,7 +90,8 @@
             <!-- <h5 class="card-title">Card title</h5> -->
             <h6 class="card-subtitle mb-2 service-name"></h6>
             <p class="card-text service-description"></p>
-            <a href="#" class="card-link .hover-img">Card link</a>
+            <p class="card-text service-price"></p>
+            <a href="#" class="card-link">Card link</a>
             <a href="#" class="card-link">Another link</a>
           </div>
           <div>
@@ -130,19 +131,6 @@
     </form>
   </div>
 </div>
-
-<!-- <div> -->
-<!-- <div id="servicesContainer">
-
-		<% for(let i=0; i < services.length; i++) {%>
-			<div class="col-md-4 themed-grid-col service-container">
-				 <div>Service name: <%= services[i].name %></div>
-				<div>Service description: <%= services[i].description%></div>
-			</div>
-		
-			<br>
-			<% } %>
-	</div> -->
 
 <script>
   const services = <%- JSON.stringify(services) %>;
@@ -244,10 +232,18 @@
         .getElementById("main-service-list-container-2")
         .appendChild(newcard);
     });
+    function setID(id, name) {
+        localStorage.setItem('ServiceID', id);
+        localStorage.setItem('ServiceName', name);
+    }
   }
 </script>
 <script src="/main.js"></script>
 <%- include("templates/footer") %>
+        
+
+      
+
 
 <!-- 
 finish the main page
