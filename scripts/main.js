@@ -45,3 +45,4 @@ function setID(id, name, price) {
     localStorage.setItem('ServicePrice', price);
     console.log(price);
 }
+});
