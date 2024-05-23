@@ -16,6 +16,11 @@ const salt = CryptoJS.enc.Hex.parse('')
 const ObjectId = require('mongodb').ObjectId;
 const nodemailer = require('nodemailer');
 
+// MongoDB database connection
+var { database } = include('databaseConnection');
+
+// Groqcloud API connection and AI functionality
+var { makeAiReqAndRes, getGroqChatCompletion } = include('groqAIAPI');
 
 const port = process.env.PORT || 3000;
 
@@ -57,8 +62,6 @@ const mongodb_database2 = process.env.MONGODB_DATABASE2;
 
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* END secret section */
-
-var { database } = include('databaseConnection');
 
 const userCollection = database.db(mongodb_database).collection('users');
 const stationsCollection = database.db(mongodb_database2).collection('Stations');
@@ -317,6 +320,10 @@ app.get('/main', async (req, res) => {
     var username = req.session.username;
     console.log('username is ' +  username);
     res.render("main", {services, username});
+    
+    // Make AI request, and save the AI response text
+    var AIResponse = await makeAiReqAndRes();
+    console.log(AIResponse);
 });
 
 
