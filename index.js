@@ -284,6 +284,7 @@ app.post('/loggingin', async (req, res) => {
         req.session.username = result[0].username;
         req.session.user_type = result[0].user_type;
         req.session.cookie.maxAge = expireTime;
+        req.session.email = result[0].email;
 
         res.redirect('/main');
         return;
@@ -536,6 +537,15 @@ app.get('/station', async (req, res) => {
         res.render("station"); 
 });
 
+app.get('/bussinessOwnerForm', async (req, res) => {
+    console.log(req.session.email);
+    res.render("bussinessOwnerForm", { email: req.session.email});
+})
+
+app.get('/bussinessOwnerSignupConfirmation', async (req, res) => {
+    console.log(req.session.email);
+    res.render("bussinessOwnerSignupConfirmation", { email: req.session.email});
+})
 
 app.get('/confirmation', sessionValidation, (req, res) => {
     res.render("confirmation");
