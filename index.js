@@ -16,6 +16,7 @@ const salt = CryptoJS.enc.Hex.parse('')
 const ObjectId = require('mongodb').ObjectId;
 const nodemailer = require('nodemailer');
 
+
 const port = process.env.PORT || 3000;
 
 const app = express();
@@ -311,10 +312,13 @@ app.get('/main', async (req, res) => {
         return;
     }
     // console.log('finding...');
-    const services = await general.find({}).project({ name: 1, description: 1 }).toArray();
-    console.log('this is ' + services);
+    const services = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1 }).toArray();
+    // console.log('this is ' + services);
+    // services.forEach(service => {
+    //     console.log(service.name);
+    // })
     var username = req.session.username;
-    console.log('username is ' +  username);
+    // console.log('username is ' +  username);
     res.render("main", {services, username});
 });
 
@@ -379,11 +383,11 @@ app.post('/search', async (req, res) => {
     const query = req.body.query;
     const regex = new RegExp(query, 'i'); // 'i' flag for case-insensitive matching
 
-    const result = await general.find({ name: { $regex: regex } }).project({ name: 1, description: 1 }).toArray();
+    const result = await general.find({ name: { $regex: regex } }).project({ _id: 1, name: 1, description: 1, background: 1 }).toArray();
 
     // Iterate through the result array and display the name of each object
     result.forEach(item => {
-        console.log("found it: " + item.name);
+        // console.log("found it: " + item.name);
     });
 
     res.json({ result });
@@ -501,12 +505,28 @@ app.get('/saved', async (req, res) => {
         const users = await userCollection.find({}).toArray();
         currentUserName = await userCollection.find({username: req.session.username }).project({username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1}).toArray();
 
-        console.log("haha" + currentUserName);
+        // console.log("haha" + currentUserName);
         res.render("saved", { stations: stations, users: users, currentUserName: currentUserName}); 
     } catch (error) {
         console.error("Error fetching stations:", error);
         res.status(500).send("Internal Server Error");
     }
+});
+
+
+app.post('/displayStation', async (req, res) => {
+    const cardId = req.body.data;
+    const distance = req.body.data2;
+    console.log(cardId);
+    
+    const objectId = new ObjectId(cardId);
+    console.log(distance);
+    const currentStation = await stationsCollection.findOne({_id: objectId});
+    res.render('station', {station1: currentStation , distance: distance });
+});
+
+app.get('/station', async (req, res) => {
+        res.render("station"); 
 });
 
 

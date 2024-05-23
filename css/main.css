@@ -16,21 +16,12 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  background-color: #9ad1d4;
 }
 
 #main-welcome-message {
   /* position: absolute;
     top: 7%; */
   z-index: 2;
-}
-
-#main-content-container {
-  display: flex;
-  flex-direction: column;
-  margin-left: 2em;
-  margin-right: 2em;
 }
 
 /* Service list container */
@@ -49,24 +40,44 @@
 
 .cardi {
   transform: scale(1);
-  width: 25rem;
+  width: 25vw;
+  min-height: 15vw;
   margin: 10px;
   padding: 10px 10px 10px 25px;
-  border-radius: 100px;
-  border: 4px solid grey;
+  border-radius: 0px;
+
   text-align: left;
 }
 
-.cardi2 {
-  border: 4px solid black;
+@media only screen and (max-width: 915px) {
+  .cardi {
+    min-width: 40vw;
+    min-height: 25vw;
+  }
+}
 
+@media only screen and (max-width: 690px) {
+  .cardi {
+    min-width: 80vw;
+    min-height: 25vw;
+  }
+}
+
+@media only screen and (max-width: 410px) {
+  .cardi {
+    min-width: 80vw;
+    min-height: 25vw;
+  }
+}
+
+.cardi2 {
   width: 100%;
   height: 100%;
   position: absolute;
   top: 0;
   left: 0;
   border-radius: inherit; /* Keep the same border radius as the card */
-  box-shadow: 0 0 20px 10px rgba(0, 0, 0, 0.2); /* Adding a shadow effect */
+  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2); /* Adding a shadow effect */
   filter: brightness(50%) blur(0px);
 }
 
@@ -77,4 +88,37 @@
   display: grid;
   grid-template-columns: 70% 30%;
   align-items: center;
+}
+
+.service {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  overflow: auto;
+  margin-left: 2em;
+  margin-right: 2em;
+}
+
+@media only screen and (max-width: 690px) {
+  .service {
+    display: flex;
+
+    flex-direction: column;
+    overflow: auto;
+    margin-left: 2em;
+    margin-right: 2em;
+  }
+}
+.card-subtitle {
+  font-weight: bold;
+  font-size: 1.5em;
+}
+
+.card-link {
+  text-decoration: none;
+  color: white;
+}
+#main-search-form {
+  max-width: 100vw;
 }

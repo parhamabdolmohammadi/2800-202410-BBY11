@@ -1,127 +1,92 @@
 <%- include("templates/header") %>
 
-<!-- <img src="images/search.png" alt="Search" id="searchIcon" /> -->
 
-<div
-  id="main-welcome-container"
-  style="
+  <div id="main-welcome-container" style="
     background: url(./hi.jpg) center / cover no-repeat;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
 
     height: 400px;
-  "
->
-  <form id="main-search-form" class="d-flex mx-auto" role="search">
-    <div class="dropdown d-flex justify-content-center"></div>
-    <button
-      type="button"
-      id="filter-button"
-      class="btn btn-light dropdown-toggle"
-      data-bs-toggle="dropdown"
-      aria-expanded="false"
-      data-bs-auto-close="outside"
-    >
-      <span class="material-symbols-outlined">filter_list</span>
-    </button>
-    <!-- Search bar text input -->
-    <input
-      id="search-text"
-      class="form-control"
-      type="search"
-      placeholder="Search for services"
-      aria-label="Search"
-      aria-describedby="search-addon"
-    />
-    <!-- Search button -->
-    <button id="search-button" class="btn btn-light" type="submit">
-      <span class="material-symbols-outlined">search</span>
-    </button>
-  </form>
+  ">
+    <form id="main-search-form" class="d-flex mx-auto" role="search">
+      <div class="dropdown d-flex justify-content-center"></div>
+      <button type="button" id="filter-button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"
+        aria-expanded="false" data-bs-auto-close="outside">
+        <span class="material-symbols-outlined">filter_list</span>
+      </button>
+      <!-- Search bar text input -->
+      <input id="search-text" class="form-control" type="search" placeholder="Search for services" aria-label="Search"
+        aria-describedby="search-addon" />
+      <!-- Search button -->
+      <button id="search-button" class="btn btn-light" type="submit">
+        <span class="material-symbols-outlined">search</span>
+      </button>
+    </form>
 
-  <h2 id="main-welcome-message" style="color: white">
-    Welcome <%= username %>!
-  </h2>
-</div>
+    <h2 id="main-welcome-message" style="color: white">
+      Welcome <%= username %>!
 
-<!-- Services list of cards -->
-<div id="main-service-list-container">
-  <h3 style="position: relative; left: 10px; top: 10px" id="services-header">
-    Find services:
-  </h3>
-  <hr />
-  <div
-    id="main-service-list-container-2"
-    class="row mb-3 text-center"
-    style="
-      display: flex;
-      flex-direction: row;
-      overflow: auto;
-      flex-wrap: nowrap;
-    "
-  >
-    <% for(let i=0; i < services.length; i++) {%>
-    <div class="card cardi">
-      <div
-        class="card-bg cardi2"
-        style="
-          background-image: url(<%= services[i].name.replace(/\s+/g, '') %>.png);
-          background-size: cover;
-          background-repeat: no-repeat;
-          background-position: center;
-        "
-      ></div>
-      <div class="card-body cardi3">
-        <div>
-          <h5 class="card-title">Card title</h5>
-          <h6 class="card-subtitle mb-2"><%= services[i].name %></h6>
-          <p class="card-text"><%= services[i].description %></p>
-          <a href="#" class="card-link">Card link</a>
-          <a href="#" class="card-link">Another link</a>
-        </div>
-        <div>
-          <button
-            style="float: right"
-            type="button"
-            class="btn btn-outline-secondary fluid-button"
-          >
-            <img
-              class=".hover-img fluid-image"
-              style="height: 30px"
-              src="/location.png"
-              alt=""
-            />
-          </button>
-        </div>
-      </div>
-    </div>
-    <% } %>
+    </h2>
   </div>
-</div>
 
-<div>
-  <!-- <div id="servicesContainer">
 
-		<% for(let i=0; i < services.length; i++) {%>
-			<div class="col-md-4 themed-grid-col service-container">
-				 <div>Service name: <%= services[i].name %></div>
-				<div>Service description: <%= services[i].description%></div>
-			</div>
-		
-			<br>
-			<% } %>
-	</div> -->
+  <!-- Services list of cards -->
 
+  <div id="main-service-list-container">
+    <h3 style="position: relative; left: 10px; top: 10px" id="services-header">
+      Find services:
+    </h3>
+    <hr />
+    <div id="main-service-list-container-2" class="row mb-3 text-center service">
+      <template id="ServiceCardTemplate">
+
+
+        <div class="card cardi">
+          <div class="card-bg cardi2 card-background"></div>
+          <div class="card-body cardi3">
+            <div>
+              <!-- <h5 class="card-title">Card title</h5> -->
+              <h6 class="card-subtitle mb-2 service-name"></h6>
+              <p class="card-text service-description"></p>
+              <a href="#" class="card-link .hover-img">Card link</a>
+              <a href="#" class="card-link">Another link</a>
+            </div>
+            <div>
+              <form action="/stations" method="GET">
+                <button style="float: right" type="submit"
+                  class="btn btn-outline-secondary fluid-button button-location">
+                  <img class=".hover-img fluid-image " style="height: 30px" src="/location.png" alt="" />
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+
+      </template>
+    </div>
+  </div>
+
+  <!-- <script>
+      var services = <%= JSON.stringify(services) %>;
+      console.log('services:', services);
+  </script> -->
   <script>
     document.addEventListener("DOMContentLoaded", function () {
+
       var link = document.createElement("link");
       link.rel = "stylesheet";
       link.href = "/main.css";
       document.head.appendChild(link);
+
     });
+    let services = <%- JSON.stringify(services) %>;
+    // console.log('services:', services);
+
 
     document.addEventListener("DOMContentLoaded", function () {
+
       // Get references to the search input and icon
       const searchInput = document.getElementById("search-text");
       const searchIcon = document.getElementById("search-button");
@@ -133,7 +98,7 @@
 
         // Get the search query from the input field
         const query = searchInput.value;
-        console.log(query);
+        // console.log(query);
 
         // Send a POST request to the server
         fetch("/search", {
@@ -146,8 +111,9 @@
           .then((response) => response.json())
           .then((data) => {
             data.result.forEach((item) => {
-              console.log(item.name); // Accessing the 'name' property of each item
-              console.log(item.description); // Accessing the 'description' property of each item
+              // console.log(item.name);
+              // console.log(item.description);
+              // console.log(item.background);
             });
 
             renderServices(data);
@@ -157,30 +123,51 @@
           });
       });
     });
-    function renderServices(services) {
+    function renderServices(filteredServices) {
       const servicesContainer = document.getElementById(
-        "main-service-list-container"
+        "main-service-list-container-2"
       );
-      servicesContainer.innerHTML = "";
+      // console.log(servicesContainer);
+      // servicesContainer.innerHTML = "";
+      const cards = document.querySelectorAll('.card');
 
-      services.result.forEach((service) => {
-        const name = document.createElement("div");
-        name.innerHTML = "Service name: " + service.name;
-        servicesContainer.appendChild(name);
+      cards.forEach(card => {
+      card.remove();
+      // console.log('removed');
+      });
+      if (filteredServices.result.length == 0) {
+        const notFound = document.createElement('div')
+        notFound.textContent = 'not found'
+        document.getElementById("main-service-list-container-2").appendChild(notFound);
+      }
+      filteredServices.result.forEach((service) => {
+        let name = service.name
+        let description = service.description
+        let background = service.background
+        let serviceID = service._id;
 
-        const des = document.createElement("div");
-        des.innerHTML = service.description;
-        servicesContainer.appendChild(des);
+
+        newcard = document.getElementById('ServiceCardTemplate').content.cloneNode(true)
+
+        newcard.querySelector(".service-name").innerHTML = name;
+        newcard.querySelector(".service-description").innerHTML = description;
+        newcard.querySelector(".card-background").style.backgroundImage = `url(${background})`;
+
+        newcard.querySelector(".button-location").id = "button-location-" + serviceID;
+        newcard.querySelector(".button-location").onclick = () => setID(serviceID, name);
+
+        document.getElementById("main-service-list-container-2").appendChild(newcard);
+
       });
     }
   </script>
+  <script src="/main.js"></script>
   <%- include("templates/footer") %>
 
-  <!-- 
+    <!-- 
 finish the main page
 	- create welcome container with search bar - with an appropriate colours that we chose from coolors
 	- create container for the available robot services to be dynamically displayed in
 	- create a file for template cards to be cloned from in the main page
 	- create a placeholder for the AI assistance button, which we shayan and I will implement next week
  -->
-</div>
