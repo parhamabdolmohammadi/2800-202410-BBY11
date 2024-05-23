@@ -533,19 +533,120 @@ app.post('/displayStation', async (req, res) => {
     res.render('station', {station1: currentStation , distance: distance });
 });
 
+
 app.get('/station', async (req, res) => {
         res.render("station"); 
 });
 
 app.get('/bussinessOwnerForm', async (req, res) => {
-    console.log(req.session.email);
-    res.render("bussinessOwnerForm", { email: req.session.email});
+    const currentUser = await userCollection.findOne(
+        { username: req.session.username },
+        {
+          projection: {
+            username: 1,
+            user_type: 1, 
+            businessOwnerRequestInProgress: 1,
+          },
+        }
+      );
+    console.log(currentUser.user_type == "user");
+    if(!currentUser.businessOwnerRequestInProgress) {
+        res.render("bussinessOwnerForm", { email: req.session.email, request: false, user_type: currentUser.user_type });
+    } else {
+        res.render("bussinessOwnerForm", { email: req.session.email, request: true, user_type: currentUser.user_type});
+    }
+    
 })
 
+
+
+
+app.post('/bussinessOwnerSubmission', async (req, res) => {
+  let name = req.body.first_name;
+  let lastname = req.body.last_name;
+  let email = req.body.email;
+  let address = req.body.Address;
+  let phonenumber = req.body.Phone;
+  let businessName = req.body.Business_Name;
+  let businessAddress = req.body.Business_Address;
+  let description = req.body.textArea;
+  let dateOfBirth = req.body.date; // assuming 'date' is the field name for birth date
+  let gender = req.body.Gender; // assuming 'Gender' is the field name for gender
+ 
+  // Create a transporter object using SMTP transport
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'roborental.bcit@gmail.com', // Your email address
+      pass:  process.env.EMAIL_PASSWORD // Your app-specific password
+    }
+  });
+
+  // Example usage
+  const htmlContent = `
+    <h1>Hello ${name} ${lastname},</h1>
+    <p>Thank you for your request we will process your request and reach out to you soon.</p>
+    <p><strong>Best regards,</strong></p>
+    <p>Robo Rental App</p>
+  `;
+
+  console.log(htmlContent);
+
+  // Function to send an email
+  async function sendEmail(email, htmlContent) {
+    try {
+      let info = await transporter.sendMail({
+        from: 'roborental.bcit@gmail.com', // Sender address
+        to: email, // List of receivers
+        subject: "Request In Progress", // Subject line
+        html: htmlContent // HTML body content
+      });
+
+      console.log('Message sent: %s', info.messageId);
+    } catch (error) {
+      console.error('Error sending email:', error);
+    }
+  }
+
+  await sendEmail(email, htmlContent);
+  
+  await userCollection.updateOne({ username: req.session.username }, { $set: { businessOwnerRequestInProgress: true, name, lastname, phonenumber, address, businessName, businessAddress, description, dateOfBirth, gender  } });
+  res.render('bussinessOwnerSignupConfirmation', {});
+});
+
+
+
 app.get('/bussinessOwnerSignupConfirmation', async (req, res) => {
+    
     console.log(req.session.email);
     res.render("bussinessOwnerSignupConfirmation", { email: req.session.email});
 })
+
+app.get('/admin', sessionValidation, adminAuthorization, async (req,res) => {
+    const result = await userCollection.find().project({username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1 }).toArray();
+ 
+    res.render("admin", {users: result});
+});
+
+app.post('/PromoteToBusinessOwner', async (req, res) => {
+    let user_id = req.body.data;
+    console.log(user_id);
+    const objectId = new ObjectId(user_id);
+    await userCollection.updateOne({ _id : objectId}, { $set: { businessOwnerRequestInProgress: false, user_type: "businessOwner" } });
+    const result = await userCollection.find().project({username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1 }).toArray();
+    res.render("main");
+});
+
+app.post('/DemoteToUser', async (req, res) => {
+    let user_id = req.body.data;
+    console.log(user_id);
+    const objectId = new ObjectId(user_id);
+    await userCollection.updateOne({ _id : objectId}, { $set: { businessOwnerRequestInProgress: false } });
+    const result = await userCollection.find().project({username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1 }).toArray();
+    res.render("admin", {users: result});
+});
+
+
 
 app.get('/confirmation', sessionValidation, (req, res) => {
     res.render("confirmation");

@@ -32,12 +32,36 @@
     <hr style="color: rgba(0, 50, 73, 1)" />
     <div class="actual-content">
       <div style="padding: 0 5px; margin: 2px">
-        <form action="">
+        <% if(user_type == "businessOwner") { %>
+        <p
+          style="
+            display: grid;
+            justify-content: center;
+            padding: 10% 0;
+            color: green;
+          "
+        >
+          You are already enrolled as a business owner
+        </p>
+        <% } else if(user_type == "admin") { %>
+        <p
+          style="
+            display: grid;
+            justify-content: center;
+            padding: 10% 0;
+            color: green;
+          "
+        >
+          You are an Admin.
+        </p>
+
+        <%} else if (!request) { %>
+        <form action="/bussinessOwnerSubmission" method="POST">
           <input
             style="display: inline; width: 40%"
             type="text"
-            id="first-name"
-            name="first-name"
+            id="first_name"
+            name="first_name"
             placeholder="First Name"
             maxlength="50"
             required
@@ -46,8 +70,8 @@
           <input
             style="display: inline; float: right; width: 40%"
             type="text"
-            id="first-name"
-            name="first-name"
+            id="last_name"
+            name="last_name"
             placeholder="Last Name"
             maxlength="50"
             required
@@ -67,7 +91,7 @@
             style="display: block"
             type="text"
             id="Address"
-            name="Addess"
+            name="Address"
             placeholder="Address"
             maxlength="100"
             required
@@ -75,8 +99,8 @@
           <input
             style="display: block"
             type="text"
-            id="Address"
-            name="Addess"
+            id="Phone"
+            name="Phone"
             pattern="[0-9]{0,10}"
             placeholder="PhoneNumber"
             maxlength="20"
@@ -130,14 +154,28 @@
             placeholder="Description About your Business and robot services you are going to provide "
             required
           ></textarea>
+
           <button class="icon-container link-style" type="submit">
             Submit
           </button>
         </form>
+        <% } else { %>
+        <p
+          style="
+            display: grid;
+            justify-content: center;
+            padding: 10% 0;
+            color: red;
+          "
+        >
+          Your request is in progress we will reach out to you soon.
+        </p>
+        <%} %>
       </div>
     </div>
   </div>
 </div>
+<br />
 <script>
   // Additional client-side scripts can go here
 </script>

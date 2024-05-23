@@ -1,6 +1,6 @@
 <%- include("templates/header") %>
 <div class="index-page-container">
-    <!-- <div class="signup-login-form-container" style="min-width: 400px;
+  <!-- <div class="signup-login-form-container" style="min-width: 400px;
                 max-width: 504px;
                 height: 200px;"
     >
@@ -10,38 +10,73 @@
         <button type='button' onclick="window.location.href = '/login';" class="btn btn-light btn-outline-secondary w-100 py-2 mb-2">Log in</button>
     </div> -->
 
-    <div id="index-welcome-image-container" style="background-image: url(robots-servicing.png)">
-        <!-- <img src="robots-servicing.png" id="index-welcome-img"/> -->
-        <h3 id="index-welcome-message"><span style="font-weight: bold;">Order robot services near you</span></h3>
-        <!-- Search bar -->
-        <form id="index-search-form" class="d-flex mx-auto" role="search">
+  <div
+    id="index-welcome-image-container"
+    style="background-image: url(robots-servicing.png)"
+  >
+    <!-- <img src="robots-servicing.png" id="index-welcome-img"/> -->
+    <h3 id="index-welcome-message">
+      <span style="font-weight: bold">Order robot services near you</span>
+    </h3>
+    <!-- Search bar -->
+    <form id="index-search-form" class="d-flex mx-auto" role="search">
+      <!-- Filter button and dropdown menu -->
+      <div class="dropdown d-flex justify-content-center">
+        <button
+          type="button"
+          id="filter-button"
+          class="btn btn-light dropdown-toggle"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+          data-bs-auto-close="outside"
+        >
+          <span class="material-symbols-outlined">location_on</span>
+        </button>
+      </div>
 
-            <!-- Filter button and dropdown menu -->
-            <div class="dropdown d-flex justify-content-center">
-                <button type="button" id="filter-button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"
-                    aria-expanded="false" data-bs-auto-close="outside">
-                    <span class="material-symbols-outlined">location_on</span>
-                </button>
-            </div>
-
-            <!-- Search bar text input -->
-            <input id="search-text" class="form-control" type="search" placeholder="Enter delivery address" aria-label="Search" aria-describedby="search-addon"/>
-            <!-- Search button -->
-            <button id="search-button" class="btn btn-light" type="submit">
-                <span class="material-symbols-outlined">search</span>
-            </button>
-        </form>
-        <div id="index-login-signup-button-container">
-            <button type='button' onclick="window.location.href = '/login';" class="btn btn-light btn-outline-secondary py-2 rounded-pill index-signup-login-buttons">Log in</button>
-            <button type='button' onclick="window.location.href = '/signup';" class="btn py-2 rounded-pill index-signup-login-buttons" style="background-color: #003249 !important; color: white;">Sign up</button>
-        </div>
+      <!-- Search bar text input -->
+      <input
+        id="search-text"
+        class="form-control"
+        type="search"
+        placeholder="Enter delivery address"
+        aria-label="Search"
+        aria-describedby="search-addon"
+      />
+      <!-- Search button -->
+      <button id="search-button" class="btn btn-light" type="submit">
+        <span class="material-symbols-outlined">search</span>
+      </button>
+    </form>
+    <div id="index-login-signup-button-container">
+      <button
+        type="button"
+        onclick="window.location.href = '/login';"
+        class="btn btn-light btn-outline-secondary py-2 rounded-pill index-signup-login-buttons"
+      >
+        Log in
+      </button>
+      <button
+        type="button"
+        onclick="window.location.href = '/signup';"
+        class="btn py-2 rounded-pill index-signup-login-buttons"
+        style="background-color: #003249 !important; color: white"
+      >
+        Sign up
+      </button>
     </div>
+  </div>
 
-    <div id="features-and-and-service-info-container" style="margin-top: 2em; margin-left: 2em; margin-right: 2em;">
-        <h3 style="display: inline; position: relative; left: 50%;">Features</h3>
-        <p style="text-align: center;">Will add cards to describe features, steps, and services and implement after we finish features</p>
-    </div>
-
+  <div
+    id="features-and-and-service-info-container"
+    style="margin-top: 2em; margin-left: 2em; margin-right: 2em"
+  >
+    <h3 style="display: inline; position: relative; left: 50%">Features</h3>
+    <p style="text-align: center">
+      Will add cards to describe features, steps, and services and implement
+      after we finish features
+    </p>
+  </div>
 </div>
 
 <%- include("templates/footer")%>
