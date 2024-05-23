@@ -10,9 +10,11 @@ const MongoStore = require('connect-mongo');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
 const CryptoJS = require('crypto-js')
-const secretKey = "mySecretKey";
-const iv = CryptoJS.lib.WordArray.random(16);
-const salt = CryptoJS.enc.Hex.parse('')
+// const secretKey = "mySecretKey";
+// const iv = CryptoJS.lib.WordArray.random(16);
+// const salt = CryptoJS.enc.Hex.parse('')
+var key = CryptoJS.enc.Utf8.parse('b75524255a7f54d2726a951bb39204df');
+var iv  = CryptoJS.enc.Utf8.parse('1583288699248111');
 const ObjectId = require('mongodb').ObjectId;
 const nodemailer = require('nodemailer');
 
@@ -210,9 +212,10 @@ app.post('/submitUser', async (req, res) => {
 
 
     var hashedPassword = await bcrypt.hash(password, saltRounds);
-    var encryptedEmail = CryptoJS.AES.encrypt(email, secretKey, { iv: iv, salt: salt }).toString();
+    var encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString()
     await userCollection.insertOne({ username: username, password: hashedPassword, email: encryptedEmail, user_type: "user" });
     console.log("Inserted user");
+    // console.log(CryptoJS.AES.decrypt(encryptedEmail, key, { iv: iv}).toString(CryptoJS.enc.Utf8));
 
 
     var html = "successfully created user";
@@ -262,7 +265,8 @@ app.post('/loggingin', async (req, res) => {
         return;
     }
 
-    var encryptedEmail = CryptoJS.AES.encrypt(email, secretKey, { iv: iv, salt: salt }).toString();
+    var encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString()
+    // console.log(encryptedEmail === 'WTfm6CGGEKx6XwoGKopaRg==');
     // Check if a user account with the entered email and password exists in the MongoDB database
     const result = await userCollection.find({ email: encryptedEmail }).project({ username: 1, email: 1, password: 1, user_type: 1, _id: 1 }).toArray();
 

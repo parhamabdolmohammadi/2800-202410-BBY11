@@ -131,19 +131,6 @@
   </div>
 </div>
 
-<!-- <div> -->
-<!-- <div id="servicesContainer">
-
-		<% for(let i=0; i < services.length; i++) {%>
-			<div class="col-md-4 themed-grid-col service-container">
-				 <div>Service name: <%= services[i].name %></div>
-				<div>Service description: <%= services[i].description%></div>
-			</div>
-		
-			<br>
-			<% } %>
-	</div> -->
-
 <script>
   const services = <%- JSON.stringify(services) %>;
   console.log(services);
@@ -255,16 +242,7 @@
         
 
       
-      
-    
 
-
-
-
-
-  </script>
-  <script src="/main.js"></script>
-  <%- include("templates/footer") %>
 
 <!-- 
 finish the main page
