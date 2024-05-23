@@ -1,0 +1,75 @@
+body {
+  min-width: 100vw;
+  min-height: 100vh;
+}
+
+.covering {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  align-items: center;
+  justify-items: center;
+  height: 100vh;
+}
+.card-style {
+  width: 90%;
+  border: 1px solid rgba(0, 50, 73, 0.5);
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+  transform: scale(0.95);
+  margin-top: 10px !important;
+  max-width: min(600px, 70vw);
+
+  /* margin: 0 1q; */
+  background-color: #ccdbdc;
+}
+
+.icon-container {
+  padding: 10px;
+  float: right;
+  width: 100px;
+  background-color: rgba(0, 126, 167, 1);
+  border-radius: 50px;
+  border: none; /* Remove the border */
+  outline: none; /* Remove the outline */
+}
+
+.actual-content {
+  padding: 10px 10px 60px 10px;
+  border-radius: 10px;
+  background-color: white;
+  margin: 5%;
+}
+
+.link-style:hover {
+  color: silver;
+}
+
+.icon-size {
+  width: 30px;
+  height: 30px;
+}
+
+input,
+textarea {
+  margin: 5px 0 !important;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+input[type="text"],
+input[type="email"],
+textarea {
+  width: 100%;
+  margin: 10px 0;
+}
+
+form {
+  width: 100%;
+  height: 100%;
+}
+
+.list {
+  margin-bottom: 10px;
+}
