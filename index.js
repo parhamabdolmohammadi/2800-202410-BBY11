@@ -323,14 +323,16 @@ app.get('/main', async (req, res) => {
 });
 
 app.post('/main/ai-assistance', async (req, res) => { // Jason WILL REMOVE THIS ROUTE HANDLER ON TO AN XMLHttpRequest OBJECT SO WE DON'T HAVE TO REFRESH THE PAGE FOR EVERY AI REQUEST =============================================
+    
+    // Get list of services from the database, store the names in an array
+    var listOfServices = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1 }).toArray();
 
     // Get message from user
     var AIRequestMsg = req.body.aiAssistanceInput;
 
-    // Make AI request, passing in the user text message. Save the AI response text
-    var AIResponse = await makeAiReqAndRes(AIRequestMsg);
-    //console.log(AIResponse);
-
+    // Make AI request, passing in the user text message and the list of services. Save the AI response text
+    var AIResponse = await makeAiReqAndRes(AIRequestMsg, listOfServices);
+    
     // Display the AI generate response in a text field in the main page
     res.send(AIResponse);
 });
