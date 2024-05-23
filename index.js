@@ -16,6 +16,11 @@ const salt = CryptoJS.enc.Hex.parse('')
 const ObjectId = require('mongodb').ObjectId;
 const nodemailer = require('nodemailer');
 
+// MongoDB database connection
+var { database } = include('databaseConnection');
+
+// Groqcloud API connection and AI functionality
+var { makeAiReqAndRes, getGroqChatCompletion } = include('groqAIAPI');
 
 const port = process.env.PORT || 3000;
 
@@ -57,8 +62,6 @@ const mongodb_database2 = process.env.MONGODB_DATABASE2;
 
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* END secret section */
-
-var { database } = include('databaseConnection');
 
 const userCollection = database.db(mongodb_database).collection('users');
 const stationsCollection = database.db(mongodb_database2).collection('Stations');
@@ -314,10 +317,17 @@ app.get('/main', async (req, res) => {
     }
     // console.log('finding...');
     const services = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1 }).toArray();
-    console.log('this is ' + services);
+    // console.log('this is ' + services);
+    // services.forEach(service => {
+    //     console.log(service.name);
+    // })
     var username = req.session.username;
-    console.log('username is ' +  username);
+    // console.log('username is ' +  username);
     res.render("main", {services, username});
+    
+    // Make AI request, and save the AI response text
+    var AIResponse = await makeAiReqAndRes();
+    console.log(AIResponse);
 });
 
 
@@ -350,32 +360,42 @@ app.use(express.json());
 
 const general = database.db('Services').collection('General')
 const fs = require('fs')
-let isNewDataInserted = false;
+let isNewDataInserted = true;
 if (isNewDataInserted) {
     const jsonData = fs.readFileSync('service.json', 'utf8');
     const dataArray = JSON.parse(jsonData);
+    // console.log('this is data array');
+    // console.log(dataArray);
     dataArray.forEach(async (data) => {
-        const existingData = await general.findOne(data);
+        // console.log('this is data' + data.name);
+        const existingData = await general.findOne({name: data.name});
         if (!existingData) {
-            // Data does not exist, insert it
+            data.background = `${data.name.trim().replace(/\s+/g, '')}.png`;
             await general.insertOne(data);
             console.log('Inserted new data:', data);
         } else {
-            // console.log('Data already exists, skipping:', data);
+            if (existingData.description !== data.description) {
+                await general.updateOne({ name: data.name}, {$set: {description: data.description}})
+            }
         }
     });
 }
+// to delete all data in general database
+// general.deleteMany({})
 
+ 
+// background
+// "/plumbing.png"
 
 app.post('/search', async (req, res) => {
     const query = req.body.query;
     const regex = new RegExp(query, 'i'); // 'i' flag for case-insensitive matching
 
-    const result = await general.find({ name: { $regex: regex } }).project({ name: 1, description: 1 }).toArray();
+    const result = await general.find({ name: { $regex: regex } }).project({ _id: 1, name: 1, description: 1, background: 1 }).toArray();
 
     // Iterate through the result array and display the name of each object
     result.forEach(item => {
-        console.log("found it: " + item.name);
+        // console.log("found it: " + item.name);
     });
 
     res.json({ result });
@@ -493,7 +513,7 @@ app.get('/saved', async (req, res) => {
         const users = await userCollection.find({}).toArray();
         currentUserName = await userCollection.find({username: req.session.username }).project({username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1}).toArray();
 
-        console.log("haha" + currentUserName);
+        // console.log("haha" + currentUserName);
         res.render("saved", { stations: stations, users: users, currentUserName: currentUserName}); 
     } catch (error) {
         console.error("Error fetching stations:", error);
