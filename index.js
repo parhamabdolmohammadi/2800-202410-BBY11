@@ -347,14 +347,14 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
             let expirydate = req.body.expirydate;
             let cvv = req.body.cvv;
 
-            const encryptedCardNumber = encryptjs.encrypt(cardnumber, encryptionKey, 256)
-            const encryptedExpirydate = encryptjs.encrypt(expirydate, encryptionKey, 256)
-            const encryptedCvv = encryptjs.encrypt(cvv, encryptionKey, 256)
+            const encryptedCardNumber = CryptoJS.AES.encrypt(cardnumber, key, { iv: iv }).toString()
+            const encryptedExpirydate = CryptoJS.AES.encrypt(expirydate, key, { iv: iv }).toString()
+            const encryptedCvv = CryptoJS.AES.encrypt(cvv, key, { iv: iv }).toString()
 
 
         } else if(paymentType ==="paypal"){
             let paypalEmail = req.body.paypalEmail;
-            const encryptedPaypalEmail = encryptjs.encrypt(paypalEmail, encryptionKey, 256)
+            const encryptedPaypalEmail = CryptoJS.AES.encrypt(paypalEmail, key, { iv: iv }).toString()
         }
     } catch (e) {
         console.log(e);
