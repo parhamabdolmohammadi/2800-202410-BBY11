@@ -122,3 +122,9 @@
 #main-search-form {
   max-width: 100vw;
 }
+
+.card-background {
+  background-size: cover; 
+  background-repeat: no-repeat; 
+  background-position: center center;
+}

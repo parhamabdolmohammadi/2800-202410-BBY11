@@ -159,6 +159,10 @@
         document.getElementById("main-service-list-container-2").appendChild(newcard);
 
       });
+      function setID(id, name) {
+        localStorage.setItem('ServiceID', id);
+        localStorage.setItem('ServiceName', name);
+    }
     }
   </script>
   <script src="/main.js"></script>
@@ -171,3 +175,4 @@ finish the main page
 	- create a file for template cards to be cloned from in the main page
 	- create a placeholder for the AI assistance button, which we shayan and I will implement next week
  -->
+
