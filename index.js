@@ -169,9 +169,11 @@ app.get('/setting', (req, res) => {
 
 app.get('/edit-profile', async (req,res) => {
     let id = await req.session._id;
+    console.log(id);
     let email = await req.session.email;
-    console.log("id: " + id);
-    res.render("edit-profile", {name : req.session.username, email : email, userId : id});
+    let unencryptedEmail = CryptoJS.AES.decrypt(email, key, { iv: iv}).toString(CryptoJS.enc.Utf8);
+    console.log(unencryptedEmail);
+    res.render("edit-profile", {name : req.session.username, email : unencryptedEmail, userId : id});
 });
 
 app.get('/edit-password', (req, res) => {
