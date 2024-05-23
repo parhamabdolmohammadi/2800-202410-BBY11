@@ -172,7 +172,16 @@
     // Get references to the search input and icon
     const searchInput = document.getElementById("search-text");
     const searchIcon = document.getElementById("search-button");
+  document.addEventListener("DOMContentLoaded", function () {
 
+    // Get references to the search input and icon
+    const searchInput = document.getElementById("search-text");
+    const searchIcon = document.getElementById("search-button");
+
+    // Add event listener to the search icon for click events
+    searchIcon.addEventListener("click", function (event) {
+      // console.log("clicked");
+      event.preventDefault(); // Prevent default action (e.g., form submission)
     // Add event listener to the search icon for click events
     searchIcon.addEventListener("click", function (event) {
       // console.log("clicked");
@@ -181,7 +190,25 @@
       // Get the search query from the input field
       const query = searchInput.value;
       // console.log(query);
+      // Get the search query from the input field
+      const query = searchInput.value;
+      // console.log(query);
 
+      // Send a POST request to the server
+      fetch("/search", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query: query }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          data.result.forEach((item) => {
+            // console.log(item.name);
+            // console.log(item.description);
+            // console.log(item.background);
+          });
       // Send a POST request to the server
       fetch("/search", {
         method: "POST",
