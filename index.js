@@ -312,7 +312,7 @@ app.get('/main', async (req, res) => {
         return;
     }
     // console.log('finding...');
-    const services = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1 }).toArray();
+    const services = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
     console.log('this is ' + services);
     var username = req.session.username;
     console.log('username is ' +  username);
@@ -320,30 +320,35 @@ app.get('/main', async (req, res) => {
 });
 
 
-app.get('/checkout', sessionValidation, (req, res) => {
+app.get('/checkout', sessionValidation, async (req, res) => {
     res.render("checkout", { query: req.query });
 });
 
 app.post('/submit-payment', sessionValidation, async (req, res) => {
     try {
         let paymentType = req.body.paymentType;
+        let userId = new ObjectId(req.session._id);
         if (paymentType === "credit") {
             let cardnumber = req.body.cardnumber;
             let expirydate = req.body.expirydate;
             let cvv = req.body.cvv;
 
-            const encryptedCardNumber = encryptjs.encrypt(cardnumber, encryptionKey, 256)
-            const encryptedExpirydate = encryptjs.encrypt(expirydate, encryptionKey, 256)
-            const encryptedCvv = encryptjs.encrypt(cvv, encryptionKey, 256)
+            const encryptedCardNumber = CryptoJS.AES.encrypt(cardnumber, secretKey).toString();
+            const encryptedExpirydate = CryptoJS.AES.encrypt(expirydate, secretKey).toString();
+            const encryptedCvv = CryptoJS.AES.encrypt(cvv, secretKey).toString();
+            await userCollection.findOneAndUpdate({_id: userId}, 
+                {$set: {cardnumber: encryptedCardNumber, expirydate: encryptedExpirydate, cvv: encryptedCvv}});
+            
 
-
-        } else if(paymentType ==="paypal"){
+        } else if (paymentType === "paypal") {
             let paypalEmail = req.body.paypalEmail;
-            const encryptedPaypalEmail = encryptjs.encrypt(paypalEmail, encryptionKey, 256)
+            const encryptedPaypalEmail = CryptoJS.AES.encrypt(paypalEmail, secretKey).toString();
+            await userCollection.findOneAndUpdate({_id: userId}, {$set: {paypalEmail: encryptedPaypalEmail}});
         }
     } catch (e) {
         console.log(e);
     }
+    res.render("confirmation");
 });
 app.use(express.json());
 
@@ -458,7 +463,7 @@ app.get('/stations', async (req, res) => {
         const users = await userCollection.find({}).toArray();
         currentUserName = await userCollection.find({username: req.session.username}).project({username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1}).toArray();
 
-        console.log("haha" +  JSON.stringify(currentUserName));
+        console.log("haha" +  stations);
         res.render("stations", { stations: stations, users: users, currentUserName: currentUserName}); 
     } catch (error) {
         console.error("Error fetching stations:", error);

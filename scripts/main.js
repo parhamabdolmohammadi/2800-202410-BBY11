@@ -7,6 +7,7 @@ services.forEach(service => {
    let name = service.name;
    var background = service.background;
    let serviceID = service._id;
+   let price = service.price;
 
 
 
@@ -15,7 +16,8 @@ services.forEach(service => {
    
    newcard.querySelector(".service-name").innerHTML = name;
    newcard.querySelector(".service-description").innerHTML = description; 
-   
+   newcard.querySelector(".service-price").innerHTML = "$"+price; 
+
    newcard.querySelector(".card-background").style.backgroundImage = `url(${background})`;
    newcard.querySelector(".card-background").style.backgroundSize = 'cover';
    newcard.querySelector(".card-background").style.backgroundRepeat = 'no-repeat';
@@ -25,7 +27,7 @@ services.forEach(service => {
    newcard.querySelector(".button-location").id = "button-location-" + serviceID;                                    
    
    
-   newcard.querySelector(".button-location").onclick = () => setID(serviceID, name);
+   newcard.querySelector(".button-location").onclick = () => setID(serviceID, name, price);
    
  
    
@@ -35,7 +37,9 @@ services.forEach(service => {
 
 });
 
-function setID(id, name) {
+function setID(id, name, price) {
     localStorage.setItem('ServiceID', id);
     localStorage.setItem('ServiceName', name);
+    localStorage.setItem('ServicePrice', price);
+    console.log(price);
 }
