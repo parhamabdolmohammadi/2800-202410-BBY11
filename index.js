@@ -320,12 +320,20 @@ app.get('/main', async (req, res) => {
     var username = req.session.username;
     console.log('username is ' +  username);
     res.render("main", {services, username});
-    
-    // Make AI request, and save the AI response text
-    var AIResponse = await makeAiReqAndRes();
-    console.log(AIResponse);
 });
 
+app.post('/main/ai-assistance', async (req, res) => { // Jason WILL REMOVE THIS ROUTE HANDLER ON TO AN XMLHttpRequest OBJECT SO WE DON'T HAVE TO REFRESH THE PAGE FOR EVERY AI REQUEST =============================================
+
+    // Get message from user
+    var AIRequestMsg = req.body.aiAssistanceInput;
+
+    // Make AI request, passing in the user text message. Save the AI response text
+    var AIResponse = await makeAiReqAndRes(AIRequestMsg);
+    //console.log(AIResponse);
+
+    // Display the AI generate response in a text field in the main page
+    res.send(AIResponse);
+});
 
 app.get('/checkout', sessionValidation, (req, res) => {
     res.render("checkout", { query: req.query });

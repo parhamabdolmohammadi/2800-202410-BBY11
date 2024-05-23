@@ -47,13 +47,16 @@
 
 
 <!-- Section for AI -->
+<form action="/main/ai-assistance" method="post" style="display: inline;">
 <div class="div-body">
 <div class="search-box">
-  <button class="btn-search"><i class="fas fa-search"></i><img src="chatbot.png" style="width: 30px; height: 30px;"></button>
-  <input type="text" class="input-search" placeholder="Ask AI">
+  
+    <button class="btn-search"><i class="fas fa-search"></i><img src="chatbot.png" style="width: 30px; height: 30px;"></button>
+    <input type="text" name="aiAssistanceInput" class="input-search" placeholder="Ask AI for Services">
 </div>
 <button class="btn-submit">Submit</button>
 </div>
+</form>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
