@@ -1,5 +1,7 @@
-let cardTemplate = document.getElementById("ServiceCardTemplate");
+document.addEventListener('DOMContentLoaded', () => {
 
+    let cardTemplate = document.getElementById("ServiceCardTemplate");
+    
 
 services.forEach(service => {
  

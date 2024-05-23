@@ -10,9 +10,11 @@ const MongoStore = require('connect-mongo');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
 const CryptoJS = require('crypto-js')
-const secretKey = "mySecretKey";
-const iv = CryptoJS.lib.WordArray.random(16);
-const salt = CryptoJS.enc.Hex.parse('')
+// const secretKey = "mySecretKey";
+// const iv = CryptoJS.lib.WordArray.random(16);
+// const salt = CryptoJS.enc.Hex.parse('')
+var key = CryptoJS.enc.Utf8.parse('b75524255a7f54d2726a951bb39204df');
+var iv  = CryptoJS.enc.Utf8.parse('1583288699248111');
 const ObjectId = require('mongodb').ObjectId;
 const nodemailer = require('nodemailer');
 
@@ -210,9 +212,10 @@ app.post('/submitUser', async (req, res) => {
 
 
     var hashedPassword = await bcrypt.hash(password, saltRounds);
-    var encryptedEmail = CryptoJS.AES.encrypt(email, secretKey, { iv: iv, salt: salt }).toString();
+    var encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString()
     await userCollection.insertOne({ username: username, password: hashedPassword, email: encryptedEmail, user_type: "user" });
     console.log("Inserted user");
+    // console.log(CryptoJS.AES.decrypt(encryptedEmail, key, { iv: iv}).toString(CryptoJS.enc.Utf8));
 
 
     var html = "successfully created user";
@@ -262,7 +265,8 @@ app.post('/loggingin', async (req, res) => {
         return;
     }
 
-    var encryptedEmail = CryptoJS.AES.encrypt(email, secretKey, { iv: iv, salt: salt }).toString();
+    var encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString()
+    // console.log(encryptedEmail === 'WTfm6CGGEKx6XwoGKopaRg==');
     // Check if a user account with the entered email and password exists in the MongoDB database
     const result = await userCollection.find({ email: encryptedEmail }).project({ username: 1, email: 1, password: 1, user_type: 1, _id: 1 }).toArray();
 
@@ -284,6 +288,7 @@ app.post('/loggingin', async (req, res) => {
         req.session.username = result[0].username;
         req.session.user_type = result[0].user_type;
         req.session.cookie.maxAge = expireTime;
+        req.session.email = result[0].email;
 
         res.redirect('/main');
         return;
@@ -315,10 +320,13 @@ app.get('/main', async (req, res) => {
         return;
     }
     // console.log('finding...');
-    const services = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
-    console.log('this is ' + services);
+    const services = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1 }).toArray();
+    // console.log('this is ' + services);
+    // services.forEach(service => {
+    //     console.log(service.name);
+    // })
     var username = req.session.username;
-    console.log('username is ' +  username);
+    // console.log('username is ' +  username);
     res.render("main", {services, username});
     
     // Make AI request, and save the AI response text
@@ -361,32 +369,42 @@ app.use(express.json());
 
 const general = database.db('Services').collection('General')
 const fs = require('fs')
-let isNewDataInserted = false;
+let isNewDataInserted = true;
 if (isNewDataInserted) {
     const jsonData = fs.readFileSync('service.json', 'utf8');
     const dataArray = JSON.parse(jsonData);
+    // console.log('this is data array');
+    // console.log(dataArray);
     dataArray.forEach(async (data) => {
-        const existingData = await general.findOne(data);
+        // console.log('this is data' + data.name);
+        const existingData = await general.findOne({name: data.name});
         if (!existingData) {
-            // Data does not exist, insert it
+            data.background = `${data.name.trim().replace(/\s+/g, '')}.png`;
             await general.insertOne(data);
             console.log('Inserted new data:', data);
         } else {
-            // console.log('Data already exists, skipping:', data);
+            if (existingData.description !== data.description) {
+                await general.updateOne({ name: data.name}, {$set: {description: data.description}})
+            }
         }
     });
 }
+// to delete all data in general database
+// general.deleteMany({})
 
+ 
+// background
+// "/plumbing.png"
 
 app.post('/search', async (req, res) => {
     const query = req.body.query;
     const regex = new RegExp(query, 'i'); // 'i' flag for case-insensitive matching
 
-    const result = await general.find({ name: { $regex: regex } }).project({ name: 1, description: 1 }).toArray();
+    const result = await general.find({ name: { $regex: regex } }).project({ _id: 1, name: 1, description: 1, background: 1 }).toArray();
 
     // Iterate through the result array and display the name of each object
     result.forEach(item => {
-        console.log("found it: " + item.name);
+        // console.log("found it: " + item.name);
     });
 
     res.json({ result });
@@ -470,7 +488,7 @@ app.get('/stations', async (req, res) => {
         const users = await userCollection.find({}).toArray();
         currentUserName = await userCollection.find({username: req.session.username}).project({username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1}).toArray();
 
-        console.log("haha" +  stations);
+        // console.log("haha" +  JSON.stringify(currentUserName));
         res.render("stations", { stations: stations, users: users, currentUserName: currentUserName}); 
     } catch (error) {
         console.error("Error fetching stations:", error);
@@ -504,7 +522,7 @@ app.get('/saved', async (req, res) => {
         const users = await userCollection.find({}).toArray();
         currentUserName = await userCollection.find({username: req.session.username }).project({username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1}).toArray();
 
-        console.log("haha" + currentUserName);
+        // console.log("haha" + currentUserName);
         res.render("saved", { stations: stations, users: users, currentUserName: currentUserName}); 
     } catch (error) {
         console.error("Error fetching stations:", error);
@@ -528,6 +546,15 @@ app.get('/station', async (req, res) => {
         res.render("station"); 
 });
 
+app.get('/bussinessOwnerForm', async (req, res) => {
+    console.log(req.session.email);
+    res.render("bussinessOwnerForm", { email: req.session.email});
+})
+
+app.get('/bussinessOwnerSignupConfirmation', async (req, res) => {
+    console.log(req.session.email);
+    res.render("bussinessOwnerSignupConfirmation", { email: req.session.email});
+})
 
 app.get('/confirmation', sessionValidation, (req, res) => {
     res.render("confirmation");
