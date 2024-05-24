@@ -460,6 +460,7 @@ if (isNewDataInserted) {
 
 app.post('/search', async (req, res) => {
     const query = req.body.query;
+    // console.log('this is my query ' + query);
     const regex = new RegExp(query, 'i'); // 'i' flag for case-insensitive matching
 
     const result = await general.find({ name: { $regex: regex } }).project({ _id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
