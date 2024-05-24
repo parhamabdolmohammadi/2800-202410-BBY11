@@ -30,6 +30,25 @@
   min-height: 50vh;
 }
 
+#services-header-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  height: 3em;
+
+  /* 10px margin to account for the 10px margin in the cards in the service container */
+  margin-top: 10px;
+
+  margin-left: calc(2em + 10px);
+  margin-right: calc(2em + 10px);
+}
+
+#services-header {
+  display: inline;
+  margin-bottom: 0;
+}
+
 .service-container {
   padding: 1em;
   border: solid;
@@ -78,7 +97,7 @@
   left: 0;
   border-radius: inherit;
   /* Keep the same border radius as the card */
-  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
+  /* box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2); */
   /* Adding a shadow effect */
   filter: brightness(50%) blur(0px);
 }
@@ -112,112 +131,6 @@
     margin-right: 2em;
   }
 }
-
-/* Section for AI */
-
-.div-body {
-  margin: 0px;
-  padding: 0px;
-  width: 100vw;
-  height: 50vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: #130f40;
-  font-family: "Lato" !important;
-}
-
-.search-box {
-  width: fit-content;
-  height: fit-content;
-  position: relative;
-}
-
-.input-search {
-  height: 50px;
-  width: 50px;
-  border-style: none;
-  padding: 10px;
-  font-size: 18px;
-  letter-spacing: 2px;
-  outline: none;
-  border-radius: 25px;
-  transition: all 0.5s ease-in-out;
-  background-color: #22a6b3;
-  padding-right: 40px;
-  color: #fff;
-}
-
-.input-search::placeholder {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 18px;
-  letter-spacing: 2px;
-  font-weight: 100;
-}
-
-.btn-search {
-  width: 50px;
-  height: 50px;
-  border-style: none;
-  font-size: 20px;
-  font-weight: bold;
-  outline: none;
-  cursor: pointer;
-  border-radius: 50%;
-  position: absolute;
-  right: 0px;
-  color: #ffffff;
-  background-color: transparent;
-  pointer-events: painted;
-}
-
-.search-box:hover .input-search,
-.input-search:focus {
-  width: 1000px;
-  border-radius: 0px;
-  background-color: transparent;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-  transition: all 500ms cubic-bezier(0, 0.11, 0.35, 2);
-}
-
-.input-search {
-  width: 120px;
-  /* Initial width */
-  transition: all 500ms cubic-bezier(0, 0.11, 0.35, 2);
-}
-
-.btn-submit {
-  display: none;
-  /* Initially hidden */
-  margin-top: 20px;
-  width: 120px;
-  height: 50px;
-  border-style: none;
-  font-size: 18px;
-  font-weight: bold;
-  outline: none;
-  cursor: pointer;
-  border-radius: 25px;
-  background-color: #22a6b3;
-  color: #ffffff;
-  transition: all 0.5s ease-in-out;
-}
-
-/* .btn-search:hover ~ .input-search{
-  width: 300px;
-  border-radius: 0px;
-  background-color: transparent;
-  border-bottom:1px solid rgba(255,255,255,.5);
-  transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
-}
-.input-search:hover{
-  width: 300px;
-  border-radius: 0px;
-  background-color: transparent;
-  border-bottom:1px solid rgba(255,255,255,.5);
-  transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
-} */
 
 .btn1 {
   border-radius: 40px;
@@ -318,11 +231,11 @@
 
 /* Section for AI */
 
-.div-body {
+#aiAssistanceSection {
   margin: 0px;
   padding: 0px;
   width: 100vw;
-  height: 50vh;
+  height: 10vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -337,6 +250,14 @@
   position: relative;
 }
 
+.search-box:hover {
+  width: 50%;
+  border-radius: 0px;
+  background-color: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  transition: all 500ms cubic-bezier(0, 0.11, 0.35, 2);
+}
+
 .input-search {
   height: 50px;
   width: 50px;
@@ -348,7 +269,7 @@
   border-radius: 25px;
   transition: all 0.5s ease-in-out;
   background-color: #22a6b3;
-  padding-right: 40px;
+  padding-right: 10px;
   color: #fff;
 }
 
@@ -377,7 +298,7 @@
 
 .search-box:hover .input-search,
 .input-search:focus {
-  width: 1000px;
+  width: 100%;
   border-radius: 0px;
   background-color: transparent;
   border-bottom: 1px solid rgba(255, 255, 255, 0.5);
@@ -385,7 +306,7 @@
 }
 
 .input-search {
-  width: 120px;
+  width: 100%;
   /* Initial width */
   transition: all 500ms cubic-bezier(0, 0.11, 0.35, 2);
 }
@@ -393,7 +314,7 @@
 .btn-submit {
   display: none;
   /* Initially hidden */
-  margin-top: 20px;
+  margin-top: 10px;
   width: 120px;
   height: 50px;
   border-style: none;
