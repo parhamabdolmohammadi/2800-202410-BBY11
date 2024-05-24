@@ -6,6 +6,8 @@
   var closest = 100;
   var closestID;
 
+  console.log("closetId " + closestID);
+
   getLocation();
 
   function getLocation() {
