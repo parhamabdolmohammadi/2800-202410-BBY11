@@ -358,94 +358,23 @@ q .card-subtitle {
   color: yellow;
 }
 
+.dance {
+  animation: dance 1s infinite;
+}
+
+
 @keyframes dance {
   0% {
-    transform: translateY(-5px);
+    transform: translateY(1em);
   }
-  25% {
-    transform: translateY(5px);
-  }
+
   50% {
-    transform: translateY(-5px);
+    transform: translateY(-1em);
   }
-  75% {
-    transform: translateY(5px);
-  }
+
   100% {
-    transform: translateY(-5px);
+    transform: translateY(1em);
   }
-}
-
-@keyframes oppositedance {
-  0% {
-    transform: translateY(5px);
-  }
-  25% {
-    transform: translateY(-5px);
-  }
-  50% {
-    transform: translateY(5px);
-  }
-  75% {
-    transform: translateY(-5px);
-  }
-  100% {
-    transform: translateY(5px);
-  }
-}
-
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  25% {
-    transform: rotate(90deg);
-  }
-  50% {
-    transform: rotate(180deg);
-  }
-  75% {
-    transform: rotate(270deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.dance span {
-  display: inline-block;
-  transition: transform 0 ease, color 0.5s ease;
-}
-
-.odd-span {
-  animation: dance 2s linear infinite;
-}
-
-.even-span {
-  animation: oppositedance 2s linear infinite;
-  color: red;
-}
-
-#main-search-form {
-  max-width: 100vw;
-}
-
-.card-background {
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
-}
-
-.robo {
-  height: 70px;
-  width: 70px;
-  display: inline-block;
-  border-radius: 50px;
-  background-color: black;
-}
-
-.robocircle {
-  animation: rotate 2s linear infinite;
 }
 
 .card-link {
