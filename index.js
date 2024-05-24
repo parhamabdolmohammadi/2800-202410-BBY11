@@ -70,6 +70,8 @@ app.set('view engine', 'ejs');
 
 app.use(express.urlencoded({ extended: false }));
 
+app.use(express.json());
+
 var mongoStore = MongoStore.create({
     mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
     crypto: {
@@ -322,19 +324,59 @@ app.get('/main', async (req, res) => {
     res.render("main", {services, username});
 });
 
-app.post('/main/ai-assistance', async (req, res) => { // Jason WILL REMOVE THIS ROUTE HANDLER ON TO AN XMLHttpRequest OBJECT SO WE DON'T HAVE TO REFRESH THE PAGE FOR EVERY AI REQUEST =============================================
-    
+app.post('/main/ai-assistance', async (req, res) => {
+    // Get message from user
+    const AIRequestMsg = req.body.aiAssistanceInput;
+
     // Get list of services from the database, store the names in an array
     var listOfServices = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1 }).toArray();
 
-    // Get message from user
-    var AIRequestMsg = req.body.aiAssistanceInput;
+    var filteredServices = [];
+
+    var aiResponseHTML;
+
+    var aiFoundServices = false;
+
+    console.log("AIRequestMsg: " + AIRequestMsg);
 
     // Make AI request, passing in the user text message and the list of services. Save the AI response text
     var AIResponse = await makeAiReqAndRes(AIRequestMsg, listOfServices);
+
+    console.log("AIResponse: " + AIResponse);
+
+    //--------------------
+
+    // If any applicable services were found in the list of services ('I'm sorry' is NOT contained in the response String)
+    if (!(AIResponse.includes("I'm sorry"))) {
     
-    // Display the AI generate response in a text field in the main page
-    res.send(AIResponse);
+    aiFoundServices = true;
+
+    var listOfAIRecommendedServices = [];
+
+    // Parse the AI-generated response - divide listOfAIRecommendedServices 
+    // into an array of Strings, using '/' as delimeter
+    listOfAIRecommendedServices = AIResponse.split('/');
+
+    // Remove first and last empty string elements (first and last = '')
+    listOfAIRecommendedServices.shift();
+    listOfAIRecommendedServices.pop();
+
+    // Filter the listOfServices array (only include the ones that have name values in the listOfAIRecommendedServices array)
+    filteredServices = listOfServices.filter(service => listOfAIRecommendedServices.includes(service.name));
+
+    aiResponseHTML = "Here are some of our services that I can recommend based on your request:";
+
+    } else {
+        // only send the generated apology message
+        if (AIResponse.includes('/')) {
+            AIResponse = AIResponse.replace(/\//g, '');
+        }
+        aiFoundServices = false;
+        aiResponseHTML = AIResponse;
+    }
+
+    // Send the filteredServices (array of json objects) back to the main page as a json object
+    res.json({aiResponseHTML, filteredServices, aiFoundServices});
 });
 
 app.get('/checkout', sessionValidation, (req, res) => {
@@ -362,7 +404,6 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
         console.log(e);
     }
 });
-app.use(express.json());
 
 const general = database.db('Services').collection('General')
 const fs = require('fs')

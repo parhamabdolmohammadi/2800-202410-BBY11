@@ -44,17 +44,14 @@
   </h2>
 </div>
 
-
-
 <!-- Section for AI -->
-<form action="/main/ai-assistance" method="post" style="display: inline;">
-<div class="div-body">
+<form role="search" style="display: inline;">
+<div class="div-body" id="aiAssistanceSection">
 <div class="search-box">
-  
     <button class="btn-search"><i class="fas fa-search"></i><img src="chatbot.png" style="width: 30px; height: 30px;"></button>
-    <input type="text" name="aiAssistanceInput" class="input-search" placeholder="Ask AI for Services">
+    <input type="search" name="aiAssistanceInput" id="aiAssistanceInput" class="input-search" placeholder="Ask AI for Services"/>
 </div>
-<button class="btn-submit">Submit</button>
+<button id="aiAssistanceSubmitBtn" class="btn-submit" type="submit">Submit</button>
 </div>
 </form>
 
@@ -149,13 +146,15 @@
   </script>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
+
+      // * Main page CSS stylesheets
       var link = document.createElement("link");
       link.rel = "stylesheet";
       link.href = "/main.css";
       document.head.appendChild(link);
-    });
 
-    document.addEventListener("DOMContentLoaded", function () {
+      // * Search bar functionality
+
       // Get references to the search input and icon
       const searchInput = document.getElementById("search-text");
       const searchIcon = document.getElementById("search-button");
@@ -183,21 +182,72 @@
               console.log(item.name); // Accessing the 'name' property of each item
               console.log(item.description); // Accessing the 'description' property of each item
             });
-
-            renderServices(data);
+            console.log(data.result);
+            renderServices(data.result);
           })
           .catch((error) => {
             console.error("Error sending search request:", error);
           });
       });
+
+      // * AI Assistance text input functionality
+
+      const aiAssistanceSubmitBtn = document.getElementById("aiAssistanceSubmitBtn");
+
+      aiAssistanceSubmitBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+
+        const aiAssistanceInput = document.getElementById("aiAssistanceInput");
+
+        aiAssistanceInputValue = aiAssistanceInput.value;
+
+        // Send post request to server (route /main/ai-assistance)
+        fetch("/main/ai-assistance", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ aiAssistanceInput: aiAssistanceInputValue }),
+        })
+        .then((AIResponse) => AIResponse.json())
+        .then((data) => {
+
+          // If an AI response message <p> element has already been created
+          aiResponseMessageElement = document.getElementById("aiResponseMessage");
+          if (aiResponseMessageElement != null) {
+            
+            // Remove the existing element
+            aiResponseMessageElement.remove();
+          }
+
+          // Text response to user
+          var aiResponseText = document.createElement("p");
+          aiResponseText.id = "aiResponseMessage";
+          aiResponseText.innerHTML = String(data.aiResponseHTML);
+          aiResponseText.style.color = "white";
+
+          document.getElementById("aiAssistanceSection").appendChild(aiResponseText);
+
+          if (data.aiFoundServices == true) {
+            // Show the services found
+            renderServices(data.filteredServices);
+          }
+        })
+
+        .catch((error) => {
+            console.error("Error sending search request:", error);
+        });
+      });
+
     });
-    function renderServices(services) {
+
+    function renderServices(filteredServices) {
       const servicesContainer = document.getElementById(
         "main-service-list-container"
       );
       servicesContainer.innerHTML = "";
 
-      services.result.forEach((service) => {
+      filteredServices.forEach((service) => {
         const name = document.createElement("div");
         name.innerHTML = "Service name: " + service.name;
         servicesContainer.appendChild(name);
@@ -207,10 +257,6 @@
         servicesContainer.appendChild(des);
       });
     }
-
-
-
-
 
   </script>
   <script src="/main.js"></script>

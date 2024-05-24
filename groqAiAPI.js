@@ -19,9 +19,11 @@ async function makeAiReqAndRes(enteredAIRequestMsg, listOfServices) {
     }
     
     AIRequestMsg += "Please choose all applicable services from the list, and only answer " +
-                    "in point form, with each point using a '/' character to seperate each point in the response (no spaces between '/' seperators). ";
-
-    console.log(AIRequestMsg);
+                    "in point form, with each point using a '/' character to seperate each point " +
+                    "in the response (do no add spaces between '/' characters, and also make sure '/' is on both the start and end " +
+                    " of your response message). " +
+                    "If no services from the list are applicable to the request, do not follow the above instructions, " +
+                    "and instead respond with a message (also include the words 'I'm sorry' in the message).";
 
     const chatCompletion = await getGroqChatCompletion(AIRequestMsg);
 
