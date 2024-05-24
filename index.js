@@ -37,6 +37,7 @@ const navLinks = [
     { name: "Login", link: "/login" },
     { name: "Admin", link: "/admin" },
     { name: "404", link: "/*" },
+    {name: "Bookmarks", link: "saved"},
     { name: "Setting", link: "/setting" }
 ]
 

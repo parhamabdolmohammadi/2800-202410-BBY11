@@ -44,9 +44,31 @@
   margin-right: calc(2em + 10px);
 }
 
-#services-header {
-  display: inline;
-  margin-bottom: 0;
+@media only screen and (max-width: 700px) {
+
+  #services-header {
+    display: inline;
+    font-size: 16pt;
+    margin-bottom: 0;
+  }
+}
+
+@media only screen and (min-width: 701px) and (max-width: 1000px) {
+
+  #services-header {
+    display: inline;
+    font-size: 24pt;
+    margin-bottom: 0;
+  }
+}
+
+@media only screen and (min-width: 1001px) {
+
+  #services-header {
+    display: inline;
+    font-size: 32pt;
+    margin-bottom: 0;
+  }
 }
 
 .service-container {
@@ -234,7 +256,7 @@ q .card-subtitle {
   margin: 0px;
   padding: 0px;
   width: 100vw;
-  height: 30vh;
+  height: 20vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -355,7 +377,8 @@ q .card-subtitle {
   font-family: "Alfa Slab One", serif;
   font-weight: 400;
   font-style: normal;
-  color: yellow;
+  /* color: yellow; */
+  color: #fcc358;
 }
 
 .dance {
@@ -446,13 +469,6 @@ q .card-subtitle {
 
 .link-arrow:hover::after {
   margin-left: 10px;
-}
-
-.app-name {
-  font-family: "Alfa Slab One", serif;
-  font-weight: 400;
-  font-style: normal;
-  color: yellow;
 }
 
 @keyframes dance1 {
