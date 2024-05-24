@@ -72,6 +72,8 @@ app.set('view engine', 'ejs');
 
 app.use(express.urlencoded({ extended: false }));
 
+app.use(express.json());
+
 var mongoStore = MongoStore.create({
     mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
     crypto: {
@@ -170,10 +172,8 @@ app.get('/setting', (req, res) => {
 
 app.get('/edit-profile', async (req,res) => {
     let id = await req.session._id;
-    console.log(id);
     let email = await req.session.email;
     let unencryptedEmail = CryptoJS.AES.decrypt(email, key, { iv: iv}).toString(CryptoJS.enc.Utf8);
-    console.log(unencryptedEmail);
     res.render("edit-profile", {name : req.session.username, email : unencryptedEmail, userId : id});
 });
 
@@ -215,8 +215,9 @@ app.post('/submitUser', async (req, res) => {
 
 
     var hashedPassword = await bcrypt.hash(password, saltRounds);
-    var encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString()
-    await userCollection.insertOne({ username: username, password: hashedPassword, email: encryptedEmail, user_type: "user" });
+    var encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString();
+    var _id = new ObjectId();
+    await userCollection.insertOne({ _id: _id, username: username, password: hashedPassword, email: encryptedEmail, user_type: "user" });
     console.log("Inserted user");
     // console.log(CryptoJS.AES.decrypt(encryptedEmail, key, { iv: iv}).toString(CryptoJS.enc.Utf8));
 
@@ -224,6 +225,7 @@ app.post('/submitUser', async (req, res) => {
     var html = "successfully created user";
     console.log(html);
 
+    req.session._id= _id;
     req.session.authenticated = true;
     req.session.username = username;
     req.session.cookie.maxAge = expireTime;
@@ -335,16 +337,76 @@ app.get('/main', async (req, res) => {
     // console.log('username is ' +  username);
     res.render("main", {services, username, stations});
     
-    // Make AI request, and save the AI response text
-    var AIResponse = await makeAiReqAndRes();
-    // console.log(AIResponse);
+    
+    
 });
 
+app.post('/main/ai-assistance', async (req, res) => {
+    // Get message from user
+    const AIRequestMsg = req.body.aiAssistanceInput;
+
+    // Get list of services from the database, store the names in an array
+    var listOfServices = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
+      console('jason' + listOfServices);
+    var filteredServices = [];
+
+    var aiResponseHTML;
+
+    var aiFoundServices = false;
+
+    console.log("AIRequestMsg: " + AIRequestMsg);
+
+    // Make AI request, passing in the user text message and the list of services. Save the AI response text
+    var AIResponse = await makeAiReqAndRes(AIRequestMsg, listOfServices);
+
+    console.log("AIResponse: " + AIResponse);
+
+    //--------------------
+
+    // If any applicable services were found in the list of services ('I'm sorry' is NOT contained in the response String)
+    if (!(AIResponse.includes("I'm sorry"))) {
+    
+    aiFoundServices = true;
+
+    var listOfAIRecommendedServices = [];
+
+    // Parse the AI-generated response - divide listOfAIRecommendedServices 
+    // into an array of Strings, using '/' as delimeter
+    listOfAIRecommendedServices = AIResponse.split('/');
+
+    // Remove first and last empty string elements (first and last = '')
+    listOfAIRecommendedServices.shift();
+    listOfAIRecommendedServices.pop();
+
+    // Filter the listOfServices array (only include the ones that have name values in the listOfAIRecommendedServices array)
+    filteredServices = listOfServices.filter(service => listOfAIRecommendedServices.includes(service.name));
+
+    aiResponseHTML = "Here are some of our services that I can recommend based on your request:";
+
+    } else {
+        // only send the generated apology message
+        // Remove '/' characters if they were included in the not found response
+        if (AIResponse.includes('/')) {
+            AIResponse = AIResponse.replace(/\//g, '');
+        }
+        aiFoundServices = false;
+        aiResponseHTML = AIResponse;
+    }
+
+    // Send the filteredServices (array of json objects) back to the main page as a json object
+    res.json({aiResponseHTML, filteredServices, aiFoundServices});
+});
 
 app.get('/checkout', sessionValidation, async (req, res) => {
+    let stationId = req.query.stationId;
     let userId = new ObjectId(req.session._id);
     let result = await userCollection.findOne({ _id: userId }, { projection: { remember: 1 } });
-    let remember = result.remember;
+    let remember =""
+    try{
+        remember = result.remember;
+    } catch (error) {
+        console.error("Cannot find remember", error.message);
+    }
 
     if(remember) {
         let paypalEmail = "";
@@ -382,6 +444,7 @@ app.get('/checkout', sessionValidation, async (req, res) => {
 });
 
 app.post('/submit-payment', sessionValidation, async (req, res) => {
+    stationId= req.body.stationID;
     try {
         let paymentType = req.body.paymentType;
         let userId = new ObjectId(req.session._id);
@@ -411,9 +474,19 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
     } catch (e) {
         console.log(e);
     }
-    res.render("confirmation");
+    try{
+        const station = await stationsCollection.findOne({_id: new ObjectId(stationId)});
+        current = station.robots_available;
+        console.log(current);
+        await stationsCollection.updateOne({_id: new ObjectId(stationId)}, {$set: {robots_available: current - 1}});
+        
+    }catch(e){
+        console.log(e);
+    }
+
+
+    res.redirect('/confirmation');
 });
-app.use(express.json());
 
 const general = database.db('Services').collection('General')
 const fs = require('fs')
@@ -446,9 +519,10 @@ if (isNewDataInserted) {
 
 app.post('/search', async (req, res) => {
     const query = req.body.query;
+    // console.log('this is my query ' + query);
     const regex = new RegExp(query, 'i'); // 'i' flag for case-insensitive matching
 
-    const result = await general.find({ name: { $regex: regex } }).project({ _id: 1, name: 1, description: 1, background: 1 }).toArray();
+    const result = await general.find({ name: { $regex: regex } }).project({ _id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
 
     // Iterate through the result array and display the name of each object
     result.forEach(item => {

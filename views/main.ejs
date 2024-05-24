@@ -57,7 +57,7 @@
     </button>
   </form>
 
-  <h1 class="app-name dance">
+  <h1 class="app-name dance1">
     <span id="span1" onclick="dow(1)">R</span>
     <span id="span2" onclick="re(2)">O</span>
     <span id="span3" onclick="mi(3)">B</span>
@@ -79,43 +79,25 @@
 </div>
 <script src="animation.js"></script>
 <!-- Section for AI -->
-<div class="div-body">
-  <div class="search-box">
-    <button class="btn-search">
-      <i class="fas fa-search"></i
-      ><img src="chatbot.png" style="width: 30px; height: 30px" />
-    </button>
-    <input type="text" class="input-search" placeholder="Ask AI" />
-  </div>
-  <button class="btn-submit">Submit</button>
+<form role="search" style="display: inline;">
+<div id="aiAssistanceSection" >
+<div class="search-box">
+    <button class="btn-search"><i class="fas fa-search"></i><img src="chatbot.png" style="width: 30px; height: 30px;"></button>
+    <input type="search" name="aiAssistanceInput" id="aiAssistanceInput" class="input-search" placeholder="Ask AI for Services"/>
 </div>
+<button id="aiAssistanceSubmitBtn" class="btn-submit" type="submit">Submit</button>
+</div>
+</form>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const searchBox = document.querySelector(".search-box");
-    const submitButton = document.querySelector(".btn-submit");
 
-    searchBox.addEventListener("mouseover", function () {
-      submitButton.style.display = "block";
-    });
-
-    document.addEventListener("click", function (event) {
-      if (
-        !searchBox.contains(event.target) &&
-        !submitButton.contains(event.target)
-      ) {
-        submitButton.style.display = "none";
-      }
-    });
-  });
-</script>
 <!-- Services list of cards -->
 
 <div id="main-service-list-container">
-  <h3 style="position: relative; left: 10px; top: 10px" id="services-header">
-    Find services:
-  </h3>
-  <hr />
+  <div id="services-header-container">
+    <h3 id="services-header">
+      Find a Service
+    </h3>
+  </div>
   <div id="main-service-list-container-2" class="row mb-3 text-center service">
     <template id="ServiceCardTemplate">
       <div class="card cardi">
@@ -127,7 +109,7 @@
             <p class="card-text service-description"></p>
             <p class="card-text service-price"></p>
             <form  action="/displayStation" method="POST">
-            <button class="button-arrow">Order Service</button>
+            <button class="button-arrow" >Order Service</button>
             <input style="display: none;" class="stationInput" type="text" name="data"  >
             <input style="display: none;" class="DistanceInput" type="text" name="data2" >
             <form action=""></form>
@@ -182,48 +164,148 @@
     link.href = "/main.css";
     document.head.appendChild(link);
   });
-
-  // console.log('services:', services);
-
   document.addEventListener("DOMContentLoaded", function () {
-    // Get references to the search input and icon
-    const searchInput = document.getElementById("search-text");
-    const searchIcon = document.getElementById("search-button");
+      // * Search bar functionality
+
+      // Get references to the search input and icon
+      const searchInput = document.getElementById("search-text");
+      const searchIcon = document.getElementById("search-button");
 
     // Add event listener to the search icon for click events
     searchIcon.addEventListener("click", function (event) {
       // console.log("clicked");
       event.preventDefault(); // Prevent default action (e.g., form submission)
 
-      // Get the search query from the input field
+      if (searchInput.value === 'dance') {
+        console.log('dance is typed');
+        let i = 0.2;
+        const cards = document.querySelectorAll(".card");
+        cards.forEach((card) => {
+          console.log(card);
+          card.classList.add('dance')
+          card.style.animationDelay = i + 's'
+          i += 0.2
+    });
+        return
+      }
+
+      if (searchInput.value === 'stop') {
+        console.log('stop is typed');
+        const cards = document.querySelectorAll(".card");
+        cards.forEach(card => {
+          card.classList.remove('dance')
+        })
+        return
+      }
       const query = searchInput.value;
       // console.log(query);
 
-      // Send a POST request to the server
-      fetch("/search", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ query: query }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          data.result.forEach((item) => {
-            // console.log(item.name);
-            // console.log(item.description);
-            // console.log(item.background);
-          });
-
-          renderServices(data);
+        // Send a POST request to the server
+        fetch("/search", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ query: query }),
         })
+          .then((response) => response.json())
+          .then((data) => {
+            data.result.forEach((item) => {
+              //console.log(item.name); // Accessing the 'name' property of each item
+              //console.log(item.description); // Accessing the 'description' property of each item
+            });
+            //console.log(data.result);
+            renderServices(data.result);
+          })
+          .catch((error) => {
+            console.error("Error sending search request:", error);
+          });
+      });
+
+      // * AI Assistance text input functionality
+
+      const searchBox = document.querySelector(".search-box");
+      const submitButton = document.querySelector(".btn-submit");
+
+      searchBox.addEventListener("click", function () {
+        submitButton.style.display = "block";
+      });
+
+      document.addEventListener("click", function (event) {
+        if (
+          !searchBox.contains(event.target) &&
+          !submitButton.contains(event.target)
+        ) {
+          submitButton.style.display = "none";
+        }
+      });
+
+      // When submit button is pressed in AI input section
+      const aiAssistanceSubmitBtn = document.getElementById("aiAssistanceSubmitBtn");
+
+      aiAssistanceSubmitBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+
+        const aiAssistanceInput = document.getElementById("aiAssistanceInput");
+
+        aiAssistanceInputValue = aiAssistanceInput.value;
+
+        // Send post request to server (route /main/ai-assistance)
+        fetch("/main/ai-assistance", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ aiAssistanceInput: aiAssistanceInputValue }),
+        })
+        .then((AIResponse) => AIResponse.json())
+        .then((data) => {
+
+          // If an AI response message <p> element has already been created
+          aiResponseMessageElement = document.getElementById("aiResponseMessage");
+          if (aiResponseMessageElement != null) {
+            
+            // Remove the existing element
+            aiResponseMessageElement.remove();
+          }
+
+          // Text response to user
+          var aiResponseText = document.createElement("p");
+          aiResponseText.id = "aiResponseMessage";
+          aiResponseText.innerHTML = String(data.aiResponseHTML);
+          aiResponseText.style.color = "white";
+
+          document.getElementById("aiAssistanceSection").appendChild(aiResponseText);
+
+          if (data.aiFoundServices == true) {
+            // Show the services found
+            renderServices(data.filteredServices);
+          }
+        })
+
         .catch((error) => {
-          console.error("Error sending search request:", error);
+            console.error("Error sending search request:", error);
         });
+      });
+
     });
-  });
-  function renderServices(filteredServices) {
-    const servicesContainer = document.getElementById(
+
+    function renderServices(filteredServices) {
+      // const servicesContainer = document.getElementById(
+      //   "main-service-list-container"
+      // );
+      // servicesContainer.innerHTML = "";
+
+      // filteredServices.forEach((service) => {
+      //   const name = document.createElement("div");
+      //   name.innerHTML = "Service name: " + service.name;
+      //   servicesContainer.appendChild(name);
+
+      //   const des = document.createElement("div");
+      //   des.innerHTML = service.description;
+      //   servicesContainer.appendChild(des);
+
+      const servicesContainer = document.getElementById(
       "main-service-list-container-2"
     );
     // console.log(servicesContainer);
@@ -233,25 +315,36 @@
       card.remove();
       // console.log('removed');
     });
-    if (filteredServices.result.length == 0) {
+    if (filteredServices.length == 0) {
       const notFound = document.createElement("div");
-      notFound.textContent = "not found";
+      const notFoundText = document.createElement('p')
+      const notFoundImage = document.createElement('img')
+      notFound.classList.add('notfound')
+      notFound.classList.add('card')
+
+      notFoundText.textContent = "No services found";
+      notFoundImage.src = 'sad.png'
+
+      notFound.appendChild(notFoundText)
+      notFound.appendChild(notFoundImage)
       document
         .getElementById("main-service-list-container-2")
         .appendChild(notFound);
-    }
-    filteredServices.result.forEach((service) => {
+    } else {
+      filteredServices.forEach((service) => {
+      let price = service.price;
       let name = service.name;
       let description = service.description;
       let background = service.background;
       let serviceID = service._id;
-      let price = service.price;
+
 
       newcard = document
         .getElementById("ServiceCardTemplate")
         .content.cloneNode(true);
 
       newcard.querySelector(".service-name").innerHTML = name;
+      newcard.querySelector(".service-price").innerHTML = "$"+price;
       newcard.querySelector(".service-description").innerHTML = description;
       newcard.querySelector(
         ".card-background"
@@ -278,7 +371,9 @@
         document
         .getElementById("main-service-list-container-2")
         .appendChild(newcard);
-    });
+      });
+    }
+    
     function setID(id, name) {
       localStorage.setItem("ServiceID", id);
       localStorage.setItem("ServiceName", name);

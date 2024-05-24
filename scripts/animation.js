@@ -118,8 +118,8 @@ function dow(n) {
   // Define a function to handle the animation
   function animateRobo() {
     const roboElement = document.querySelector(".robo");
-    const evenSpans = document.querySelectorAll(".dance span:nth-child(2n)");
-    const oddSpans = document.querySelectorAll(".dance span:nth-child(2n + 1)");
+    const evenSpans = document.querySelectorAll(".dance1 span:nth-child(2n)");
+    const oddSpans = document.querySelectorAll(".dance1 span:nth-child(2n + 1)");
 
     var audio = new Audio("Welcome_to_Robo_Rent.mp4");
     audio.play();

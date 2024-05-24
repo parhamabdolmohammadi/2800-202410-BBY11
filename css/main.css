@@ -30,6 +30,25 @@
   min-height: 50vh;
 }
 
+#services-header-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  height: 3em;
+
+  /* 10px margin to account for the 10px margin in the cards in the service container */
+  margin-top: 10px;
+
+  margin-left: calc(2em + 10px);
+  margin-right: calc(2em + 10px);
+}
+
+#services-header {
+  display: inline;
+  margin-bottom: 0;
+}
+
 .service-container {
   padding: 1em;
   border: solid;
@@ -76,8 +95,10 @@
   position: absolute;
   top: 0;
   left: 0;
-  border-radius: inherit; /* Keep the same border radius as the card */
-  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2); /* Adding a shadow effect */
+  border-radius: inherit;
+  /* Keep the same border radius as the card */
+  /* box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2); */
+  /* Adding a shadow effect */
   filter: brightness(50%) blur(0px);
 }
 
@@ -111,115 +132,12 @@
   }
 }
 
-/* Section for AI */
-
-.div-body {
-  margin: 0px;
-  padding: 0px;
-  width: 100vw;
-  height: 50vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: #130f40;
-  font-family: "Lato" !important;
-}
-
-.search-box {
-  width: fit-content;
-  height: fit-content;
-  position: relative;
-}
-
-.input-search {
-  height: 50px;
-  width: 50px;
-  border-style: none;
-  padding: 10px;
-  font-size: 18px;
-  letter-spacing: 2px;
-  outline: none;
-  border-radius: 25px;
-  transition: all 0.5s ease-in-out;
-  background-color: #22a6b3;
-  padding-right: 40px;
-  color: #fff;
-}
-
-.input-search::placeholder {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 18px;
-  letter-spacing: 2px;
-  font-weight: 100;
-}
-
-.btn-search {
-  width: 50px;
-  height: 50px;
-  border-style: none;
-  font-size: 20px;
-  font-weight: bold;
-  outline: none;
-  cursor: pointer;
-  border-radius: 50%;
-  position: absolute;
-  right: 0px;
-  color: #ffffff;
-  background-color: transparent;
-  pointer-events: painted;
-}
-
-.search-box:hover .input-search,
-.input-search:focus {
-  width: 1000px;
-  border-radius: 0px;
-  background-color: transparent;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-  transition: all 500ms cubic-bezier(0, 0.11, 0.35, 2);
-}
-
-.input-search {
-  width: 120px; /* Initial width */
-  transition: all 500ms cubic-bezier(0, 0.11, 0.35, 2);
-}
-
-.btn-submit {
-  display: none; /* Initially hidden */
-  margin-top: 20px;
-  width: 120px;
-  height: 50px;
-  border-style: none;
-  font-size: 18px;
-  font-weight: bold;
-  outline: none;
-  cursor: pointer;
-  border-radius: 25px;
-  background-color: #22a6b3;
-  color: #ffffff;
-  transition: all 0.5s ease-in-out;
-}
-
-/* .btn-search:hover ~ .input-search{
-  width: 300px;
-  border-radius: 0px;
-  background-color: transparent;
-  border-bottom:1px solid rgba(255,255,255,.5);
-  transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
-}
-.input-search:hover{
-  width: 300px;
-  border-radius: 0px;
-  background-color: transparent;
-  border-bottom:1px solid rgba(255,255,255,.5);
-  transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
-} */
-
 .btn1 {
   border-radius: 40px;
   transform: scale(0.8);
   border: 0;
-  cursor: pointer; /*when we put our cursor on it it'd turn to a pointer*/
+  cursor: pointer;
+  /*when we put our cursor on it it'd turn to a pointer*/
   font-size: 1.8rem;
   font-weight: 600;
   margin: 1rem 0;
@@ -245,6 +163,7 @@ q .card-subtitle {
   text-decoration: none;
   color: white;
 }
+
 #main-search-form {
   max-width: 100vw;
 }
@@ -266,7 +185,8 @@ q .card-subtitle {
 }
 
 .callout .btn1 {
-  justify-self: center; /*that'll fix it based on position of it inside it's container*/
+  justify-self: center;
+  /*that'll fix it based on position of it inside it's container*/
   align-self: center;
 }
 
@@ -276,7 +196,8 @@ q .card-subtitle {
 
 @media screen and (min-width: 768px) {
   .callout .grid--1x2 {
-    grid-template-columns: 1fr auto; /* that will make the button wide enough to fit its column and all the extra space would be dedicated to the other column with on fraction of space*/
+    grid-template-columns: 1fr auto;
+    /* that will make the button wide enough to fit its column and all the extra space would be dedicated to the other column with on fraction of space*/
   }
 
   .callout__content {
@@ -307,14 +228,48 @@ q .card-subtitle {
   }
 }
 
-.button-arrow {
-  border: 0;
-  background: none;
-  text-decoration: none;
-  color: #80ced7;
-  text-transform: uppercase;
-  font-size: 15px;
-  font-weight: bold;
+/* Section for AI */
+
+#aiAssistanceSection {
+  margin: 0px;
+  padding: 0px;
+  width: 100vw;
+  height: 10vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #130f40;
+  font-family: "Lato" !important;
+}
+
+.search-box {
+  width: fit-content;
+  height: fit-content;
+  position: relative;
+}
+
+.search-box:hover {
+  width: 50%;
+  border-radius: 0px;
+  background-color: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  transition: all 500ms cubic-bezier(0, 0.11, 0.35, 2);
+}
+
+.input-search {
+  height: 50px;
+  width: 50px;
+  border-style: none;
+  padding: 10px;
+  font-size: 18px;
+  letter-spacing: 2px;
+  outline: none;
+  border-radius: 25px;
+  transition: all 0.5s ease-in-out;
+  background-color: #22a6b3;
+  padding-right: 10px;
+  color: #fff;
 }
 
 .button-arrow::after {
@@ -327,6 +282,75 @@ q .card-subtitle {
   margin-left: 10px;
 }
 
+.input-search::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 18px;
+  letter-spacing: 2px;
+  font-weight: 100;
+}
+
+.btn-search {
+  width: 50px;
+  height: 50px;
+  border-style: none;
+  font-size: 20px;
+  font-weight: bold;
+  outline: none;
+  cursor: pointer;
+  border-radius: 50%;
+  position: absolute;
+  right: 0px;
+  color: #ffffff;
+  background-color: transparent;
+  pointer-events: painted;
+}
+
+.search-box:hover .input-search,
+.input-search:focus {
+  width: 100%;
+  border-radius: 0px;
+  background-color: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  transition: all 500ms cubic-bezier(0, 0.11, 0.35, 2);
+}
+
+.input-search {
+  width: 100%;
+  /* Initial width */
+  transition: all 500ms cubic-bezier(0, 0.11, 0.35, 2);
+}
+
+.btn-submit {
+  display: none;
+  /* Initially hidden */
+  margin-top: 10px;
+  width: 120px;
+  height: 50px;
+  border-style: none;
+  font-size: 18px;
+  font-weight: bold;
+  outline: none;
+  cursor: pointer;
+  border-radius: 25px;
+  background-color: #22a6b3;
+  color: #ffffff;
+  transition: all 0.5s ease-in-out;
+}
+
+/* .btn-search:hover ~ .input-search{
+  width: 300px;
+  border-radius: 0px;
+  background-color: transparent;
+  border-bottom:1px solid rgba(255,255,255,.5);
+  transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
+}
+.input-search:hover{
+  width: 300px;
+  border-radius: 0px;
+  background-color: transparent;
+  border-bottom:1px solid rgba(255,255,255,.5);
+  transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
+} */
 .app-name {
   font-family: "Alfa Slab One", serif;
   font-weight: 400;
@@ -400,6 +424,177 @@ q .card-subtitle {
 .even-span {
   animation: oppositedance 2s linear infinite;
   color: red;
+}
+
+#main-search-form {
+  max-width: 100vw;
+}
+
+.card-background {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.robo {
+  height: 70px;
+  width: 70px;
+  display: inline-block;
+  border-radius: 50px;
+  background-color: black;
+}
+
+.robocircle {
+  animation: rotate 2s linear infinite;
+}
+
+.card-link {
+  display: inline-block;
+  padding: 0.3em;
+  margin: 5px;
+  /* background-color: #007bff; */
+  color: white;
+  text-align: center;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  user-select: none;
+  /* Prevent text selection */
+  text-decoration: none;
+  border: 1px solid white;
+}
+
+.card-link:hover {
+  background-color: black;
+  transition: all 1s;
+}
+
+.button-location {
+  border: 1px solid white;
+}
+
+.button-location:hover {
+  color: black;
+  background-color: black;
+}
+
+.notfound {
+  /* border: 1px solid black; */
+  /* grid-column-start:3; */
+  grid-column: 2 / span 2;
+  grid-row: span 2;
+}
+
+.notfound img {
+  max-width: 100%;
+}
+
+.notfound p {
+  font-weight: bold;
+  font-size: 2em;
+}
+
+.card:hover {
+  box-shadow: #003249;
+}
+
+.button-arrow {
+  border: 0;
+  background: none;
+
+  text-decoration: none;
+  color: #80ced7;
+  text-transform: uppercase;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.link-arrow::after {
+  content: "-->";
+  margin-left: 5px;
+  transition: margin 0.15s;
+}
+
+.link-arrow:hover::after {
+  margin-left: 10px;
+}
+
+.app-name {
+  font-family: "Alfa Slab One", serif;
+  font-weight: 400;
+  font-style: normal;
+  color: yellow;
+}
+
+@keyframes dance1 {
+  0% {
+    transform: translateY(-5px);
+  }
+  25% {
+    transform: translateY(5px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+  75% {
+    transform: translateY(5px);
+  }
+  100% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes oppositedance {
+  0% {
+    transform: translateY(5px);
+  }
+  25% {
+    transform: translateY(-5px);
+  }
+  50% {
+    transform: translateY(5px);
+  }
+  75% {
+    transform: translateY(-5px);
+  }
+  100% {
+    transform: translateY(5px);
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(90deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  75% {
+    transform: rotate(270deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.dance1 span {
+  display: inline-block;
+  transition: transform 0 ease, color 0.5s ease;
+}
+
+.dance1:hover span:nth-child(2n) {
+  /* Change the color of even spans to red on hover */
+}
+
+.odd-span {
+  animation: dance1 2s linear infinite;
+}
+
+.even-span {
+  animation: oppositedance 2s linear infinite;
 }
 
 .robo {
