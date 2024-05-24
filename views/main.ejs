@@ -68,12 +68,18 @@
       <div class="card cardi">
         <div class="card-bg cardi2 card-background"></div>
         <div class="card-body cardi3">
-          <div>
-            <!-- <h5 class="card-title">Card title</h5> -->
-            <h6 class="card-subtitle mb-2 service-name"></h6>
-            <p class="card-text service-description"></p>
-            <p class="card-text service-price"></p>
-            <a href="#" class="card-link">Details</a>
+          <div class="eachCard">
+            <div class="front">
+              <h6 class="card-subtitle mb-2 service-name"></h6>
+              <p class="card-text service-price"></p>
+              <button class="card-link">Details</button>
+            </div>
+           <div class="back">
+             <p class="card-text service-description"></p>
+           </div>
+            
+            <!-- <a href="#" class="card-link">Details</a> -->
+            
             <!-- <a href="#" class="card-link">Another link</a> -->
           </div>
           <div>
@@ -125,6 +131,7 @@
   </script>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
+      
 
       // * Main page CSS stylesheets
       var link = document.createElement("link");
@@ -133,7 +140,6 @@
       document.head.appendChild(link);
 
       // * Search bar functionality
-
       // Get references to the search input and icon
       const searchInput = document.getElementById("search-text");
       const searchIcon = document.getElementById("search-button");

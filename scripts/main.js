@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     let cardTemplate = document.getElementById("ServiceCardTemplate");
-    
+    let i = 1;
 
 services.forEach(service => {
  
@@ -15,7 +15,7 @@ services.forEach(service => {
 
    let newcard = cardTemplate.content.cloneNode(true);
 
-   
+   newcard.querySelector('.eachCard').classList.add(`card${i}`) // identify each card 
    newcard.querySelector(".service-name").innerHTML = name;
    newcard.querySelector(".service-description").innerHTML = description; 
    newcard.querySelector(".service-price").innerHTML = "$"+price; 
@@ -37,6 +37,7 @@ services.forEach(service => {
   
    document.getElementById("main-service-list-container-2").appendChild(newcard);
 
+   i++;
 });
 
 function setID(id, name, price) {
@@ -45,4 +46,27 @@ function setID(id, name, price) {
     localStorage.setItem('ServicePrice', price);
     console.log(price);
 }
+
+// Define card animation here 
+
+document.querySelectorAll('.card-link').forEach((button, index) => {
+    button.classList.add(`detail-btn${index + 1}`)
+    
+    button.addEventListener('click', (e) => {
+        console.log(index);
+        document.querySelector(`.card${index + 1}`).classList.add('flipped')
+        e.stopPropagation()
+    })
+    
+})
+
+document.querySelectorAll('.cardi').forEach((card) => {
+    card.addEventListener('click', (e) => {
+        if (card.classList.contains('flipped')) {
+            card.classList.remove('flipped');
+        }
+
+        e.stopPropagation()
+    })
+})
 });
