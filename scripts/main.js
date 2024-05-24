@@ -27,11 +27,22 @@ services.forEach(service => {
    
 
    newcard.querySelector(".button-location").id = "button-location-" + serviceID;                                    
+   newcard.querySelector(".button-arrow").id = "button-arrow-" + serviceID;                                    
    
    
    newcard.querySelector(".button-location").onclick = () => setID(serviceID, name, price);
-   
+   newcard.querySelector(".button-arrow").onclick= () =>  setID(serviceID, name, price)
+
+   let stationInput = newcard.querySelector(".stationInput");
+   stationInput.id = "stationInput-" + serviceID;
+   stationInput.value = localStorage.getItem('ClosestStationID');
+
+   // Set ID and value for DistanceInput
+   let distanceInput = newcard.querySelector(".DistanceInput");
+   distanceInput.id = "DistanceInput-" + serviceID;
+   distanceInput.value = localStorage.getItem('ClosestStationDistance');
  
+   
    
 
   
@@ -46,3 +57,4 @@ function setID(id, name, price) {
     console.log(price);
 }
 });
+

@@ -307,7 +307,9 @@ q .card-subtitle {
   }
 }
 
-.link-arrow {
+.button-arrow {
+  border: 0;
+  background: none;
   text-decoration: none;
   color: #80ced7;
   text-transform: uppercase;
@@ -315,13 +317,13 @@ q .card-subtitle {
   font-weight: bold;
 }
 
-.link-arrow::after {
+.button-arrow::after {
   content: "-->";
   margin-left: 5px;
   transition: margin 0.15s;
 }
 
-.link-arrow:hover::after {
+.button-arrow:hover::after {
   margin-left: 10px;
 }
 
@@ -389,10 +391,6 @@ q .card-subtitle {
 .dance span {
   display: inline-block;
   transition: transform 0 ease, color 0.5s ease;
-}
-
-.dance:hover span:nth-child(2n) {
-  /* Change the color of even spans to red on hover */
 }
 
 .odd-span {

@@ -290,7 +290,7 @@ app.post('/loggingin', async (req, res) => {
         req.session.email = result[0].email;
         req.session.username = result[0].username;
         req.session.user_type = result[0].user_type;
-        console.log("hahahha" + req.session.user_type);
+      
         req.session.cookie.maxAge = expireTime;
         req.session.email = result[0].email;
 
@@ -325,17 +325,19 @@ app.get('/main', async (req, res) => {
     }
     // console.log('finding...');
     const services = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
+    const stations = await stationsCollection.find({}).toArray(); 
+    currentUserName = await userCollection.find({username: req.session.username}).project({username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1}).toArray();
     // console.log('this is ' + services);
     // services.forEach(service => {
     //     console.log(service.name);
     // })
     var username = req.session.username;
     // console.log('username is ' +  username);
-    res.render("main", {services, username});
+    res.render("main", {services, username, stations});
     
     // Make AI request, and save the AI response text
     var AIResponse = await makeAiReqAndRes();
-    console.log(AIResponse);
+    // console.log(AIResponse);
 });
 
 
@@ -534,7 +536,6 @@ app.get('/stations', async (req, res) => {
         const users = await userCollection.find({}).toArray();
         currentUserName = await userCollection.find({username: req.session.username}).project({username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1}).toArray();
 
-        // console.log("haha" +  JSON.stringify(currentUserName));
         res.render("stations", { stations: stations, users: users, currentUserName: currentUserName}); 
     } catch (error) {
         console.error("Error fetching stations:", error);
@@ -580,16 +581,18 @@ app.get('/saved', async (req, res) => {
 app.post('/displayStation', async (req, res) => {
     const cardId = req.body.data;
     const distance = req.body.data2;
-    console.log(cardId);
+ 
     
     const objectId = new ObjectId(cardId);
-    console.log(distance);
+  
     const currentStation = await stationsCollection.findOne({_id: objectId});
     res.render('station', {station1: currentStation , distance: distance });
 });
 
 
 app.get('/station', async (req, res) => {
+   
+    
         res.render("station"); 
 });
 

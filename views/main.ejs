@@ -77,156 +77,7 @@
     &nbsp;Welcome <%= username %>!
   </h2>
 </div>
-<script>
-  function dow(n) {
-    document.getElementById(`span${n}`).style.color = "grey";
-
-    let audio = new Audio("do.mp4");
-    audio.currentTime = 0.5; // Start from the second second
-    audio.play();
-
-    setTimeout(() => {
-      audio.pause();
-      audio.currentTime = 0;
-    }, 1500); // Stop the audio after 1 second
-
-    setTimeout(() => {
-      document.getElementById(`span${n}`).style.color = "";
-    }, 2000);
-  }
-
-  function re(n) {
-    document.getElementById(`span${n}`).style.color = "grey";
-
-    let audio = new Audio("re.mp4");
-    audio.currentTime = 0.5; // Start from the second second
-    audio.play();
-
-    setTimeout(() => {
-      audio.pause();
-      audio.currentTime = 0;
-    }, 1500); // Stop the audio after 1 second
-
-    setTimeout(() => {
-      document.getElementById(`span${n}`).style.color = "";
-    }, 2000);
-  }
-
-  function mi(n) {
-    document.getElementById(`span${n}`).style.color = "grey";
-
-    let audio = new Audio("mi.mp4");
-    audio.currentTime = 0.5; // Start from the second second
-    audio.play();
-
-    setTimeout(() => {
-      audio.pause();
-      audio.currentTime = 0;
-    }, 1500); // Stop the audio after 1 second
-
-    setTimeout(() => {
-      document.getElementById(`span${n}`).style.color = "";
-    }, 2000);
-  }
-  function fa(n) {
-    document.getElementById(`span${n}`).style.color = "grey";
-
-    let audio = new Audio("fa1.mp4");
-    audio.currentTime = 0.5; // Start from the second second
-    audio.play();
-
-    setTimeout(() => {
-      audio.pause();
-      audio.currentTime = 0;
-    }, 1500); // Stop the audio after 1 second
-
-    setTimeout(() => {
-      document.getElementById(`span${n}`).style.color = "";
-    }, 2000);
-  }
-  function sol() {
-    document.getElementById("span6").style.color = "grey";
-
-    let audio = new Audio("sol.mp4");
-    audio.currentTime = 0.5; // Start from the second second
-    audio.play();
-
-    setTimeout(() => {
-      audio.pause();
-      audio.currentTime = 0;
-    }, 1500); // Stop the audio after 1 second
-
-    setTimeout(() => {
-      document.getElementById("span6").style.color = "";
-    }, 2000);
-  }
-
-  function la() {
-    document.getElementById("span7").style.color = "grey";
-
-    let audio = new Audio("la.mp4");
-    audio.currentTime = 0.5; // Start from the second second
-    audio.play();
-
-    setTimeout(() => {
-      audio.pause();
-      audio.currentTime = 0;
-    }, 1500); // Stop the audio after 1 second
-
-    setTimeout(() => {
-      document.getElementById("span7").style.color = "";
-    }, 2000);
-  }
-
-  function si() {
-    document.getElementById("span8").style.color = "grey";
-
-    let audio = new Audio("si.mp4");
-    audio.currentTime = 0.5; // Start from the second second
-    audio.play();
-
-    setTimeout(() => {
-      audio.pause();
-      audio.currentTime = 0;
-    }, 1500); // Stop the audio after 1 second
-
-    setTimeout(() => {
-      document.getElementById("span8").style.color = "";
-    }, 2000);
-  }
-
-  // Define a function to handle the animation
-  function animateRobo() {
-    const roboElement = document.querySelector(".robo");
-    const evenSpans = document.querySelectorAll(".dance span:nth-child(2n)");
-    const oddSpans = document.querySelectorAll(".dance span:nth-child(2n + 1)");
-
-    var audio = new Audio("Welcome_to_Robo_Rent.mp4");
-    audio.play();
-    // Loop through each even span and add the class
-    evenSpans.forEach(function (span) {
-      span.classList.add("even-span");
-    });
-
-    oddSpans.forEach(function (span) {
-      span.classList.add("odd-span");
-    });
-
-    // Add the animation class
-    roboElement.classList.add("robocircle");
-
-    // After the animation completes, remove the animation class
-    setTimeout(() => {
-      roboElement.classList.remove("robocircle");
-      evenSpans.forEach(function (span) {
-        span.classList.remove("even-span");
-      });
-      oddSpans.forEach(function (span) {
-        span.classList.remove("odd-span");
-      });
-    }, 2000); // Adjust the timing (in milliseconds) to match the animation duration
-  }
-</script>
+<script src="animation.js"></script>
 <!-- Section for AI -->
 <div class="div-body">
   <div class="search-box">
@@ -275,8 +126,11 @@
             <h6 class="card-subtitle mb-2 service-name"></h6>
             <p class="card-text service-description"></p>
             <p class="card-text service-price"></p>
-
-            <a href="/station" class="link-arrow">Order Service</a>
+            <form  action="/displayStation" method="POST">
+            <button class="button-arrow">Order Service</button>
+            <input style="display: none;" class="stationInput" type="text" name="data"  >
+            <input style="display: none;" class="DistanceInput" type="text" name="data2" >
+            <form action=""></form>
           </div>
           <div>
             <form action="/stations" method="GET">
@@ -391,6 +245,7 @@
       let description = service.description;
       let background = service.background;
       let serviceID = service._id;
+      let price = service.price;
 
       newcard = document
         .getElementById("ServiceCardTemplate")
@@ -404,10 +259,23 @@
 
       newcard.querySelector(".button-location").id =
         "button-location-" + serviceID;
+        newcard.querySelector(".button-arrow").id = "button-arrow-" + serviceID;
+        
       newcard.querySelector(".button-location").onclick = () =>
         setID(serviceID, name);
+        newcard.querySelector(".button-arrow").onclick= () =>  setID(serviceID, name, price);
+      
 
-      document
+        let stationInput = newcard.querySelector(".stationInput");
+   stationInput.id = "stationInput-" + serviceID;
+   stationInput.value = localStorage.getItem('ClosestStationID');
+
+   
+   let distanceInput = newcard.querySelector(".DistanceInput");
+   distanceInput.id = "DistanceInput-" + serviceID;
+   distanceInput.value = localStorage.getItem('ClosestStationDistance');
+
+        document
         .getElementById("main-service-list-container-2")
         .appendChild(newcard);
     });
@@ -417,7 +285,26 @@
     }
   }
 </script>
+<script>
+  const station = <%- JSON.stringify(stations) %>;
+  console.log(station);
+  
+
+  const currentUser = <%- JSON.stringify(currentUserName) %>;
+  console.log(currentUser);
+
+  // Additional client-side scripts can go here
+</script>
+<script src="/map2.js"></script>
 <script src="/main.js"></script>
+
+
+<script>
+
+
+  
+</script>
+
 <%- include("templates/footer") %>
 
 <!-- 
