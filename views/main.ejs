@@ -208,6 +208,7 @@
         .appendChild(notFound);
     }
     filteredServices.result.forEach((service) => {
+      let price = service.price;
       let name = service.name;
       let description = service.description;
       let background = service.background;
@@ -218,6 +219,7 @@
         .content.cloneNode(true);
 
       newcard.querySelector(".service-name").innerHTML = name;
+      newcard.querySelector(".service-price").innerHTML = "$"+price;
       newcard.querySelector(".service-description").innerHTML = description;
       newcard.querySelector(
         ".card-background"

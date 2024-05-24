@@ -14,7 +14,7 @@
                             <div class="card">
                                 <div class="card-header p-0" id="headingTwo">
                                     <h2 class="mb-0">
-                                        <a href="/checkout?type=paypal"><button
+                                        <a class="dynamic-link" href="/checkout?type=paypal"><button
                                                 class="btn btn-light btn-block text-left collapsed p-3 rounded-0 border-bottom-custom"
                                                 type="button" data-toggle="collapse" data-target="#collapseTwo"
                                                 aria-expanded="false" aria-controls="collapseTwo">
@@ -40,7 +40,7 @@
                             <div class="card">
                                 <div class="card-header p-0">
                                     <h2 class="mb-0">
-                                        <a href="/checkout?type=credit"><button
+                                        <a class="dynamic-link" href="/checkout?type=credit"><button
                                                 class="btn btn-light btn-block text-left p-3 rounded-0" type="button"
                                                 data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
                                                 aria-controls="collapseOne">
@@ -117,25 +117,32 @@
                     </div>
 
                 </div>
+                <div class="d-flex justify-content-between p-3">
 
+                    <div class="d-flex flex-column">
+
+                        <span><small style="font-size:8pt">Station</small> <i class="fa fa-caret-down"></i></span>
+                    </div>
+
+                    <div class="mt-1">
+                        <input hidden name="stationID" id="stationID" value="">
+                        <spa name="stationId" id="stationId" class="super-price" value=""></sup>
+                            <span class="super-month"></span>
+                    </div>
+                    
+
+                </div>
                 <div class="col-md-6">
                     <span>Summary</span>
-
                     <div class="card">
-
                         <div class="d-flex justify-content-between p-3">
-
                             <div class="d-flex flex-column">
-
                                 <span>Service <i class="fa fa-caret-down"></i></span>
-
                             </div>
-
                             <div class="mt-1">
                                 <spa id="Selected-service"class="super-price"></sup>
                                     <span class="super-month"></span>
                             </div>
-
                         </div>
                         <div class="d-flex justify-content-between p-3">
 

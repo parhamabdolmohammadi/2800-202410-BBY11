@@ -169,10 +169,8 @@ app.get('/setting', (req, res) => {
 
 app.get('/edit-profile', async (req,res) => {
     let id = await req.session._id;
-    console.log(id);
     let email = await req.session.email;
     let unencryptedEmail = CryptoJS.AES.decrypt(email, key, { iv: iv}).toString(CryptoJS.enc.Utf8);
-    console.log(unencryptedEmail);
     res.render("edit-profile", {name : req.session.username, email : unencryptedEmail, userId : id});
 });
 
@@ -214,8 +212,9 @@ app.post('/submitUser', async (req, res) => {
 
 
     var hashedPassword = await bcrypt.hash(password, saltRounds);
-    var encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString()
-    await userCollection.insertOne({ username: username, password: hashedPassword, email: encryptedEmail, user_type: "user" });
+    var encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString();
+    var _id = new ObjectId();
+    await userCollection.insertOne({ _id: _id, username: username, password: hashedPassword, email: encryptedEmail, user_type: "user" });
     console.log("Inserted user");
     // console.log(CryptoJS.AES.decrypt(encryptedEmail, key, { iv: iv}).toString(CryptoJS.enc.Utf8));
 
@@ -223,6 +222,7 @@ app.post('/submitUser', async (req, res) => {
     var html = "successfully created user";
     console.log(html);
 
+    req.session._id= _id;
     req.session.authenticated = true;
     req.session.username = username;
     req.session.cookie.maxAge = expireTime;
@@ -338,9 +338,15 @@ app.get('/main', async (req, res) => {
 
 
 app.get('/checkout', sessionValidation, async (req, res) => {
+    let stationId = req.query.stationId;
     let userId = new ObjectId(req.session._id);
     let result = await userCollection.findOne({ _id: userId }, { projection: { remember: 1 } });
-    let remember = result.remember;
+    let remember =""
+    try{
+        remember = result.remember;
+    } catch (error) {
+        console.error("Cannot find remember", error.message);
+    }
 
     if(remember) {
         let paypalEmail = "";
@@ -378,6 +384,7 @@ app.get('/checkout', sessionValidation, async (req, res) => {
 });
 
 app.post('/submit-payment', sessionValidation, async (req, res) => {
+    stationId= req.body.stationID;
     try {
         let paymentType = req.body.paymentType;
         let userId = new ObjectId(req.session._id);
@@ -407,7 +414,18 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
     } catch (e) {
         console.log(e);
     }
-    res.render("confirmation");
+    try{
+        const station = await stationsCollection.findOne({_id: new ObjectId(stationId)});
+        current = station.robots_available;
+        console.log(current);
+        await stationsCollection.updateOne({_id: new ObjectId(stationId)}, {$set: {robots_available: current - 1}});
+        
+    }catch(e){
+        console.log(e);
+    }
+
+
+    res.redirect('/confirmation');
 });
 app.use(express.json());
 
@@ -444,7 +462,7 @@ app.post('/search', async (req, res) => {
     const query = req.body.query;
     const regex = new RegExp(query, 'i'); // 'i' flag for case-insensitive matching
 
-    const result = await general.find({ name: { $regex: regex } }).project({ _id: 1, name: 1, description: 1, background: 1 }).toArray();
+    const result = await general.find({ name: { $regex: regex } }).project({ _id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
 
     // Iterate through the result array and display the name of each object
     result.forEach(item => {
