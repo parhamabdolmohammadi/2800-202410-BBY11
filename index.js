@@ -483,7 +483,7 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
 
 const general = database.db('Services').collection('General')
 const fs = require('fs')
-let isNewDataInserted = true;
+let isNewDataInserted = false; // This should be false when all data in service.json is stored in mongo db
 if (isNewDataInserted) {
     const jsonData = fs.readFileSync('service.json', 'utf8');
     const dataArray = JSON.parse(jsonData);
