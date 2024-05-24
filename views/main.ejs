@@ -273,7 +273,13 @@
           var aiResponseText = document.createElement("p");
           aiResponseText.id = "aiResponseMessage";
           aiResponseText.innerHTML = String(data.aiResponseHTML);
-          aiResponseText.style.color = "white";
+          aiResponseText.style.display = "inline-block";
+          aiResponseText.style.backgroundColor = "white";
+          aiResponseText.style.color = "black";
+          aiResponseText.style.fontFamily = "sans-serif";
+          aiResponseText.style.marginTop = "1em";
+          aiResponseText.style.padding = "2em";
+          aiResponseText.style.borderRadius = "15px";
 
           document.getElementById("aiAssistanceSection").appendChild(aiResponseText);
 
