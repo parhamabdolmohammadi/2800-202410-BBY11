@@ -15,7 +15,7 @@ services.forEach(service => {
 
    let newcard = cardTemplate.content.cloneNode(true);
 
-   newcard.querySelector('.eachCard').classList.add(`card${i}`) // identify each card 
+//    newcard.querySelector('.eachCard').classList.add(`card${i}`) // identify each card 
    newcard.querySelector(".service-name").innerHTML = name;
    newcard.querySelector(".service-description").innerHTML = description; 
    newcard.querySelector(".service-price").innerHTML = "$"+price; 
@@ -27,11 +27,22 @@ services.forEach(service => {
    
 
    newcard.querySelector(".button-location").id = "button-location-" + serviceID;                                    
+   newcard.querySelector(".button-arrow").id = "button-arrow-" + serviceID;                                    
    
    
    newcard.querySelector(".button-location").onclick = () => setID(serviceID, name, price);
-   
+   newcard.querySelector(".button-arrow").onclick= () =>  setID(serviceID, name, price)
+
+   let stationInput = newcard.querySelector(".stationInput");
+   stationInput.id = "stationInput-" + serviceID;
+   stationInput.value = localStorage.getItem('ClosestStationID');
+
+   // Set ID and value for DistanceInput
+   let distanceInput = newcard.querySelector(".DistanceInput");
+   distanceInput.id = "DistanceInput-" + serviceID;
+   distanceInput.value = localStorage.getItem('ClosestStationDistance');
  
+   
    
 
   
@@ -70,3 +81,4 @@ document.querySelectorAll('.cardi').forEach((card) => {
     })
 })
 });
+

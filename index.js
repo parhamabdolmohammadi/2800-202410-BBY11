@@ -85,6 +85,7 @@ var mongoStore = MongoStore.create({
 app.use(express.static(__dirname + "/css"));
 app.use(express.static(__dirname + "/images"));
 app.use(express.static(__dirname + "/js"));
+app.use(express.static(__dirname + "/audio"));
 
 // Map the file system paths to the app's virtual paths
 // Parameters: The root parameter describes the root directory from which to serve static assets.
@@ -172,6 +173,7 @@ app.get('/setting', (req, res) => {
 app.get('/edit-profile', async (req,res) => {
     let id = await req.session._id;
     let email = await req.session.email;
+    console.log(email);
     let unencryptedEmail = CryptoJS.AES.decrypt(email, key, { iv: iv}).toString(CryptoJS.enc.Utf8);
     res.render("edit-profile", {name : req.session.username, email : unencryptedEmail, userId : id});
 });
@@ -225,6 +227,7 @@ app.post('/submitUser', async (req, res) => {
     console.log(html);
 
     req.session._id= _id;
+    req.session.email = encryptedEmail;
     req.session.authenticated = true;
     req.session.username = username;
     req.session.cookie.maxAge = expireTime;
@@ -291,6 +294,7 @@ app.post('/loggingin', async (req, res) => {
         req.session.email = result[0].email;
         req.session.username = result[0].username;
         req.session.user_type = result[0].user_type;
+      
         req.session.cookie.maxAge = expireTime;
         req.session.email = result[0].email;
 
@@ -325,13 +329,18 @@ app.get('/main', async (req, res) => {
     }
     // console.log('finding...');
     const services = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
+    const stations = await stationsCollection.find({}).toArray(); 
+    currentUserName = await userCollection.find({username: req.session.username}).project({username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1}).toArray();
     // console.log('this is ' + services);
     // services.forEach(service => {
     //     console.log(service.name);
     // })
     var username = req.session.username;
     // console.log('username is ' +  username);
-    res.render("main", {services, username});
+    res.render("main", {services, username, stations});
+    
+    
+    
 });
 
 app.post('/main/ai-assistance', async (req, res) => {
@@ -603,7 +612,6 @@ app.get('/stations', async (req, res) => {
         const users = await userCollection.find({}).toArray();
         currentUserName = await userCollection.find({username: req.session.username}).project({username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1}).toArray();
 
-        // console.log("haha" +  JSON.stringify(currentUserName));
         res.render("stations", { stations: stations, users: users, currentUserName: currentUserName}); 
     } catch (error) {
         console.error("Error fetching stations:", error);
@@ -649,16 +657,18 @@ app.get('/saved', async (req, res) => {
 app.post('/displayStation', async (req, res) => {
     const cardId = req.body.data;
     const distance = req.body.data2;
-    console.log(cardId);
+ 
     
     const objectId = new ObjectId(cardId);
-    console.log(distance);
+  
     const currentStation = await stationsCollection.findOne({_id: objectId});
     res.render('station', {station1: currentStation , distance: distance });
 });
 
 
 app.get('/station', async (req, res) => {
+   
+    
         res.render("station"); 
 });
 
@@ -758,7 +768,7 @@ app.post('/PromoteToBusinessOwner', async (req, res) => {
     const objectId = new ObjectId(user_id);
     await userCollection.updateOne({ _id : objectId}, { $set: { businessOwnerRequestInProgress: false, user_type: "businessOwner" } });
     const result = await userCollection.find().project({username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1 }).toArray();
-    res.render("main");
+    res.redirect("/admin");
 });
 
 app.post('/DemoteToUser', async (req, res) => {
@@ -767,7 +777,7 @@ app.post('/DemoteToUser', async (req, res) => {
     const objectId = new ObjectId(user_id);
     await userCollection.updateOne({ _id : objectId}, { $set: { businessOwnerRequestInProgress: false } });
     const result = await userCollection.find().project({username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1 }).toArray();
-    res.render("admin", {users: result});
+    res.redirect("/admin");
 });
 
 
