@@ -1,0 +1,184 @@
+<%- include("templates/header") %>
+
+<body>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "/businessOwnerForm.css";
+      document.head.appendChild(link);
+
+      var link2 = document.createElement("link");
+      link2.rel = "stylesheet";
+      link2.href =
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css";
+      link2.integrity =
+        "sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH";
+      link2.crossOrigin = "anonymous";
+      document.head.appendChild(link2);
+    });
+  </script>
+</body>
+<div class="covering">
+  <div class="card-style">
+    <div class="card-header1">
+      <img style="position: relative; bottom: 3px" src="/robot2.png" alt="" />
+      <p style="display: inline; font-weight: 500; font-size: 15px">
+        Business Owner Sign Up
+      </p>
+      <span id="card-name" class="card-name"></span>
+    </div>
+    <hr style="color: rgba(0, 50, 73, 1)" />
+    <div class="actual-content">
+      <div style="padding: 0 5px; margin: 2px">
+        <% if(user_type == "businessOwner") { %>
+        <p
+          style="
+            display: grid;
+            justify-content: center;
+            padding: 10% 0;
+            color: green;
+          "
+        >
+          You are already enrolled as a business owner
+        </p>
+        <% } else if(user_type == "admin") { %>
+        <p
+          style="
+            display: grid;
+            justify-content: center;
+            padding: 10% 0;
+            color: green;
+          "
+        >
+          You are an Admin.
+        </p>
+
+        <%} else if (!request) { %>
+        <form action="/bussinessOwnerSubmission" method="POST">
+          <input
+            style="display: inline; width: 40%"
+            type="text"
+            id="first_name"
+            name="first_name"
+            placeholder="First Name"
+            maxlength="50"
+            required
+          />
+
+          <input
+            style="display: inline; float: right; width: 40%"
+            type="text"
+            id="last_name"
+            name="last_name"
+            placeholder="Last Name"
+            maxlength="50"
+            required
+          />
+          <input
+            style="display: block"
+            type="email"
+            maxlength="60"
+            id="email"
+            name="email"
+            placeholder="Email"
+            maxlength="50"
+            required
+          />
+
+          <input
+            style="display: block"
+            type="text"
+            id="Address"
+            name="Address"
+            placeholder="Address"
+            maxlength="100"
+            required
+          />
+          <input
+            style="display: block"
+            type="text"
+            id="Phone"
+            name="Phone"
+            pattern="[0-9]{0,10}"
+            placeholder="PhoneNumber"
+            maxlength="20"
+            required
+          />
+
+          <label>Birth Date: &nbsp;&nbsp;&nbsp;</label
+          ><input type="date" id="date" name="date" required />
+          <br />
+          <label>Gender:</label>
+          <label for="Male">Male</label>
+          <input
+            style="display: inline"
+            type="radio"
+            id="Male"
+            name="Gender"
+            value="Male"
+          />
+          <label for="Female">Female</label>
+          <input
+            style="display: inline"
+            type="radio"
+            id="Female"
+            name="Gender"
+            value="Female"
+            checked="checked"
+          />
+          <input
+            style="display: block"
+            type="text"
+            id="Business_Name"
+            name="Business_Name"
+            placeholder="Business Name"
+            maxlength="40"
+            required
+          />
+          <input
+            style="display: block"
+            type="text"
+            id="Business_Address"
+            name="Business_Address"
+            placeholder="Business Address"
+            maxlength="100"
+            required
+          />
+          <textarea
+            style="width: 90%"
+            id="textArea"
+            name="textArea"
+            rows="4"
+            placeholder="Description About your Business and robot services you are going to provide "
+            required
+          ></textarea>
+
+          <button class="icon-container link-style" type="submit">
+            Submit
+          </button>
+        </form>
+        <% } else { %>
+        <p
+          style="
+            display: grid;
+            justify-content: center;
+            padding: 10% 0;
+            color: red;
+          "
+        >
+          Your request is in progress we will reach out to you soon.
+        </p>
+        <%} %>
+      </div>
+    </div>
+  </div>
+</div>
+<br />
+<script>
+  // Additional client-side scripts can go here
+</script>
+<script src="/b"></script>
+
+<%- include("templates/footer") %>

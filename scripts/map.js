@@ -6,6 +6,8 @@
   var closest = 100;
   var closestID;
 
+  console.log("closetId " + closestID);
+
   getLocation();
 
   function getLocation() {
@@ -27,6 +29,8 @@
 
     station.forEach(station => {
       let d = distance(station.lat, station.lng);
+      let id = "id-placeholder11" + station._id;
+      document.getElementById(id).value = d;
       if (d < closest) {
         closest = d;
         closestID = station._id;
@@ -63,6 +67,7 @@
     station.forEach(station => {
       let coords = { lat: station.lat, lng: station.lng };
     
+      
       addMarker(station._id,{
         coords: coords,
         content: `<h1>${station.station_name}</h1>`,
@@ -86,8 +91,19 @@
       );
     }
       
-      icon.innerHTML =
-        '<img src="/robot.png" style="position: relative; bottom:3px; width: 40px; height: 40px;  ;"> ';
+    icon.innerHTML = `
+    <a href="#" onclick="scrollToSection('id-button${station_ID}'); return false;">
+        <img src="/robot.png" style="position: relative; bottom: 3px; width: 40px; height: 40px;">
+    </a>
+`;
+
+function scrollToSection(sectionId) {
+    // Scroll to the target section
+    document.getElementById(sectionId).scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+    });
+}
 
       const marker = new AdvancedMarkerElement({
         map: map,

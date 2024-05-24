@@ -61,7 +61,8 @@ background-color: lightgray;
   z-index: 2;
 
   padding: 0;
-  width: 350pt;
+  min-width: 20em;
+  width: 30%;
   height: 40pt;
   margin-bottom: 2em;
 /* 

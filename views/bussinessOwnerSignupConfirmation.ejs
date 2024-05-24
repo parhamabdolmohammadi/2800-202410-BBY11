@@ -1,0 +1,44 @@
+<%- include("templates/header") %>
+<body>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "/bussinessOwnerSignupConfirmation.css";
+      document.head.appendChild(link);
+
+      var link2 = document.createElement("link");
+      link2.rel = "stylesheet";
+      link2.href =
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css";
+      link2.integrity =
+        "sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH";
+      link2.crossOrigin = "anonymous";
+      document.head.appendChild(link2);
+    });
+  </script>
+  <div class="parent">
+    <div class="container-conf">
+      <div class="tracking-number-conf"><b>Request Submitted!!</b></div>
+      <div class="purchase-info-conf">
+        <p>Thank you<span></span>!!!</p>
+
+        <p>We will process and reach out to you Soon.</p>
+        <p>More Information contact: parham.abdo@gmail.com</p>
+        <br />
+        <a
+          style="
+            padding: 7px;
+            border-radius: 100px;
+            background-color: #003249;
+            text-decoration: none;
+          "
+          href="/main"
+          >Go to Main</a
+        >
+      </div>
+    </div>
+  </div>
+
+  <%- include("templates/footer") %>
+</body>

@@ -1,0 +1,145 @@
+<%- include("templates/header") %>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const link1 = document.createElement("link");
+    link1.rel = "stylesheet";
+    link1.href = "/admin.css";
+    document.head.appendChild(link1);
+
+    const link2 = document.createElement("link");
+    link2.rel = "stylesheet";
+    link2.href =
+      "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css";
+    link2.integrity =
+      "sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH";
+    link2.crossOrigin = "anonymous";
+    document.head.appendChild(link2);
+  });
+</script>
+<br>
+<br>
+<h1>Requests In Progress:</h1>
+
+  <% let b = 0; %> <% users.forEach((user, index) => { %> <% if
+  (user.businessOwnerRequestInProgress) { %> <% b++; %>
+  <div class="card-style form-signin w-100 m-auto">
+    <div class="card-header">
+      <img style="position: relative; bottom: 3px" src="/robot2.png" alt="" />
+      <p style="display: inline; font-weight: 500; font-size: 25px">
+        Request <%- b %>
+      </p>
+      <span id="card-name" class="card-name"></span>
+      <span style="float: right; transform: scale(1.5)">
+        <img style="width: 20px; font-weight: 500" class="star-image" alt="" />
+      </span>
+    </div>
+    <hr style="color: rgba(0, 50, 73, 1)" />
+    <div style="padding: 0 20px">
+        <div>
+            <img src="/user.png" style="width: 20px" alt="" />
+            <span>Name: <%- user.name + " " +  user.lastname %></span>
+          </div>
+
+        <div>
+          <img src="/email.png" style="width: 20px" alt="" />
+          <span>Email:</span>
+        </div>
+        <div>
+          <img src="/gender.png" style="width: 20px" alt="" />
+          <span>Gender: <%- user.gender %></span>
+        </div>
+        <div>
+          <img src="/age.png" style="width: 20px" alt="" />
+          <span>Birth: <%- user.dateOfBirth %></span>
+        </div>
+        <div>
+          <img src="/home.png" style="width: 20px" alt="" />
+          <span>Address: <%- user.address %></span>
+        </div>
+        <div>
+          <img src="/call.png" style="width: 20px" alt="" />
+          <span>Phone Number: +1<%- user.phonenumber %></span>
+        </div>
+        <div>
+          <img src="/briefcase.png" style="width: 20px" alt="" />
+          <span>Business Name: <%- user.businessName %></span>
+        </div>
+        <div>
+          <img src="/location2.png" style="width: 20px" alt="" />
+          <span>Business Address: <%- user.businessAddress %></span>
+        </div>
+        <div>
+          <img src="/description.png" style="width: 20px" alt="" />
+          <span>Description About Business: <%- user.description %></span>
+        </div>
+          
+        </div>
+        
+      
+      <div class="container text-center">
+        <div  class="row row-cols-2">
+          <div  class="col" onclick="DemoteToUser('<%- user._id %>')">
+            <a class="p-3 link-style">
+              <span class="icon-container" style="background-color: red">
+                <img class="icon-size" src="/reject.png" alt="" />
+                <p>Decline</p>
+              </span>
+            </a>
+          </div>
+          
+
+          <div class="col">
+            <a class="p-3 link-style" onclick="PromoteToBusinessOwner('<%- user._id %>')">
+              <span
+                class="icon-container"
+                style="background-color: green"
+              >
+                <img class="icon-size" src="/accept.png" alt="" />
+                <p>Approve</p>
+              </span>
+            </a>
+          </div>
+        </div>
+        <form style="display: none " action="/PromoteToBusinessOwner" method="POST">
+          <input
+            type="text"
+            class="id-placeholder"
+            name="data"
+            value="hi"
+            required
+           id="id-<%- user._id %>"
+          /><br /><br />
+          <button class="id-button" id="button-<%- user._id %>" type="submit">Submit</button>
+        </form>
+        <form style="display: none" action="/DemoteToUser" method="POST">
+          <input
+            type="text"
+            class="id-placeholder"
+            name="data"
+            value="hi"
+            required
+           id="id2-<%- user._id %>"
+          /><br /><br />
+          <button class="id-button" id="button2-<%- user._id %>" type="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <% } %> <% }); %>
+
+<script>function PromoteToBusinessOwner(user) {
+    console.log("hello" + user);
+
+document.getElementById('id-'+ user).value = user;
+document.getElementById("button-"+ user).click();
+}
+
+function DemoteToUser(user) {
+    console.log("hello" + user);
+
+document.getElementById('id2-'+ user).value = user;
+document.getElementById("button2-"+ user).click();
+}
+</script>
+<%- include("templates/footer") %>

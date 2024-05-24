@@ -1,118 +1,414 @@
 <%- include("templates/header") %>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var link = document.createElement("link");
+    link.rel = "preconnect";
+    link.href = "https://fonts.googleapis.com";
+    document.head.appendChild(link);
 
-<!-- <img src="images/search.png" alt="Search" id="searchIcon" /> -->
+    var link2 = document.createElement("link");
+    link2.rel = "preconnect";
+    link2.href = "https://fonts.gstatic.com";
+    link2.crossOrigin = "true";
+    document.head.appendChild(link2);
 
-<div id="main-welcome-container">
-<form id="main-search-form" class="d-flex mx-auto" role="search">
-	<div class="dropdown d-flex justify-content-center">
-	</div>
-	<button type="button" id="filter-button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"
-		aria-expanded="false" data-bs-auto-close="outside">
-		<span class="material-symbols-outlined">filter_list</span>
-	</button>
-	<!-- Search bar text input -->
-	<input id="search-text" class="form-control" type="search" placeholder="Search for services" aria-label="Search"
-		aria-describedby="search-addon" />
-	<!-- Search button -->
-	<button id="search-button" class="btn btn-light" type="submit">
-		<span class="material-symbols-outlined">search</span>
-	</button>
-	</form>
+    var link3 = document.createElement("link");
+    link3.rel = "stylesheet";
+    link3.href =
+      "https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap";
+    document.head.appendChild(link3);
+  });
+</script>
+<div
+  id="main-welcome-container"
+  style="
+    background: url(./hi.jpg) center / cover no-repeat;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 
-	<h2 id="main-welcome-message">Welcome <%= username %>!</h2>
+    height: 400px;
+  "
+>
+  <form id="main-search-form" class="d-flex mx-auto" role="search">
+    <div class="dropdown d-flex justify-content-center"></div>
+    <button
+      type="button"
+      id="filter-button"
+      class="btn btn-light dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+      data-bs-auto-close="outside"
+    >
+      <span class="material-symbols-outlined">filter_list</span>
+    </button>
+    <!-- Search bar text input -->
+    <input
+      id="search-text"
+      class="form-control"
+      type="search"
+      placeholder="Search for services"
+      aria-label="Search"
+      aria-describedby="search-addon"
+    />
+    <!-- Search button -->
+    <button id="search-button" class="btn btn-light" type="submit">
+      <span class="material-symbols-outlined">search</span>
+    </button>
+  </form>
 
+  <h1 class="app-name dance1">
+    <span id="span1" onclick="dow(1)">R</span>
+    <span id="span2" onclick="re(2)">O</span>
+    <span id="span3" onclick="mi(3)">B</span>
+    <span id="span4" onclick="fa(4)">O</span>
+    <span id="span5">&nbsp;</span>
+    <span id="span6" onclick="sol()">R</span>
+    <span id="span7" onclick="la()">E</span>
+    <span id="span8" onclick="si()">N</span>
+    <span id="span9" onclick="dow(9)">T</span>
+    <span id="span10" onclick="re(10)">A</span>
+    <span id="span11" onclick="mi(11)">L</span>
+    <div onclick="animateRobo();" class="robo">
+      <img style="padding: 10px; width: 100%" src="./roboto.png" alt="" />
+    </div>
+  </h1>
+  <h2 id="main-welcome-message" style="color: white">
+    &nbsp;Welcome <%= username %>!
+  </h2>
+</div>
+<script src="animation.js"></script>
+<!-- Section for AI -->
+<form role="search" style="display: inline;">
+<div id="aiAssistanceSection" >
+<div class="search-box">
+    <button class="btn-search"><i class="fas fa-search"></i><img src="chatbot.png" style="width: 30px; height: 30px;"></button>
+    <input type="search" name="aiAssistanceInput" id="aiAssistanceInput" class="input-search" placeholder="Ask AI for Services"/>
+</div>
+<button id="aiAssistanceSubmitBtn" class="btn-submit" type="submit">Submit</button>
+</div>
+</form>
+
+
+<!-- Services list of cards -->
+
+<div id="main-service-list-container">
+  <div id="services-header-container">
+    <h3 id="services-header">
+      Find a Service
+    </h3>
+  </div>
+  <div id="main-service-list-container-2" class="row mb-3 text-center service">
+    <template id="ServiceCardTemplate">
+      <div class="card cardi">
+        <div class="card-bg cardi2 card-background"></div>
+        <div class="card-body cardi3">
+          <div>
+            <!-- <h5 class="card-title">Card title</h5> -->
+            <h6 class="card-subtitle mb-2 service-name"></h6>
+            <p class="card-text service-description"></p>
+            <p class="card-text service-price"></p>
+            <form  action="/displayStation" method="POST">
+            <button class="button-arrow" >Order Service</button>
+            <input style="display: none;" class="stationInput" type="text" name="data"  >
+            <input style="display: none;" class="DistanceInput" type="text" name="data2" >
+            <form action=""></form>
+          </div>
+          <div>
+            <form action="/stations" method="GET">
+              <button
+                style="float: right"
+                type="submit"
+                class="btn btn-outline-secondary fluid-button button-location"
+              >
+                <img
+                  class=".hover-img fluid-image"
+                  style="height: 30px"
+                  src="/location.png"
+                  alt=""
+                />
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </template>
+  </div>
 </div>
 
-	<!-- Services list of cards -->
-	<div id="main-content-container">
-		<h3 id="services-header">Find services</h3>
-		<div id="main-service-list-container" class="row mb-3 text-center">
+<div class="callout callout--primary">
+  <div class="grid grid--1x2">
+    <div class="callout__content">
+      <h2 class="callout__heading">Get Started As a Business Owner?</h2>
+      <p>
+        This could be a good chance to enroll for becomming a business Owner
+        You'd get the chance to Provide robots for our stations and and take
+        advantage of being payed.
+      </p>
+    </div>
+    <form class="form-class" action="/bussinessOwnerForm" method="GET">
+      <button type="submit" class="btn1">Get Started</button>
+    </form>
+  </div>
+</div>
 
-			<% for(let i=0; i < services.length; i++) {%>
-			<div class="col-md-4 g-2 themed-grid-col service-container">
-				<img src="placeholder-image.png" alt="Placeholder Image" width="80%" height="70%" style="margin-bottom: 2em;";/>
-				<div style="display: inline-block;"><h4 style="display: inline;"><%= services[i].name %></h4></div>
-				<div style="display: inline-block;"><h4 style="display: inline;"><%= services[i].description%></h4></div>
-			</div>
-			<% } %>
-			
-		</div>
-	</div>
+<script>
+  const services = <%- JSON.stringify(services) %>;
+  console.log(services);
+</script>
 
-	<!-- <div id="servicesContainer">
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "/main.css";
+    document.head.appendChild(link);
+  });
+  document.addEventListener("DOMContentLoaded", function () {
+      // * Search bar functionality
 
-		<% for(let i=0; i < services.length; i++) {%>
-			<div class="col-md-4 themed-grid-col service-container">
-				 <div>Service name: <%= services[i].name %></div>
-				<div>Service description: <%= services[i].description%></div>
-			</div>
-		
-			<br>
-			<% } %>
-	</div> -->
+      // Get references to the search input and icon
+      const searchInput = document.getElementById("search-text");
+      const searchIcon = document.getElementById("search-button");
 
-	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-			var link = document.createElement('link');
-			link.rel = 'stylesheet';
-			link.href = '/main.css';
-			document.head.appendChild(link);
-		});
+    // Add event listener to the search icon for click events
+    searchIcon.addEventListener("click", function (event) {
+      // console.log("clicked");
+      event.preventDefault(); // Prevent default action (e.g., form submission)
 
-		document.addEventListener('DOMContentLoaded', function () {
-			// Get references to the search input and icon
-			const searchInput = document.getElementById('search-text');
-			const searchIcon = document.getElementById('search-button');
+      if (searchInput.value === 'dance') {
+        console.log('dance is typed');
+        let i = 0.2;
+        const cards = document.querySelectorAll(".card");
+        cards.forEach((card) => {
+          console.log(card);
+          card.classList.add('dance')
+          card.style.animationDelay = i + 's'
+          i += 0.2
+    });
+        return
+      }
 
-			// Add event listener to the search icon for click events
-			searchIcon.addEventListener('click', function (event) {
-				console.log('clicked');
-				event.preventDefault(); // Prevent default action (e.g., form submission)
+      if (searchInput.value === 'stop') {
+        console.log('stop is typed');
+        const cards = document.querySelectorAll(".card");
+        cards.forEach(card => {
+          card.classList.remove('dance')
+        })
+        return
+      }
+      const query = searchInput.value;
+      // console.log(query);
 
-				// Get the search query from the input field
-				const query = searchInput.value;
-				console.log(query);
+        // Send a POST request to the server
+        fetch("/search", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ query: query }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            data.result.forEach((item) => {
+              //console.log(item.name); // Accessing the 'name' property of each item
+              //console.log(item.description); // Accessing the 'description' property of each item
+            });
+            //console.log(data.result);
+            renderServices(data.result);
+          })
+          .catch((error) => {
+            console.error("Error sending search request:", error);
+          });
+      });
 
-				// Send a POST request to the server
-				fetch('/search', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({ query: query })
-				})
-					.then(response => response.json())
-					.then(data => {
-						data.result.forEach(item => {
-							console.log(item.name); // Accessing the 'name' property of each item
-							console.log(item.description); // Accessing the 'description' property of each item
-						});
+      // * AI Assistance text input functionality
 
-						renderServices(data)
-					})
-					.catch(error => {
-						console.error('Error sending search request:', error);
-					});
-			});
-		});
-		function renderServices(services) {
-			const servicesContainer = document.getElementById('main-service-list-container');
-			servicesContainer.innerHTML = '';
+      const searchBox = document.querySelector(".search-box");
+      const submitButton = document.querySelector(".btn-submit");
 
-			services.result.forEach((service) => {
-				const name = document.createElement('div');
-				name.innerHTML = 'Service name: ' + service.name;
-				servicesContainer.appendChild(name);
+      searchBox.addEventListener("click", function () {
+        submitButton.style.display = "block";
+      });
 
-				const des = document.createElement('div');
-				des.innerHTML = service.description;
-				servicesContainer.appendChild(des);
-			});
-		}
-	</script>
-	<%- include("templates/footer") %>
+      document.addEventListener("click", function (event) {
+        if (
+          !searchBox.contains(event.target) &&
+          !submitButton.contains(event.target)
+        ) {
+          submitButton.style.display = "none";
+        }
+      });
 
-		<!-- 
+      // When submit button is pressed in AI input section
+      const aiAssistanceSubmitBtn = document.getElementById("aiAssistanceSubmitBtn");
+
+      aiAssistanceSubmitBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+
+        const aiAssistanceInput = document.getElementById("aiAssistanceInput");
+
+        aiAssistanceInputValue = aiAssistanceInput.value;
+
+        // Send post request to server (route /main/ai-assistance)
+        fetch("/main/ai-assistance", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ aiAssistanceInput: aiAssistanceInputValue }),
+        })
+        .then((AIResponse) => AIResponse.json())
+        .then((data) => {
+
+          // If an AI response message <p> element has already been created
+          aiResponseMessageElement = document.getElementById("aiResponseMessage");
+          if (aiResponseMessageElement != null) {
+            
+            // Remove the existing element
+            aiResponseMessageElement.remove();
+          }
+
+          // Text response to user
+          var aiResponseText = document.createElement("p");
+          aiResponseText.id = "aiResponseMessage";
+          aiResponseText.innerHTML = String(data.aiResponseHTML);
+          aiResponseText.style.display = "inline-block";
+          aiResponseText.style.backgroundColor = "white";
+          aiResponseText.style.color = "black";
+          aiResponseText.style.fontFamily = "sans-serif";
+          aiResponseText.style.marginTop = "1em";
+          aiResponseText.style.padding = "2em";
+          aiResponseText.style.borderRadius = "15px";
+
+          document.getElementById("aiAssistanceSection").appendChild(aiResponseText);
+
+          if (data.aiFoundServices == true) {
+            // Show the services found
+            renderServices(data.filteredServices);
+          }
+        })
+
+        .catch((error) => {
+            console.error("Error sending search request:", error);
+        });
+      });
+
+    });
+
+    function renderServices(filteredServices) {
+      // const servicesContainer = document.getElementById(
+      //   "main-service-list-container"
+      // );
+      // servicesContainer.innerHTML = "";
+
+      // filteredServices.forEach((service) => {
+      //   const name = document.createElement("div");
+      //   name.innerHTML = "Service name: " + service.name;
+      //   servicesContainer.appendChild(name);
+
+      //   const des = document.createElement("div");
+      //   des.innerHTML = service.description;
+      //   servicesContainer.appendChild(des);
+
+      const servicesContainer = document.getElementById(
+      "main-service-list-container-2"
+    );
+    // console.log(servicesContainer);
+    // servicesContainer.innerHTML = "";
+    const cards = document.querySelectorAll(".card");
+    cards.forEach((card) => {
+      card.remove();
+      // console.log('removed');
+    });
+    if (filteredServices.length == 0) {
+      const notFound = document.createElement("div");
+      const notFoundText = document.createElement('p')
+      const notFoundImage = document.createElement('img')
+      notFound.classList.add('notfound')
+      notFound.classList.add('card')
+
+      notFoundText.textContent = "No services found";
+      notFoundImage.src = 'sad.png'
+
+      notFound.appendChild(notFoundText)
+      notFound.appendChild(notFoundImage)
+      document
+        .getElementById("main-service-list-container-2")
+        .appendChild(notFound);
+    } else {
+      filteredServices.forEach((service) => {
+      let price = service.price;
+      let name = service.name;
+      let description = service.description;
+      let background = service.background;
+      let serviceID = service._id;
+
+
+      newcard = document
+        .getElementById("ServiceCardTemplate")
+        .content.cloneNode(true);
+
+      newcard.querySelector(".service-name").innerHTML = name;
+      newcard.querySelector(".service-price").innerHTML = "$"+price;
+      newcard.querySelector(".service-description").innerHTML = description;
+      newcard.querySelector(
+        ".card-background"
+      ).style.backgroundImage = `url(${background})`;
+
+      newcard.querySelector(".button-location").id =
+        "button-location-" + serviceID;
+        newcard.querySelector(".button-arrow").id = "button-arrow-" + serviceID;
+        
+      newcard.querySelector(".button-location").onclick = () =>
+        setID(serviceID, name);
+        newcard.querySelector(".button-arrow").onclick= () =>  setID(serviceID, name, price);
+      
+
+        let stationInput = newcard.querySelector(".stationInput");
+   stationInput.id = "stationInput-" + serviceID;
+   stationInput.value = localStorage.getItem('ClosestStationID');
+
+   
+   let distanceInput = newcard.querySelector(".DistanceInput");
+   distanceInput.id = "DistanceInput-" + serviceID;
+   distanceInput.value = localStorage.getItem('ClosestStationDistance');
+
+        document
+        .getElementById("main-service-list-container-2")
+        .appendChild(newcard);
+      });
+    }
+    
+    function setID(id, name) {
+      localStorage.setItem("ServiceID", id);
+      localStorage.setItem("ServiceName", name);
+    }
+  }
+</script>
+<script>
+  const station = <%- JSON.stringify(stations) %>;
+  console.log(station);
+  
+
+  const currentUser = <%- JSON.stringify(currentUserName) %>;
+  console.log(currentUser);
+
+  // Additional client-side scripts can go here
+</script>
+<script src="/map2.js"></script>
+<script src="/main.js"></script>
+
+
+<script>
+
+
+  
+</script>
+
+<%- include("templates/footer") %>
+
+<!-- 
 finish the main page
 	- create welcome container with search bar - with an appropriate colours that we chose from coolors
 	- create container for the available robot services to be dynamically displayed in
