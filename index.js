@@ -172,6 +172,7 @@ app.get('/setting', (req, res) => {
 app.get('/edit-profile', async (req,res) => {
     let id = await req.session._id;
     let email = await req.session.email;
+    console.log(email);
     let unencryptedEmail = CryptoJS.AES.decrypt(email, key, { iv: iv}).toString(CryptoJS.enc.Utf8);
     res.render("edit-profile", {name : req.session.username, email : unencryptedEmail, userId : id});
 });
@@ -225,6 +226,7 @@ app.post('/submitUser', async (req, res) => {
     console.log(html);
 
     req.session._id= _id;
+    req.session.email = encryptedEmail;
     req.session.authenticated = true;
     req.session.username = username;
     req.session.cookie.maxAge = expireTime;
