@@ -83,6 +83,7 @@ var mongoStore = MongoStore.create({
 app.use(express.static(__dirname + "/css"));
 app.use(express.static(__dirname + "/images"));
 app.use(express.static(__dirname + "/js"));
+app.use(express.static(__dirname + "/audio"));
 
 // Map the file system paths to the app's virtual paths
 // Parameters: The root parameter describes the root directory from which to serve static assets.
@@ -289,6 +290,7 @@ app.post('/loggingin', async (req, res) => {
         req.session.email = result[0].email;
         req.session.username = result[0].username;
         req.session.user_type = result[0].user_type;
+        console.log("hahahha" + req.session.user_type);
         req.session.cookie.maxAge = expireTime;
         req.session.email = result[0].email;
 
@@ -687,7 +689,7 @@ app.post('/PromoteToBusinessOwner', async (req, res) => {
     const objectId = new ObjectId(user_id);
     await userCollection.updateOne({ _id : objectId}, { $set: { businessOwnerRequestInProgress: false, user_type: "businessOwner" } });
     const result = await userCollection.find().project({username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1 }).toArray();
-    res.render("main");
+    res.redirect("/admin");
 });
 
 app.post('/DemoteToUser', async (req, res) => {
@@ -696,7 +698,7 @@ app.post('/DemoteToUser', async (req, res) => {
     const objectId = new ObjectId(user_id);
     await userCollection.updateOne({ _id : objectId}, { $set: { businessOwnerRequestInProgress: false } });
     const result = await userCollection.find().project({username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1 }).toArray();
-    res.render("admin", {users: result});
+    res.redirect("/admin");
 });
 
 

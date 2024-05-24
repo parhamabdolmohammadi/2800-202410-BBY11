@@ -1,5 +1,24 @@
 <%- include("templates/header") %>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var link = document.createElement("link");
+    link.rel = "preconnect";
+    link.href = "https://fonts.googleapis.com";
+    document.head.appendChild(link);
 
+    var link2 = document.createElement("link");
+    link2.rel = "preconnect";
+    link2.href = "https://fonts.gstatic.com";
+    link2.crossOrigin = "true";
+    document.head.appendChild(link2);
+
+    var link3 = document.createElement("link");
+    link3.rel = "stylesheet";
+    link3.href =
+      "https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap";
+    document.head.appendChild(link3);
+  });
+</script>
 <div
   id="main-welcome-container"
   style="
@@ -38,11 +57,176 @@
     </button>
   </form>
 
+  <h1 class="app-name dance">
+    <span id="span1" onclick="dow(1)">R</span>
+    <span id="span2" onclick="re(2)">O</span>
+    <span id="span3" onclick="mi(3)">B</span>
+    <span id="span4" onclick="fa(4)">O</span>
+    <span id="span5">&nbsp;</span>
+    <span id="span6" onclick="sol()">R</span>
+    <span id="span7" onclick="la()">E</span>
+    <span id="span8" onclick="si()">N</span>
+    <span id="span9" onclick="dow(9)">T</span>
+    <span id="span10" onclick="re(10)">A</span>
+    <span id="span11" onclick="mi(11)">L</span>
+    <div onclick="animateRobo();" class="robo">
+      <img style="padding: 10px; width: 100%" src="./roboto.png" alt="" />
+    </div>
+  </h1>
   <h2 id="main-welcome-message" style="color: white">
-    Welcome <%= username %>!
+    &nbsp;Welcome <%= username %>!
   </h2>
 </div>
+<script>
+  function dow(n) {
+    document.getElementById(`span${n}`).style.color = "grey";
 
+    let audio = new Audio("do.mp4");
+    audio.currentTime = 0.5; // Start from the second second
+    audio.play();
+
+    setTimeout(() => {
+      audio.pause();
+      audio.currentTime = 0;
+    }, 1500); // Stop the audio after 1 second
+
+    setTimeout(() => {
+      document.getElementById(`span${n}`).style.color = "";
+    }, 2000);
+  }
+
+  function re(n) {
+    document.getElementById(`span${n}`).style.color = "grey";
+
+    let audio = new Audio("re.mp4");
+    audio.currentTime = 0.5; // Start from the second second
+    audio.play();
+
+    setTimeout(() => {
+      audio.pause();
+      audio.currentTime = 0;
+    }, 1500); // Stop the audio after 1 second
+
+    setTimeout(() => {
+      document.getElementById(`span${n}`).style.color = "";
+    }, 2000);
+  }
+
+  function mi(n) {
+    document.getElementById(`span${n}`).style.color = "grey";
+
+    let audio = new Audio("mi.mp4");
+    audio.currentTime = 0.5; // Start from the second second
+    audio.play();
+
+    setTimeout(() => {
+      audio.pause();
+      audio.currentTime = 0;
+    }, 1500); // Stop the audio after 1 second
+
+    setTimeout(() => {
+      document.getElementById(`span${n}`).style.color = "";
+    }, 2000);
+  }
+  function fa(n) {
+    document.getElementById(`span${n}`).style.color = "grey";
+
+    let audio = new Audio("fa1.mp4");
+    audio.currentTime = 0.5; // Start from the second second
+    audio.play();
+
+    setTimeout(() => {
+      audio.pause();
+      audio.currentTime = 0;
+    }, 1500); // Stop the audio after 1 second
+
+    setTimeout(() => {
+      document.getElementById(`span${n}`).style.color = "";
+    }, 2000);
+  }
+  function sol() {
+    document.getElementById("span6").style.color = "grey";
+
+    let audio = new Audio("sol.mp4");
+    audio.currentTime = 0.5; // Start from the second second
+    audio.play();
+
+    setTimeout(() => {
+      audio.pause();
+      audio.currentTime = 0;
+    }, 1500); // Stop the audio after 1 second
+
+    setTimeout(() => {
+      document.getElementById("span6").style.color = "";
+    }, 2000);
+  }
+
+  function la() {
+    document.getElementById("span7").style.color = "grey";
+
+    let audio = new Audio("la.mp4");
+    audio.currentTime = 0.5; // Start from the second second
+    audio.play();
+
+    setTimeout(() => {
+      audio.pause();
+      audio.currentTime = 0;
+    }, 1500); // Stop the audio after 1 second
+
+    setTimeout(() => {
+      document.getElementById("span7").style.color = "";
+    }, 2000);
+  }
+
+  function si() {
+    document.getElementById("span8").style.color = "grey";
+
+    let audio = new Audio("si.mp4");
+    audio.currentTime = 0.5; // Start from the second second
+    audio.play();
+
+    setTimeout(() => {
+      audio.pause();
+      audio.currentTime = 0;
+    }, 1500); // Stop the audio after 1 second
+
+    setTimeout(() => {
+      document.getElementById("span8").style.color = "";
+    }, 2000);
+  }
+
+  // Define a function to handle the animation
+  function animateRobo() {
+    const roboElement = document.querySelector(".robo");
+    const evenSpans = document.querySelectorAll(".dance span:nth-child(2n)");
+    const oddSpans = document.querySelectorAll(".dance span:nth-child(2n + 1)");
+
+    var audio = new Audio("Welcome_to_Robo_Rent.mp4");
+    audio.play();
+    // Loop through each even span and add the class
+    evenSpans.forEach(function (span) {
+      span.classList.add("even-span");
+    });
+
+    oddSpans.forEach(function (span) {
+      span.classList.add("odd-span");
+    });
+
+    // Add the animation class
+    roboElement.classList.add("robocircle");
+
+    // After the animation completes, remove the animation class
+    setTimeout(() => {
+      roboElement.classList.remove("robocircle");
+      evenSpans.forEach(function (span) {
+        span.classList.remove("even-span");
+      });
+      oddSpans.forEach(function (span) {
+        span.classList.remove("odd-span");
+      });
+    }, 2000); // Adjust the timing (in milliseconds) to match the animation duration
+  }
+</script>
 <!-- Section for AI -->
 <div class="div-body">
   <div class="search-box">
@@ -91,8 +275,8 @@
             <h6 class="card-subtitle mb-2 service-name"></h6>
             <p class="card-text service-description"></p>
             <p class="card-text service-price"></p>
-            <a href="#" class="card-link">Card link</a>
-            <a href="#" class="card-link">Another link</a>
+
+            <a href="/station" class="link-arrow">Order Service</a>
           </div>
           <div>
             <form action="/stations" method="GET">
@@ -135,11 +319,6 @@
 <script>
   const services = <%- JSON.stringify(services) %>;
   console.log(services);
-
-
-
-
-  // Additional client-side scripts can go here
 </script>
 
 <script>
@@ -233,17 +412,13 @@
         .appendChild(newcard);
     });
     function setID(id, name) {
-        localStorage.setItem('ServiceID', id);
-        localStorage.setItem('ServiceName', name);
+      localStorage.setItem("ServiceID", id);
+      localStorage.setItem("ServiceName", name);
     }
   }
 </script>
 <script src="/main.js"></script>
 <%- include("templates/footer") %>
-        
-
-      
-
 
 <!-- 
 finish the main page
