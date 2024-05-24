@@ -37,6 +37,7 @@ const navLinks = [
     { name: "Login", link: "/login" },
     { name: "Admin", link: "/admin" },
     { name: "404", link: "/*" },
+    { name: "Bookmarks", link: "saved"},
     { name: "Setting", link: "/setting" }
 ]
 
@@ -71,6 +72,8 @@ const stationsCollection = database.db(mongodb_database2).collection('Stations')
 app.set('view engine', 'ejs');
 
 app.use(express.urlencoded({ extended: false }));
+
+app.use(express.json());
 
 var mongoStore = MongoStore.create({
     mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
@@ -330,12 +333,62 @@ app.get('/main', async (req, res) => {
     var username = req.session.username;
     // console.log('username is ' +  username);
     res.render("main", {services, username});
-    
-    // Make AI request, and save the AI response text
-    var AIResponse = await makeAiReqAndRes();
-    console.log(AIResponse);
 });
 
+app.post('/main/ai-assistance', async (req, res) => {
+    // Get message from user
+    const AIRequestMsg = req.body.aiAssistanceInput;
+
+    // Get list of services from the database, store the names in an array
+    var listOfServices = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1 }).toArray();
+
+    var filteredServices = [];
+
+    var aiResponseHTML;
+
+    var aiFoundServices = false;
+
+    console.log("AIRequestMsg: " + AIRequestMsg);
+
+    // Make AI request, passing in the user text message and the list of services. Save the AI response text
+    var AIResponse = await makeAiReqAndRes(AIRequestMsg, listOfServices);
+
+    console.log("AIResponse: " + AIResponse);
+
+    //--------------------
+
+    // If any applicable services were found in the list of services ('I'm sorry' is NOT contained in the response String)
+    if (!(AIResponse.includes("I'm sorry"))) {
+    
+    aiFoundServices = true;
+
+    var listOfAIRecommendedServices = [];
+
+    // Parse the AI-generated response - divide listOfAIRecommendedServices 
+    // into an array of Strings, using '/' as delimeter
+    listOfAIRecommendedServices = AIResponse.split('/');
+
+    // Remove first and last empty string elements (first and last = '')
+    listOfAIRecommendedServices.shift();
+    listOfAIRecommendedServices.pop();
+
+    // Filter the listOfServices array (only include the ones that have name values in the listOfAIRecommendedServices array)
+    filteredServices = listOfServices.filter(service => listOfAIRecommendedServices.includes(service.name));
+
+    aiResponseHTML = "Here are some of our services that I can recommend based on your request:";
+
+    } else {
+        // only send the generated apology message
+        if (AIResponse.includes('/')) {
+            AIResponse = AIResponse.replace(/\//g, '');
+        }
+        aiFoundServices = false;
+        aiResponseHTML = AIResponse;
+    }
+
+    // Send the filteredServices (array of json objects) back to the main page as a json object
+    res.json({aiResponseHTML, filteredServices, aiFoundServices});
+});
 
 app.get('/checkout', sessionValidation, async (req, res) => {
     let stationId = req.query.stationId;
@@ -427,7 +480,6 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
 
     res.redirect('/confirmation');
 });
-app.use(express.json());
 
 const general = database.db('Services').collection('General')
 const fs = require('fs')

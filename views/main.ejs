@@ -44,16 +44,15 @@
 </div>
 
 <!-- Section for AI -->
-<div class="div-body">
-  <div class="search-box">
-    <button class="btn-search">
-      <i class="fas fa-search"></i
-      ><img src="chatbot.png" style="width: 30px; height: 30px" />
-    </button>
-    <input type="text" class="input-search" placeholder="Ask AI" />
-  </div>
-  <button class="btn-submit">Submit</button>
+<form role="search" style="display: inline;">
+<div class="div-body" id="aiAssistanceSection">
+<div class="search-box">
+    <button class="btn-search"><i class="fas fa-search"></i><img src="chatbot.png" style="width: 30px; height: 30px;"></button>
+    <input type="search" name="aiAssistanceInput" id="aiAssistanceInput" class="input-search" placeholder="Ask AI for Services"/>
 </div>
+<button id="aiAssistanceSubmitBtn" class="btn-submit" type="submit">Submit</button>
+</div>
+</form>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -139,23 +138,22 @@
 
 
 
-  // Additional client-side scripts can go here
-</script>
+    // Additional client-side scripts can go here
+  </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
 
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    var link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = "/main.css";
-    document.head.appendChild(link);
-  });
+      // * Main page CSS stylesheets
+      var link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "/main.css";
+      document.head.appendChild(link);
 
-  // console.log('services:', services);
+      // * Search bar functionality
 
-  document.addEventListener("DOMContentLoaded", function () {
-    // Get references to the search input and icon
-    const searchInput = document.getElementById("search-text");
-    const searchIcon = document.getElementById("search-button");
+      // Get references to the search input and icon
+      const searchInput = document.getElementById("search-text");
+      const searchIcon = document.getElementById("search-button");
 
     // Add event listener to the search icon for click events
     searchIcon.addEventListener("click", function (event) {
@@ -186,97 +184,99 @@
       const query = searchInput.value;
       // console.log(query);
 
-      // Send a POST request to the server
-      fetch("/search", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ query: query }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          data.result.forEach((item) => {
-            // console.log(item.name);
-            // console.log(item.description);
-            // console.log(item.background);
-          });
-
-          renderServices(data.result);
+        // Send a POST request to the server
+        fetch("/search", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ query: query }),
         })
+          .then((response) => response.json())
+          .then((data) => {
+            data.result.forEach((item) => {
+              console.log(item.name); // Accessing the 'name' property of each item
+              console.log(item.description); // Accessing the 'description' property of each item
+            });
+            console.log(data.result);
+            renderServices(data.result);
+          })
+          .catch((error) => {
+            console.error("Error sending search request:", error);
+          });
+      });
+
+      // * AI Assistance text input functionality
+
+      const aiAssistanceSubmitBtn = document.getElementById("aiAssistanceSubmitBtn");
+
+      aiAssistanceSubmitBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+
+        const aiAssistanceInput = document.getElementById("aiAssistanceInput");
+
+        aiAssistanceInputValue = aiAssistanceInput.value;
+
+        // Send post request to server (route /main/ai-assistance)
+        fetch("/main/ai-assistance", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ aiAssistanceInput: aiAssistanceInputValue }),
+        })
+        .then((AIResponse) => AIResponse.json())
+        .then((data) => {
+
+          // If an AI response message <p> element has already been created
+          aiResponseMessageElement = document.getElementById("aiResponseMessage");
+          if (aiResponseMessageElement != null) {
+            
+            // Remove the existing element
+            aiResponseMessageElement.remove();
+          }
+
+          // Text response to user
+          var aiResponseText = document.createElement("p");
+          aiResponseText.id = "aiResponseMessage";
+          aiResponseText.innerHTML = String(data.aiResponseHTML);
+          aiResponseText.style.color = "white";
+
+          document.getElementById("aiAssistanceSection").appendChild(aiResponseText);
+
+          if (data.aiFoundServices == true) {
+            // Show the services found
+            renderServices(data.filteredServices);
+          }
+        })
+
         .catch((error) => {
-          console.error("Error sending search request:", error);
+            console.error("Error sending search request:", error);
         });
-    });
-  });
-  function renderServices(filteredServices) {
-    const servicesContainer = document.getElementById(
-      "main-service-list-container-2"
-    );
-    // console.log(servicesContainer);
-    // servicesContainer.innerHTML = "";
-    const cards = document.querySelectorAll(".card");
-    cards.forEach((card) => {
-      card.remove();
-      // console.log('removed');
-    });
-    if (filteredServices.length == 0) {
-      const notFound = document.createElement("div");
-      const notFoundText = document.createElement('p')
-      const notFoundImage = document.createElement('img')
-      notFound.classList.add('notfound')
-      notFound.classList.add('card')
+      });
 
-      notFoundText.textContent = "No services found";
-      notFoundImage.src = 'sad.png'
+    });
 
-      notFound.appendChild(notFoundText)
-      notFound.appendChild(notFoundImage)
-      document
-        .getElementById("main-service-list-container-2")
-        .appendChild(notFound);
-    } else {
+    function renderServices(filteredServices) {
+      const servicesContainer = document.getElementById(
+        "main-service-list-container"
+      );
+      servicesContainer.innerHTML = "";
+
       filteredServices.forEach((service) => {
-      let price = service.price;
-      let name = service.name;
-      let description = service.description;
-      let background = service.background;
-      let serviceID = service._id;
+        const name = document.createElement("div");
+        name.innerHTML = "Service name: " + service.name;
+        servicesContainer.appendChild(name);
 
-      newcard = document
-        .getElementById("ServiceCardTemplate")
-        .content.cloneNode(true);
-
-      newcard.querySelector(".service-name").innerHTML = name;
-      newcard.querySelector(".service-price").innerHTML = "$"+price;
-      newcard.querySelector(".service-description").innerHTML = description;
-      newcard.querySelector(
-        ".card-background"
-      ).style.backgroundImage = `url(${background})`;
-
-      newcard.querySelector(".button-location").id =
-        "button-location-" + serviceID;
-      newcard.querySelector(".button-location").onclick = () =>
-        setID(serviceID, name);
-
-      document
-        .getElementById("main-service-list-container-2")
-        .appendChild(newcard);
-    });
+        const des = document.createElement("div");
+        des.innerHTML = service.description;
+        servicesContainer.appendChild(des);
+      });
     }
-    
-    function setID(id, name) {
-        localStorage.setItem('ServiceID', id);
-        localStorage.setItem('ServiceName', name);
-    }
-  }
-</script>
-<script src="/main.js"></script>
-<%- include("templates/footer") %>
-        
 
-      
-
+  </script>
+  <script src="/main.js"></script>
+  <%- include("templates/footer") %>
 
 <!-- 
 finish the main page
