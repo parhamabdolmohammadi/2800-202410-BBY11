@@ -349,7 +349,7 @@ app.post('/main/ai-assistance', async (req, res) => {
 
     // Get list of services from the database, store the names in an array
     var listOfServices = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
-      console('jason' + listOfServices);
+
     var filteredServices = [];
 
     var aiResponseHTML;
