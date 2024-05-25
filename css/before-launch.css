@@ -201,3 +201,89 @@ h1,
     padding-left: 0;
   }
 }
+
+.container .right .icon-list .icon {
+    margin-right: 1em;
+    font-size: 1.5em;
+  }
+  
+  .container .right .icon-list .icon a {
+    color: black;
+    text-decoration: none;
+  }
+  
+  .right,
+  .mainInfo,
+  .left {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+  }
+  
+  h1,
+  .slogan,
+  button,
+  .form {
+    font-family: "Lato", sans-serif;
+  }
+  
+  .slogan,
+  .form-subscribe {
+    margin-left: 2em;
+  }
+  
+  @media screen and (max-width: 576px) {
+  
+    .slogan,
+    .form-subscribe {
+      margin-left: auto;
+    }
+  }
+  
+  .twitter::before {
+    font-family: "Font Awesome 5 Brands";
+    content: "\f099";
+  }
+  
+  .facebook::before {
+    font-family: "Font Awesome 5 Brands";
+    content: "\f09a";
+  }
+  
+  .instagram::before {
+    font-family: "Font Awesome 5 Brands";
+    content: "\f16d";
+  }
+  
+  .github::before {
+    font-family: "Font Awesome 5 Brands";
+    content: "\f09b";
+  }
+  
+  .stackoverflow::before {
+    font-family: "Font Awesome 5 Brands";
+    content: "\e07b";
+  }
+  
+  .youtube::before {
+    font-family: "Font Awesome 5 Brands";
+    content: "\f167";
+  }
+  
+  .medium::before {
+    font-family: "Font Awesome 5 Brands";
+    content: "\f23a";
+  }
+  
+  .linkedin::before {
+    font-family: "Font Awesome 5 Brands";
+    content: "\f08c";
+  }
+  
