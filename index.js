@@ -869,6 +869,11 @@ The Robo Rental Team`
     }
 }
 
+const sendEmails = process.env.SEND_EMAILS_PAGE_NAME;
+app.get("/"+sendEmails, (req, res) => {
+    sendAllEmails();
+    res.redirect('/');
+});
 
 app.get('/confirmation', sessionValidation, (req, res) => {
     res.render("confirmation");
