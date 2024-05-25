@@ -781,6 +781,42 @@ app.post('/DemoteToUser', async (req, res) => {
     res.redirect("/admin");
 });
 
+app.post('/submitEmailBL', async (req, res) => {
+    var email=req.body.email;
+    await emailsCollection.insertOne({ email:email });
+    try {
+        let transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+                user: 'roborental.team@gmail.com',
+                pass: process.env.EMAIL_PASSWORD
+            }
+        });
+        if (!email) {
+            res.render("index");
+            return;
+        }
+        let mailOptions = {
+            from: 'roborental.team@gmail.com',
+            to: email,
+            subject: 'Robo Rental Launch',
+            text:`Exciting news! Robo Rental, the app that makes it easy to rent robots for various services, is launching soon.
+            By signing up you will be notified on the day of our apps launch.
+            Robo Rental offers a seamless solution for renting robots to assist with a variety of tasks. Stay tuned for more details!
+
+            Thank you for your interest.
+
+            Best regards,
+
+            The Robo Rental Team`,
+        };
+        let info = await transporter.sendMail(mailOptions);
+        console.log('Email sent:', info.messageId);
+        res.redirect('/index2');
+    } catch (error) {
+        console.error('Error occurred:', error);
+    }
+});
 
 
 app.get('/confirmation', sessionValidation, (req, res) => {
