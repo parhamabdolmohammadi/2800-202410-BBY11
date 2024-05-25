@@ -22,7 +22,7 @@ const nodemailer = require('nodemailer');
 var { database } = include('databaseConnection');
 
 // Groqcloud API connection and AI functionality
-var { makeAiReqAndRes, getGroqChatCompletion } = include('groqAIAPI');
+var { makeAiReqAndRes, getGroqChatCompletion } = include('groqAiAPI');
 
 const port = process.env.PORT || 3000;
 
