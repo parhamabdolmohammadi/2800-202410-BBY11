@@ -819,6 +819,57 @@ app.post('/submitEmailBL', async (req, res) => {
 });
 
 
+async function sendAllEmails() {
+    try {
+        // Fetch email addresses from the collection
+        let emails = await emailsCollection.find({}, { projection: { email: 1 } }).toArray();
+        console.log("Emails array:", emails);
+
+        // Create a transporter object using the default SMTP transport
+        let transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+                user: 'roborental.team@gmail.com',
+                pass: process.env.EMAIL_PASSWORD
+            }
+        });
+
+        // Iterate over each email and send the notification
+        for (let { email } of emails) {
+            console.log("Sending email to:", email);
+
+            // Email options
+            let mailOptions = {
+                from: 'roborental.team@gmail.com',
+                to: email,
+                subject: 'Robo Rental Launched',
+                text: `We are thrilled to announce that Robo Rental, the app that makes it easy to rent robots for various services, has officially launched!
+
+With Robo Rental, you can seamlessly rent robots to assist with a variety of tasks, providing you with innovative solutions for your needs. Our app is designed to offer you convenience and efficiency at your fingertips.
+
+Thank you for your interest and support. We invite you to explore the app and discover the future of robotic services.
+
+Stay tuned for more updates and features coming soon!
+
+Best regards,
+
+The Robo Rental Team`
+            };
+
+            // Send email
+            try {
+                let info = await transporter.sendMail(mailOptions);
+                console.log('Email sent:', info.messageId);
+            } catch (error) {
+                console.error('Error sending email:', error);
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching emails:', error);
+    }
+}
+
+
 app.get('/confirmation', sessionValidation, (req, res) => {
     res.render("confirmation");
 });
