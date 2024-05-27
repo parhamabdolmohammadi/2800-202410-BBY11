@@ -44,9 +44,10 @@ const navLinks = [
 // To determine if the user is at the index page
 // Header.ejs uses to determine if it should load the navbar side panel or not
 var atIndexPage = false;
-
+let username1 = 'aran';
 app.use("/", (req, res, next) => {
     app.locals.navLinks = navLinks;
+    app.locals.username = username1;
     app.locals.currentURL = url.parse(req.url).pathname;
     app.locals.atIndexPage = false;
     next();
@@ -233,7 +234,8 @@ app.post('/submitUser', async (req, res) => {
     req.session.username = username;
     req.session.cookie.maxAge = expireTime;
     req.session.user_type = "user";
-
+    username1 = username;
+    
 
     res.redirect("/main");
 });
@@ -298,6 +300,7 @@ app.post('/loggingin', async (req, res) => {
       
         req.session.cookie.maxAge = expireTime;
         req.session.email = result[0].email;
+        username1 = result[0].username;
 
         res.redirect('/main');
         return;
