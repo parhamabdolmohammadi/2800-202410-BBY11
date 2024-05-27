@@ -666,6 +666,9 @@ app.post('/displayStation', async (req, res) => {
     res.render('station', {station1: currentStation , distance: distance });
 });
 
+app.get('/businessCheckout', sessionValidation, async (req, res) => {
+    res.render("businessCheckout");
+});
 
 app.get('/station', async (req, res) => {
    
