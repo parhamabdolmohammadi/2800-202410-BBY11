@@ -5,15 +5,18 @@ function fillCard(stat) {
    document.getElementById('card-address').innerHTML = stat.address;
    document.getElementById('station-name').innerHTML = stat.station_name;
    // for Coda current card Availability
-//    document.getElementById('card-availability').innerHTML = stat.robots_available;
+//    document.getElementById('card-availability').innerHTML = stat.robots_in_stock;
+//    document.getElementById('card-availability').innerHTML = stat.robots_total_stock;
 //    document.getElementById('card-phone').innerHTML = stat.contact_number;
    document.getElementById('station-distance').innerHTML = Math.floor(distance1 * 100) / 100 + " km" ;
-
+   document.getElementById('maxlable').innerHTML = "Max: " + (20-stat.robots_total_stock);
+   document.getElementById('number').max=(20-stat.robots_total_stock);
    localStorage.setItem('StationID', stat._id);
+   document.getElementById('station').value=stat._id;
   
 let serviceName = localStorage.getItem('ServiceName');
    document.getElementById('Selected-service').innerHTML =serviceName;
-   let price = localStorage.getItem('ServicePrice');   
+   let price = localStorage.getItem('ServicePrice');
 //    document.getElementById('price').innerHTML ='$'+price;
 
 

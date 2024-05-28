@@ -735,8 +735,37 @@ app.post('/DisplaybusinessCheckout', async (req, res) => {
     const services = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
 
     const currentStation = await stationsCollection.findOne({_id: objectId});
-
+      
     res.render('businessCheckout', {station1: currentStation , distance: distance , services, cardId, user_type: currentUser.user_type});
+});
+
+app.post('/addRobot', async (req, res) => {
+    const stationId = req.body.station;
+    const station = await stationsCollection.findOne({_id: new ObjectId(stationId)});
+    const current = station.robots_total_stock;
+    const added = req.body.number;
+    const newStock = current + parseInt(added);
+    await stationsCollection.updateOne({_id: new ObjectId(stationId)}, {$set: {robots_total_stock: newStock}});
+    res.redirect('/businessConfirmation');
+});
+
+app.get('/businessConfirmation', sessionValidation, (req, res) => {
+    function generateuuid() {
+        const uuid = uuidv4().replace(/-/g, '');
+        return uuid.slice(0, 24);
+    }
+    let orderNumber = generateuuid();
+    let timestamp = new Date().toISOString();
+
+    res.render("businessConfirmation", { orderNumber: orderNumber });
+        let id = new ObjectId(orderNumber);
+        ordersCollection.insertOne({
+            _id: id,
+            business: true,
+            timestamp: timestamp,
+            customerId: req.session._id
+        });
+    
 });
 
 app.get('/station', async (req, res) => {
@@ -745,10 +774,7 @@ app.get('/station', async (req, res) => {
     res.render("station");
 });
 
-app.get('/businessCheckout', async (req, res) => {
-   res.render('businessCheckout', {station1: currentStation , distance: distance , services});
-  
-});
+
 
 app.get('/bussinessOwnerForm', async (req, res) => {
     const currentUser = await userCollection.findOne(

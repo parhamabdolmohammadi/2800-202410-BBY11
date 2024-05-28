@@ -23,21 +23,7 @@
     document.head.appendChild(link3);
   });
 </script>
-
-<form action="/submit" method="POST">
-  <label for="robotCount">Number of Robots:</label>
-  <input type="number" id="robotCount" name="robotCount" required />
-
-  <label for="services">Services:</label>
-  <select id="services" name="services" multiple>
-    <% services.forEach(service => { %>
-    <option value="<%= service %>"><%= service %></option>
-    <% }) %>
-  </select>
-
-  <button type="submit">Submit</button>
-</form>
-
+<form action="addRobot" method="post">
 <div class="covering">
   <div class="card-style">
     <div class="card-header1">
@@ -57,7 +43,7 @@
     <div class="actual-content">
       <div style="padding: 0 5px">
         <div style="list-style-type: none">
-          <% if(user_type == "user_type") { %>
+          <% if(user_type == "user") { %>
 
           <p
             style="
@@ -67,7 +53,7 @@
               color: red;
             "
           >
-            You are not Business Owner!
+            You are not a Business Owner!
           </p>
           <% } else { %>
           <div style="color: green; display: flex; justify-content: center">
@@ -84,14 +70,14 @@
             />
             <span style="font-size: 19px">Choose quantity: &nbsp;&nbsp;</span
             ><input
-              min="18"
-              step="2"
-              max="99"
+              min="1"
+              step="1"
+              max="20"
               type="number"
               id="number"
               name="number"
-              value="19"
-            />
+              value="1"
+            /> <label id="maxlable" for="number">maximum: x</label>
           </div>
           <div class="list">
             <img src="/maps-and-flags.png" style="width: 30px" alt="" />
@@ -122,17 +108,16 @@
         </div>
       </div>
     </div>
+    <input hidden name="station" id="station" value=""/>
     <div class="text-center">
+        <button name="submit" type="submit"
+        style="float:right"    class="icon-container">Submit</button>
       <div style="float: right" class="button">
-        <a class="link-style" href="/checkout"
-          ><span class="icon-container">
-            <p style="margin-bottom: 0">Submit</p>
-          </span></a
-        >
       </div>
     </div>
   </div>
 </div>
+</form>
 <script>
   const station = <%- JSON.stringify(station1) %>;
   console.log(station);
