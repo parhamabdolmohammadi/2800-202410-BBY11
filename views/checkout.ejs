@@ -1,16 +1,11 @@
 <%- include("templates/header") %>
-
     <div class="container d-flex justify-content-center mt-5 mb-5">
-
         <div class="row g-3">
             <form class="my-form" action="submit-payment" method="post">
-
                 <div class="col-md-6">
                     <span>Payment Method</span>
                     <div class="card">
-
                         <div class="accordion" id="accordionExample">
-
                             <div class="card">
                                 <div class="card-header p-0" id="headingTwo">
                                     <h2 class="mb-0">
@@ -19,10 +14,8 @@
                                                 type="button" data-toggle="collapse" data-target="#collapseTwo"
                                                 aria-expanded="false" aria-controls="collapseTwo">
                                                 <div class="d-flex align-items-center justify-content-between">
-
                                                     <span>Paypal</span>
                                                     <img src="https://i.imgur.com/7kQEsHU.png" width="30">
-
                                                 </div>
                                             </button>
                                         </a>
@@ -36,7 +29,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="card">
                                 <div class="card-header p-0">
                                     <h2 class="mb-0">
@@ -45,7 +37,6 @@
                                                 data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
                                                 aria-controls="collapseOne">
                                                 <div class="d-flex align-items-center justify-content-between">
-
                                                     <span>Credit card</span>
                                                     <div class="icons">
                                                         <img src="https://i.imgur.com/2ISgYja.png" width="30">
@@ -53,84 +44,56 @@
                                                         <img src="https://i.imgur.com/35tC99g.png" width="30">
                                                         <img src="https://i.imgur.com/2ISgYja.png" width="30">
                                                     </div>
-
                                                 </div>
                                             </button>
                                         </a>
                                     </h2>
                                 </div>
-
                                 <div id="collapseOne" class="collapse <% if(query.type==='credit'){%> show <%} %>"
                                     aria-labelledby="headingOne" data-parent="#accordionExample">
                                     <div class="card-body payment-card-body">
-
                                         <span class="font-weight-normal card-text">Card Number</span>
                                         <div class="input">
-
                                             <i class="fa fa-credit-card"></i>
                                             <input type="text" name="cardnumber" class="form-control"
-                                                placeholder="0000 0000 0000 0000" value="<%= remember ? cardnumber : "" %>">
-
+                                                placeholder="0000 0000 0000 0000"
+                                                value="<%= remember ? cardnumber : "" %>">
                                         </div>
-
                                         <div class="row mt-3 mb-3">
-
                                             <div class="col-md-6">
-
                                                 <span class="font-weight-normal card-text">Expiry Date</span>
                                                 <div class="input">
-
                                                     <i class="fa fa-calendar"></i>
                                                     <input type="text" name="expirydate" class="form-control"
                                                         placeholder="MM/YY" value="<%= remember ? expirydate : "" %>">
-
                                                 </div>
-
                                             </div>
-
-
                                             <div class="col-md-6">
-
                                                 <span class="font-weight-normal card-text">CVC/CVV</span>
                                                 <div class="input">
-
                                                     <i class="fa fa-lock"></i>
-                                                    <input type="text" name="cvv" class="form-control"
-                                                        placeholder="000" value="<%= remember ? cvv : "" %>">
-
+                                                    <input type="text" name="cvv" class="form-control" placeholder="000"
+                                                        value="<%= remember ? cvv : "" %>">
                                                 </div>
-
                                             </div>
-
-
                                         </div>
-
                                         <span class="text-muted certificate-text"><i class="fa fa-lock"></i>
                                         </span>
-
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
                 <div class="d-flex justify-content-between p-3 station">
-
                     <div class="d-flex flex-column">
-
                         <span><small style="font-size:8pt">Station</small> <i class="fa fa-caret-down"></i></span>
                     </div>
-
                     <div class="mt-1">
                         <input hidden name="stationID" id="stationID" value="">
                         <spa name="stationId" id="stationId" class="super-price" value=""></sup>
                             <span class="super-month"></span>
                     </div>
-                    
-
                 </div>
                 <div class="col-md-6">
                     <span>Summary</span>
@@ -140,7 +103,7 @@
                                 <span>Service <i class="fa fa-caret-down"></i></span>
                             </div>
                             <div class="mt-1">
-                                <spa id="Selected-service"class="super-price"></sup>
+                                <spa id="Selected-service" class="super-price"></sup>
                                     <span class="super-month"></span>
                             </div>
                         </div>
@@ -150,53 +113,36 @@
 
                                 <span>Subtotal <i class="fa fa-caret-down"></i></span>
                                 <a href="#" class="billing">Save 20% with Premium</a>
-
                             </div>
-
                             <div class="mt-1">
-                                <span id="Selected-price"class="super-price">$9.99</span>
-                                    <span class="super-month"></span>
+                                <span id="Selected-price" class="super-price">$9.99</span>
+                                <span class="super-month"></span>
                             </div>
-
                         </div>
-
                         <hr class="mt-0 line">
-
                         <div class="p-3">
-
                             <div class="d-flex justify-content-between mb-2">
-
                                 <span>GST</span>
                                 <span id="gst"></span>
-
                             </div>
-
                             <div class="d-flex justify-content-between">
-
                                 <span>PST</span>
                                 <span id="pst"></span>
-
                             </div>
-
-
                         </div>
-
                         <hr class="mt-0 line">
-
-
                         <div class="p-3 d-flex justify-content-between">
-
                             <div class="d-flex flex-column">
-
                                 <span>Total</span>
-
                             </div>
                             <span id="total"></span>
                         </div>
                         <div style="margin:3%" class="form-check form-switch">
-                            <input name="remember" class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                            <input name="remember" class="form-check-input"
+                                   type="checkbox" id="flexSwitchCheckDefault"
+                                   <%= remember ? 'checked' : '' %> >
                             <label class="form-check-label" for="flexSwitchCheckDefault">Remember Me</label>
-                          </div>
+                        </div>
                         <% if (query.type==='credit' ) { %>
                             <div class="p-3">
                                 <button name="paymentType" type="submit" value="credit"
@@ -214,14 +160,12 @@
                                     </div>
                                 </div>
                                 <% } else {} %>
+
                     </div>
                 </div>
             </form>
         </div>
-
-
     </div>
     <script src="/checkout.js"></script>
-
 
     <%- include("templates/footer") %>

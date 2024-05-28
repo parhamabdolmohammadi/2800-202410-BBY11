@@ -14,7 +14,7 @@ const CryptoJS = require('crypto-js')
 // const iv = CryptoJS.lib.WordArray.random(16);
 // const salt = CryptoJS.enc.Hex.parse('')
 var key = CryptoJS.enc.Utf8.parse('b75524255a7f54d2726a951bb39204df');
-var iv  = CryptoJS.enc.Utf8.parse('1583288699248111');
+var iv = CryptoJS.enc.Utf8.parse('1583288699248111');
 const ObjectId = require('mongodb').ObjectId;
 const nodemailer = require('nodemailer');
 
@@ -37,7 +37,7 @@ const navLinks = [
     { name: "Login", link: "/login" },
     { name: "Admin", link: "/admin" },
     { name: "404", link: "/*" },
-    {name: "Bookmarks", link: "saved"},
+    { name: "Bookmarks", link: "saved" },
     { name: "Setting", link: "/setting" }
 ]
 
@@ -93,7 +93,7 @@ app.use(express.static(__dirname + "/audio"));
 // Map the file system paths to the app's virtual paths
 // Parameters: The root parameter describes the root directory from which to serve static assets.
 
-app.use(express.static(__dirname + "/scripts")); 
+app.use(express.static(__dirname + "/scripts"));
 
 
 
@@ -173,12 +173,12 @@ app.get('/setting', (req, res) => {
     res.render("setting")
 });
 
-app.get('/edit-profile', async (req,res) => {
+app.get('/edit-profile', async (req, res) => {
     let id = await req.session._id;
     let email = await req.session.email;
     console.log(email);
-    let unencryptedEmail = CryptoJS.AES.decrypt(email, key, { iv: iv}).toString(CryptoJS.enc.Utf8);
-    res.render("edit-profile", {name : req.session.username, email : unencryptedEmail, userId : id});
+    let unencryptedEmail = CryptoJS.AES.decrypt(email, key, { iv: iv }).toString(CryptoJS.enc.Utf8);
+    res.render("edit-profile", { name: req.session.username, email: unencryptedEmail, userId: id });
 });
 
 app.get('/edit-password', (req, res) => {
@@ -229,14 +229,14 @@ app.post('/submitUser', async (req, res) => {
     var html = "successfully created user";
     console.log(html);
 
-    req.session._id= _id;
+    req.session._id = _id;
     req.session.email = encryptedEmail;
     req.session.authenticated = true;
     req.session.username = username;
     req.session.cookie.maxAge = expireTime;
     req.session.user_type = "user";
     username1 = username;
-    
+
 
     res.redirect("/main");
 });
@@ -298,7 +298,7 @@ app.post('/loggingin', async (req, res) => {
         req.session.email = result[0].email;
         req.session.username = result[0].username;
         req.session.user_type = result[0].user_type;
-      
+
         req.session.cookie.maxAge = expireTime;
         req.session.email = result[0].email;
         username1 = result[0].username;
@@ -333,19 +333,19 @@ app.get('/main', async (req, res) => {
         return;
     }
     // console.log('finding...');
-    const services = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
-    const stations = await stationsCollection.find({}).toArray(); 
-    currentUserName = await userCollection.find({username: req.session.username}).project({username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1}).toArray();
+    const services = await general.find({}).project({ _id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
+    const stations = await stationsCollection.find({}).toArray();
+    currentUserName = await userCollection.find({ username: req.session.username }).project({ username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1 }).toArray();
     // console.log('this is ' + services);
     // services.forEach(service => {
     //     console.log(service.name);
     // })
     var username = req.session.username;
     // console.log('username is ' +  username);
-    res.render("main", {services, username, stations});
-    
-    
-    
+    res.render("main", { services, username, stations });
+
+
+
 });
 
 app.post('/main/ai-assistance', async (req, res) => {
@@ -353,7 +353,7 @@ app.post('/main/ai-assistance', async (req, res) => {
     const AIRequestMsg = req.body.aiAssistanceInput;
 
     // Get list of services from the database, store the names in an array
-    var listOfServices = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
+    var listOfServices = await general.find({}).project({ _id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
 
     var filteredServices = [];
 
@@ -372,23 +372,23 @@ app.post('/main/ai-assistance', async (req, res) => {
 
     // If any applicable services were found in the list of services ('I'm sorry' is NOT contained in the response String)
     if (!(AIResponse.includes("I'm sorry"))) {
-    
-    aiFoundServices = true;
 
-    var listOfAIRecommendedServices = [];
+        aiFoundServices = true;
 
-    // Parse the AI-generated response - divide listOfAIRecommendedServices 
-    // into an array of Strings, using '/' as delimeter
-    listOfAIRecommendedServices = AIResponse.split('/');
+        var listOfAIRecommendedServices = [];
 
-    // Remove first and last empty string elements (first and last = '')
-    listOfAIRecommendedServices.shift();
-    listOfAIRecommendedServices.pop();
+        // Parse the AI-generated response - divide listOfAIRecommendedServices 
+        // into an array of Strings, using '/' as delimeter
+        listOfAIRecommendedServices = AIResponse.split('/');
 
-    // Filter the listOfServices array (only include the ones that have name values in the listOfAIRecommendedServices array)
-    filteredServices = listOfServices.filter(service => listOfAIRecommendedServices.includes(service.name));
+        // Remove first and last empty string elements (first and last = '')
+        listOfAIRecommendedServices.shift();
+        listOfAIRecommendedServices.pop();
 
-    aiResponseHTML = "Here are some of our services that I can recommend based on your request:";
+        // Filter the listOfServices array (only include the ones that have name values in the listOfAIRecommendedServices array)
+        filteredServices = listOfServices.filter(service => listOfAIRecommendedServices.includes(service.name));
+
+        aiResponseHTML = "Here are some of our services that I can recommend based on your request:";
 
     } else {
         // only send the generated apology message
@@ -401,129 +401,128 @@ app.post('/main/ai-assistance', async (req, res) => {
     }
 
     // Send the filteredServices (array of json objects) back to the main page as a json object
-    res.json({aiResponseHTML, filteredServices, aiFoundServices});
+    res.json({ aiResponseHTML, filteredServices, aiFoundServices });
 });
 
 app.get('/checkout', sessionValidation, async (req, res) => {
     let stationId = req.query.stationId;
     let userId = new ObjectId(req.session._id);
     let result = await userCollection.findOne({ _id: userId }, { projection: { remember: 1 } });
-    let remember =""
-    try{
+    let remember = ""
+    try {
         remember = result.remember;
     } catch (error) {
         console.error("Cannot find remember", error.message);
     }
-
-    if(remember) {
+    console.log("remember: " + req.body.remember);
+    if (remember) {
         let paypalEmail = "";
         let cardnumber = "";
         let expirydate = "";
         let cvv = "";
-        const user = await userCollection.findOne({ _id: userId }, {projection: { cardnumber: 1, expirydate: 1, cvv: 1, paypalEmail: 1 }});
+        const user = await userCollection.findOne({ _id: userId }, { projection: { cardnumber: 1, expirydate: 1, cvv: 1, paypalEmail: 1 } });
         try {
-            paypalEmail = CryptoJS.AES.decrypt(user.paypalEmail, key, { iv: iv}).toString(CryptoJS.enc.Utf8);
+            paypalEmail = CryptoJS.AES.decrypt(user.paypalEmail, key, { iv: iv }).toString(CryptoJS.enc.Utf8);
         } catch (error) {
             console.error("Cannot find paypalEmail", error.message);
         }
-        
+
         try {
-            cardnumber = CryptoJS.AES.decrypt(user.cardnumber, key, { iv: iv}).toString(CryptoJS.enc.Utf8);
+            cardnumber = CryptoJS.AES.decrypt(user.cardnumber, key, { iv: iv }).toString(CryptoJS.enc.Utf8);
         } catch (error) {
             console.error("Cannot find cardnumber", error.message);
         }
-        
+
         try {
-            expirydate = CryptoJS.AES.decrypt(user.expirydate, key, { iv: iv}).toString(CryptoJS.enc.Utf8);
+            expirydate = CryptoJS.AES.decrypt(user.expirydate, key, { iv: iv }).toString(CryptoJS.enc.Utf8);
         } catch (error) {
             console.error("Cannot find expirydate", error.message);
         }
-        
+
         try {
-            cvv = CryptoJS.AES.decrypt(user.cvv, key, { iv: iv}).toString(CryptoJS.enc.Utf8);
+            cvv = CryptoJS.AES.decrypt(user.cvv, key, { iv: iv }).toString(CryptoJS.enc.Utf8);
         } catch (error) {
             console.error("Cannot find cvv", error.message);
         }
-        res.render("checkout", { query: req.query, remember: true, paypalEmail: paypalEmail, cardnumber: cardnumber, expirydate: expirydate, cvv: cvv});
+        res.render("checkout", { query: req.query, remember: true, paypalEmail: paypalEmail, cardnumber: cardnumber, expirydate: expirydate, cvv: cvv });
     } else {
-        res.render("checkout", { query: req.query, remember: false});
+        res.render("checkout", { query: req.query, remember: false });
     }
 });
 
 app.post('/submit-payment', sessionValidation, async (req, res) => {
-    let stationId= req.body.stationID;
+    let stationId = req.body.stationID;
     let paymentType = req.body.paymentType;
 
     try {
         let userId = new ObjectId(req.session._id);
         let remember = req.body.remember;
-        if(remember === "on") {
-            await userCollection.findOneAndUpdate({_id: userId}, {$set: {remember: true}});
+        if (remember === "on") {
+            await userCollection.findOneAndUpdate({ _id: userId }, { $set: { remember: true } });
         } else {
-            await userCollection.findOneAndUpdate({_id: userId}, {$set: {remember: false}});
+            await userCollection.findOneAndUpdate({ _id: userId }, { $set: { remember: false } });
         }
         if (paymentType === "credit") {
             let cardnumber = req.body.cardnumber;
             let expirydate = req.body.expirydate;
             let cvv = req.body.cvv;
 
-            const encryptedCardNumber = CryptoJS.AES.encrypt(cardnumber, key, {iv: iv}).toString();
-            const encryptedExpirydate = CryptoJS.AES.encrypt(expirydate, key, {iv: iv}).toString();
-            const encryptedCvv = CryptoJS.AES.encrypt(cvv, key, {iv: iv}).toString();
-            await userCollection.findOneAndUpdate({_id: userId}, 
-                {$set: {cardnumber: encryptedCardNumber, expirydate: encryptedExpirydate, cvv: encryptedCvv}});
-            
+            const encryptedCardNumber = CryptoJS.AES.encrypt(cardnumber, key, { iv: iv }).toString();
+            const encryptedExpirydate = CryptoJS.AES.encrypt(expirydate, key, { iv: iv }).toString();
+            const encryptedCvv = CryptoJS.AES.encrypt(cvv, key, { iv: iv }).toString();
+            await userCollection.findOneAndUpdate({ _id: userId },
+                { $set: { cardnumber: encryptedCardNumber, expirydate: encryptedExpirydate, cvv: encryptedCvv } });
+
 
         } else if (paymentType === "paypal") {
             let paypalEmail = req.body.paypalEmail;
-            const encryptedPaypalEmail = CryptoJS.AES.encrypt(paypalEmail, key, {iv: iv}).toString();
-            await userCollection.findOneAndUpdate({_id: userId}, {$set: {paypalEmail: encryptedPaypalEmail}});
+            const encryptedPaypalEmail = CryptoJS.AES.encrypt(paypalEmail, key, { iv: iv }).toString();
+            await userCollection.findOneAndUpdate({ _id: userId }, { $set: { paypalEmail: encryptedPaypalEmail } });
         }
     } catch (e) {
         console.log(e);
     }
-    try{
-        const station = await stationsCollection.findOne({_id: new ObjectId(stationId)});
+    try {
+        const station = await stationsCollection.findOne({ _id: new ObjectId(stationId) });
         current = station.robots_in_stock;
-        await stationsCollection.updateOne({_id: new ObjectId(stationId)}, {$set: {robots_in_stock: current - 1}});
+        await stationsCollection.updateOne({ _id: new ObjectId(stationId) }, { $set: { robots_in_stock: current - 1 } });
 
         setTimeout(() => {
             current = station.robots_in_stock;
-            current ++;
+            current++;
             console.log("15 Seconds passed")
-            stationsCollection.updateOne({_id: new ObjectId(stationId)}, {$set: {robots_in_stock: current}});
+            stationsCollection.updateOne({ _id: new ObjectId(stationId) }, { $set: { robots_in_stock: current } });
         }, 1000 * 60 * 60);
-    }catch(e){
+    } catch (e) {
         console.log(e);
     }
-
-
-    res.redirect('/confirmation?paymentType='+paymentType);
+    res.redirect('/confirmation?paymentType=' + paymentType);
 });
 
 
 app.get('/confirmation', sessionValidation, (req, res) => {
     function generateuuid() {
-        const uuid = uuidv4().replace(/-/g, ''); 
+        const uuid = uuidv4().replace(/-/g, '');
         return uuid.slice(0, 24);
-      }
-      let total = req.query.total;
-      let paymentType = req.query.paymentType;
-      let service = req.query.service;
-      let orderNumber = generateuuid();
-      let timestamp = new Date().toISOString();
+    }
+    let total = req.query.total;
+    let paymentType = req.query.paymentType;
+    let service = req.query.service;
+    let orderNumber = generateuuid();
+    let timestamp = new Date().toISOString();
 
-
-      let id = new ObjectId(orderNumber);
-      ordersCollection.insertOne({ 
-        _id: id, 
-        timestamp: timestamp, 
-        paymentType: paymentType, 
-        customerId: req.session._id, 
-        total: total, 
-        service: service});
-
-    res.render("confirmation", { orderNumber: orderNumber});
+    res.render("confirmation", { orderNumber: orderNumber });
+    if (total != null) {
+        let id = new ObjectId(orderNumber);
+        ordersCollection.insertOne({
+            _id: id,
+            timestamp: timestamp,
+            paymentType: paymentType,
+            customerId: req.session._id,
+            total: total,
+            service: service
+        });
+    }
 });
 
 const general = database.db('Services').collection('General')
@@ -537,14 +536,14 @@ if (isNewDataInserted) {
     // console.log(dataArray);
     dataArray.forEach(async (data) => {
         // console.log('this is data' + data.name);
-        const existingData = await general.findOne({name: data.name});
+        const existingData = await general.findOne({ name: data.name });
         if (!existingData) {
             data.background = `${data.name.trim().replace(/\s+/g, '')}.png`;
             await general.insertOne(data);
             console.log('Inserted new data:', data);
         } else {
             if (existingData.description !== data.description) {
-                await general.updateOne({ name: data.name}, {$set: {description: data.description}})
+                await general.updateOne({ name: data.name }, { $set: { description: data.description } })
             }
         }
     });
@@ -552,7 +551,7 @@ if (isNewDataInserted) {
 // to delete all data in general database
 // general.deleteMany({})
 
- 
+
 // background
 // "/plumbing.png"
 
@@ -598,7 +597,7 @@ app.post('/sendEmail', async (req, res) => {
         };
         const info = await transporter.sendMail(mailOptions);
         console.log('Email sent:', info.messageId);
-        res.render("enterCode", {resetCode: resetCode, userEmail: email});
+        res.render("enterCode", { resetCode: resetCode, userEmail: email });
     } catch (error) {
         console.error('Error occurred:', error);
     }
@@ -606,13 +605,13 @@ app.post('/sendEmail', async (req, res) => {
 
 app.post('/loginfromcode', async (req, res) => {
     try {
-        let code1= req.body.resetCode;
+        let code1 = req.body.resetCode;
         let code2 = req.body.inputCode;
         let email = req.body.email;
         if (code1 !== code2) {
             res.send("Invalid code. Please try again.");
         } else {
-            res.render("reset-password", {email: email});
+            res.render("reset-password", { email: email });
         }
     } catch (error) {
         console.error('Error occurred:', error);
@@ -626,12 +625,12 @@ app.post('/resetPassword', async (req, res) => {
         let email = req.body.email;
 
         console.log(password1, password2);
-        if(password1 === password2) {
+        if (password1 === password2) {
             let hashedPassword = await bcrypt.hash(password1, saltRounds);
-            console.log("Email: "+email);
-            console.log("Password: "+hashedPassword);
+            console.log("Email: " + email);
+            console.log("Password: " + hashedPassword);
 
-            await userCollection.updateOne({email: email}, {$set: {password: hashedPassword}});
+            await userCollection.updateOne({ email: email }, { $set: { password: hashedPassword } });
             res.redirect("/login");
         } else {
             res.send("Passwords do not match. Please try again.");
@@ -645,11 +644,11 @@ app.post('/resetPassword', async (req, res) => {
 
 app.get('/stations', async (req, res) => {
     try {
-        const stations = await stationsCollection.find({}).toArray(); 
+        const stations = await stationsCollection.find({}).toArray();
         const users = await userCollection.find({}).toArray();
-        currentUserName = await userCollection.find({username: req.session.username}).project({username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1}).toArray();
+        currentUserName = await userCollection.find({ username: req.session.username }).project({ username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1 }).toArray();
 
-        res.render("stations", { stations: stations, users: users, currentUserName: currentUserName}); 
+        res.render("stations", { stations: stations, users: users, currentUserName: currentUserName });
     } catch (error) {
         console.error("Error fetching stations:", error);
         res.status(500).send("Internal Server Error");
@@ -678,12 +677,12 @@ app.post('/editBookmark', async (req, res) => {
 
 app.get('/saved', async (req, res) => {
     try {
-        const stations = await stationsCollection.find({}).toArray(); 
+        const stations = await stationsCollection.find({}).toArray();
         const users = await userCollection.find({}).toArray();
-        currentUserName = await userCollection.find({username: req.session.username }).project({username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1}).toArray();
+        currentUserName = await userCollection.find({ username: req.session.username }).project({ username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1 }).toArray();
 
         // console.log("haha" + currentUserName);
-        res.render("saved", { stations: stations, users: users, currentUserName: currentUserName}); 
+        res.render("saved", { stations: stations, users: users, currentUserName: currentUserName });
     } catch (error) {
         console.error("Error fetching stations:", error);
         res.status(500).send("Internal Server Error");
@@ -694,8 +693,8 @@ app.get('/saved', async (req, res) => {
 app.post('/displayStation', async (req, res) => {
     const cardId = req.body.data;
     const distance = req.body.data2;
- 
-    
+
+
     const objectId = new ObjectId(cardId);
   
     const currentStation = await stationsCollection.findOne({_id: objectId});
@@ -728,9 +727,9 @@ app.post('/DisplaybusinessCheckout', async (req, res) => {
 });
 
 app.get('/station', async (req, res) => {
-   
-    
-        res.render("station"); 
+
+
+    res.render("station");
 });
 
 app.get('/businessCheckout', async (req, res) => {
@@ -742,98 +741,98 @@ app.get('/bussinessOwnerForm', async (req, res) => {
     const currentUser = await userCollection.findOne(
         { username: req.session.username },
         {
-          projection: {
-            username: 1,
-            user_type: 1, 
-            businessOwnerRequestInProgress: 1,
-          },
+            projection: {
+                username: 1,
+                user_type: 1,
+                businessOwnerRequestInProgress: 1,
+            },
         }
-      );
+    );
     console.log(currentUser.user_type == "user");
-    if(!currentUser.businessOwnerRequestInProgress) {
+    if (!currentUser.businessOwnerRequestInProgress) {
         res.render("bussinessOwnerForm", { email: req.session.email, request: false, user_type: currentUser.user_type });
     } else {
-        res.render("bussinessOwnerForm", { email: req.session.email, request: true, user_type: currentUser.user_type});
+        res.render("bussinessOwnerForm", { email: req.session.email, request: true, user_type: currentUser.user_type });
     }
-    
+
 })
 
 
 
 
 app.post('/bussinessOwnerSubmission', async (req, res) => {
-  let name = req.body.first_name;
-  let lastname = req.body.last_name;
-  let email = req.body.email;
-  let address = req.body.Address;
-  let phonenumber = req.body.Phone;
-  let businessName = req.body.Business_Name;
-  let businessAddress = req.body.Business_Address;
-  let description = req.body.textArea;
-  let dateOfBirth = req.body.date; // assuming 'date' is the field name for birth date
-  let gender = req.body.Gender; // assuming 'Gender' is the field name for gender
- 
-  // Create a transporter object using SMTP transport
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'roborental.bcit@gmail.com', // Your email address
-      pass:  process.env.EMAIL_PASSWORD // Your app-specific password
-    }
-  });
+    let name = req.body.first_name;
+    let lastname = req.body.last_name;
+    let email = req.body.email;
+    let address = req.body.Address;
+    let phonenumber = req.body.Phone;
+    let businessName = req.body.Business_Name;
+    let businessAddress = req.body.Business_Address;
+    let description = req.body.textArea;
+    let dateOfBirth = req.body.date; // assuming 'date' is the field name for birth date
+    let gender = req.body.Gender; // assuming 'Gender' is the field name for gender
 
-  // Example usage
-  const htmlContent = `
+    // Create a transporter object using SMTP transport
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'roborental.bcit@gmail.com', // Your email address
+            pass: process.env.EMAIL_PASSWORD // Your app-specific password
+        }
+    });
+
+    // Example usage
+    const htmlContent = `
     <h1>Hello ${name} ${lastname},</h1>
     <p>Thank you for your request we will process your request and reach out to you soon.</p>
     <p><strong>Best regards,</strong></p>
     <p>Robo Rental App</p>
   `;
 
-  console.log(htmlContent);
+    console.log(htmlContent);
 
-  // Function to send an email
-  async function sendEmail(email, htmlContent) {
-    try {
-      let info = await transporter.sendMail({
-        from: 'roborental.bcit@gmail.com', // Sender address
-        to: email, // List of receivers
-        subject: "Request In Progress", // Subject line
-        html: htmlContent // HTML body content
-      });
+    // Function to send an email
+    async function sendEmail(email, htmlContent) {
+        try {
+            let info = await transporter.sendMail({
+                from: 'roborental.bcit@gmail.com', // Sender address
+                to: email, // List of receivers
+                subject: "Request In Progress", // Subject line
+                html: htmlContent // HTML body content
+            });
 
-      console.log('Message sent: %s', info.messageId);
-    } catch (error) {
-      console.error('Error sending email:', error);
+            console.log('Message sent: %s', info.messageId);
+        } catch (error) {
+            console.error('Error sending email:', error);
+        }
     }
-  }
 
-  await sendEmail(email, htmlContent);
-  
-  await userCollection.updateOne({ username: req.session.username }, { $set: { businessOwnerRequestInProgress: true, name, lastname, phonenumber, address, businessName, businessAddress, description, dateOfBirth, gender  } });
-  res.render('bussinessOwnerSignupConfirmation', {});
+    await sendEmail(email, htmlContent);
+
+    await userCollection.updateOne({ username: req.session.username }, { $set: { businessOwnerRequestInProgress: true, name, lastname, phonenumber, address, businessName, businessAddress, description, dateOfBirth, gender } });
+    res.render('bussinessOwnerSignupConfirmation', {});
 });
 
 
 
 app.get('/bussinessOwnerSignupConfirmation', async (req, res) => {
-    
+
     console.log(req.session.email);
-    res.render("bussinessOwnerSignupConfirmation", { email: req.session.email});
+    res.render("bussinessOwnerSignupConfirmation", { email: req.session.email });
 })
 
-app.get('/admin', sessionValidation, adminAuthorization, async (req,res) => {
-    const result = await userCollection.find().project({username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1 }).toArray();
- 
-    res.render("admin", {users: result});
+app.get('/admin', sessionValidation, adminAuthorization, async (req, res) => {
+    const result = await userCollection.find().project({ username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1 }).toArray();
+
+    res.render("admin", { users: result });
 });
 
 app.post('/PromoteToBusinessOwner', async (req, res) => {
     let user_id = req.body.data;
     console.log(user_id);
     const objectId = new ObjectId(user_id);
-    await userCollection.updateOne({ _id : objectId}, { $set: { businessOwnerRequestInProgress: false, user_type: "businessOwner" } });
-    const result = await userCollection.find().project({username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1 }).toArray();
+    await userCollection.updateOne({ _id: objectId }, { $set: { businessOwnerRequestInProgress: false, user_type: "businessOwner" } });
+    const result = await userCollection.find().project({ username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1 }).toArray();
     res.redirect("/admin");
 });
 
@@ -841,14 +840,14 @@ app.post('/DemoteToUser', async (req, res) => {
     let user_id = req.body.data;
     console.log(user_id);
     const objectId = new ObjectId(user_id);
-    await userCollection.updateOne({ _id : objectId}, { $set: { businessOwnerRequestInProgress: false } });
-    const result = await userCollection.find().project({username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1 }).toArray();
+    await userCollection.updateOne({ _id: objectId }, { $set: { businessOwnerRequestInProgress: false } });
+    const result = await userCollection.find().project({ username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1 }).toArray();
     res.redirect("/admin");
 });
 
 app.post('/submitEmailBL', async (req, res) => {
-    var email=req.body.email;
-    await emailsCollection.insertOne({ email:email });
+    var email = req.body.email;
+    await emailsCollection.insertOne({ email: email });
     try {
         let transporter = nodemailer.createTransport({
             service: 'Gmail',
@@ -865,7 +864,7 @@ app.post('/submitEmailBL', async (req, res) => {
             from: 'roborental.team@gmail.com',
             to: email,
             subject: 'Robo Rental Launch',
-            text:`Exciting news! Robo Rental, the app that makes it easy to rent robots for various services, is launching soon.
+            text: `Exciting news! Robo Rental, the app that makes it easy to rent robots for various services, is launching soon.
             By signing up you will be notified on the day of our apps launch.
             Robo Rental offers a seamless solution for renting robots to assist with a variety of tasks. Stay tuned for more details!
 
@@ -935,7 +934,7 @@ The Robo Rental Team`
 }
 
 const sendEmails = process.env.SEND_EMAILS_PAGE_NAME;
-app.get("/"+sendEmails, (req, res) => {
+app.get("/" + sendEmails, (req, res) => {
     sendAllEmails();
     res.redirect('/');
 });

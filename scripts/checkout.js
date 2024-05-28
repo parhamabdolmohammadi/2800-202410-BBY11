@@ -7,7 +7,8 @@ let gst = servicePrice * 0.05;
 // Rounding to 2 decimal points
 pst = parseFloat(pst.toFixed(2));
 gst = parseFloat(gst.toFixed(2));
-let total = parseFloat(servicePrice) + pst + gst;
+let total = parseFloat((parseFloat(servicePrice) + pst + gst).toFixed(2));
+console.log("pst: "+pst + " gst: "+gst + " total: "+total );
 
 document.getElementById('stationId').value = stationId;
 document.getElementById('stationID').value = stationId;
