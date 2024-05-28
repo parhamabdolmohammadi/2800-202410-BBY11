@@ -45,7 +45,6 @@
 }
 
 @media only screen and (max-width: 700px) {
-
   #services-header {
     display: inline;
     font-size: 16pt;
@@ -54,7 +53,6 @@
 }
 
 @media only screen and (min-width: 701px) and (max-width: 1000px) {
-
   #services-header {
     display: inline;
     font-size: 24pt;
@@ -63,7 +61,6 @@
 }
 
 @media only screen and (min-width: 1001px) {
-
   #services-header {
     display: inline;
     font-size: 32pt;
@@ -86,7 +83,7 @@
   margin: 10px;
   padding: 10px 10px 10px 25px;
   border-radius: 0px;
-
+  transition: transform 1s linear;
   text-align: left;
 }
 
@@ -128,11 +125,12 @@
   position: relative;
   z-index: 1;
   color: white;
+}
+.cardi33 {
   display: grid;
   grid-template-columns: 70% 30%;
   align-items: center;
 }
-
 .service {
   display: grid;
 
@@ -385,7 +383,6 @@ q .card-subtitle {
   animation: dance 1s infinite;
 }
 
-
 @keyframes dance {
   0% {
     transform: translateY(1em);
@@ -552,4 +549,15 @@ q .card-subtitle {
 
 .robocircle {
   animation: rotate 2s linear infinite;
+}
+
+.flipped {
+  transform: rotateY(180deg);
+}
+
+.description:hover {
+  color: #80ced7;
+}
+.description2:hover {
+  color: #80ced7;
 }
