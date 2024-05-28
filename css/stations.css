@@ -60,3 +60,18 @@
     grid-template-areas: "stations-placeholder map";
   }
 }
+
+.footer-special {
+  background-color: silver;
+  display: flex !important;
+  margin: -13px;
+  justify-content: center;
+  transition: all 2s ease;
+  padding: 20px;
+}
+
+.footer-card {
+  display: none;
+
+  transition: all 2s ease;
+}

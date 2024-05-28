@@ -18,6 +18,7 @@ services.forEach(service => {
    
    newcard.querySelector(".service-name").innerHTML = name;
    newcard.querySelector(".service-description").innerHTML = description; 
+   
    newcard.querySelector(".service-price").innerHTML = "$"+price; 
 
    newcard.querySelector(".card-background").style.backgroundImage = `url(${background})`;
@@ -25,13 +26,25 @@ services.forEach(service => {
    newcard.querySelector(".card-background").style.backgroundRepeat = 'no-repeat';
    newcard.querySelector(".card-background").style.backgroundPosition = 'center';
    
-
+   
+   newcard.querySelector(".service-name").id = 'service-name'+ serviceID;
+   newcard.querySelector(".stations-button").id = 'stations-button'+ serviceID;
+   newcard.querySelector(".service-price").id = 'service-price'+ serviceID;
    newcard.querySelector(".button-location").id = "button-location-" + serviceID;                                    
    newcard.querySelector(".button-arrow").id = "button-arrow-" + serviceID;                                    
-   
+   newcard.querySelector(".description").id = "description" + serviceID;                                    
+   newcard.querySelector(".description2").id = "description2" + serviceID;                                    
+   newcard.querySelector(".cardi").id = "cardi" + serviceID;   
+   newcard.querySelector(".cardi3").id = "cardi3" + serviceID;                                  
+   newcard.querySelector(".service-description").id = "service-description" + serviceID; 
+   newcard.querySelector(".service-description").style.display = 'none'; 
+
    
    newcard.querySelector(".button-location").onclick = () => setID(serviceID, name, price);
    newcard.querySelector(".button-arrow").onclick= () =>  setID(serviceID, name, price)
+   newcard.querySelector(".description").onclick= () =>  setDescription(serviceID);
+   newcard.querySelector(".description2").onclick= () =>  undoDescription(serviceID);
+   newcard.querySelector(".description2").style.display = 'none'; 
 
    let stationInput = newcard.querySelector(".stationInput");
    stationInput.id = "stationInput-" + serviceID;
@@ -56,5 +69,48 @@ function setID(id, name, price) {
     localStorage.setItem('ServicePrice', price);
     console.log(price);
 }
+
+
+function setDescription(serviceID) {
+    // Toggle the 'flipped' class on the card
+    document.getElementById("cardi" + serviceID).classList.toggle("flipped");
+    document.getElementById( "description" + serviceID).classList.toggle("flipped");
+    document.getElementById("service-description" + serviceID).classList.toggle("flipped");
+    document.getElementById("description2" + serviceID).classList.toggle("flipped");
+    document.getElementById( "service-description" + serviceID).style.display = 'block'; 
+    document.getElementById( "description2" + serviceID).style.display = 'block'; 
+    document.getElementById( "description" + serviceID).style.display = 'block'; 
+    document.getElementById( "description" + serviceID).style.display = 'none'; 
+    // Hide the button-arrow element by setting its display style to 'none'
+    document.getElementById("button-arrow-" + serviceID).style.display = 'none';
+    
+    document.getElementById('service-price'+ serviceID).style.display = 'none';
+    document.getElementById('stations-button'+ serviceID).style.display = 'none';
+    document.getElementById('service-name'+ serviceID).style.display = 'none';
+
+    document.getElementById("cardi3" + serviceID).classList.toggle("cardi33");
+    
+}
+
+function undoDescription(serviceID) {
+    document.getElementById("cardi" + serviceID).classList.toggle("flipped");
+    document.getElementById( "description" + serviceID).classList.toggle("flipped");
+    document.getElementById("service-description" + serviceID).classList.toggle("flipped");
+    document.getElementById("description2" + serviceID).classList.toggle("flipped");
+    
+    document.getElementById( "service-description" + serviceID).style.display = 'none'; 
+    document.getElementById( "description2" + serviceID).style.display = 'none'; 
+
+    document.getElementById( "description" + serviceID).style.display = 'block'; 
+    document.getElementById("button-arrow-" + serviceID).style.display = 'block';
+    
+    document.getElementById('service-price'+ serviceID).style.display = 'block';
+    document.getElementById('stations-button'+ serviceID).style.display = 'block';
+    document.getElementById('service-name'+ serviceID).style.display = 'block';
+
+    document.getElementById("cardi3" + serviceID).classList.toggle("cardi33");
+}
+
+
 });
 
