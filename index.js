@@ -328,35 +328,46 @@ app.get('/logout', (req, res) => {
 
 
 app.get('/deleteAccount', (req, res) => {
-    async function deleteUserAccount(userId) {
-        const uri = 'mongodb+srv://Seohyeon:Qkrtjgus8663!@atlascluster.u56alig.mongodb.net/AtlasCluster?retryWrites=true&w=majority';
-        const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+const { MongoClient, ObjectId } = require('mongodb');
+
+async function deleteUserAccount(userId) {
     
-        try {
-            await client.connect();
-            const database = client.db('AtlasCluster'); 
-            const collection = database.collection('users'); // Replace with your collection name
+    const uri = 'mongodb+srv://Seohyeon:Qkrtjgus8663!@atlascluster.u56alig.mongodb.net/AtlasCluster?retryWrites=true&w=majority';
     
-            const result = await collection.deleteOne({ _id: new ObjectId(userId) });
-    
-            if (result.deletedCount === 1) {
-                console.log('Successfully deleted one document.');
-            } else {
-                console.log('No documents matched the query. Deleted 0 documents.');
-            }
-        } catch (err) {
-            console.error('An error occurred while deleting the user account:', err);
-        } finally {
-            await client.close();
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+    try {
+        
+        await client.connect();
+        
+        const database = client.db('AtlasCluster');
+        
+        const collection = database.collection('users'); 
+
+        
+        const result = await collection.deleteOne({ _id: new ObjectId(userId) });
+
+        
+        if (result.deletedCount === 1) {
+            console.log('Successfully deleted one document.');
+        } else {
+            console.log('No documents matched the query. Deleted 0 documents.');
         }
+    } catch (err) {
+        console.error('An error occurred while deleting the user account:', err);
+    } finally {
+
+        await client.close();
     }
+}
     
     // Example usage:
     let userId = new ObjectId(req.session._id);
     deleteUserAccount(userId);
 
 
-    res.redirect('/')
+    res.redirect('/logout')
 })
 
 
