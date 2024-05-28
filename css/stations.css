@@ -75,3 +75,33 @@
 
   transition: all 2s ease;
 }
+
+@keyframes fadeRedToWhite {
+  from {
+    background-color: #003249;
+  }
+  to {
+    background-color: white;
+  }
+}
+
+.highlight {
+  animation: fadeRedToWhite 2s linear forwards;
+}
+
+.media {
+  display: flex;
+  margin-bottom: 4rem;
+}
+
+.media__title {
+  margin-top: 0;
+}
+
+.media__body {
+  margin: 0 2rem;
+}
+
+.media__image {
+  margin-top: 1rem;
+}

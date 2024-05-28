@@ -201,7 +201,7 @@ q .card-subtitle {
 .callout__heading {
   color: #fff;
   margin-top: 0;
-  font-size: 3rem;
+  font-size: 30px;
 }
 
 .callout .btn1 {
@@ -555,9 +555,39 @@ q .card-subtitle {
   transform: rotateY(180deg);
 }
 
-.description:hover {
-  color: #80ced7;
+@media screen and (min-width: 1024px) {
+  .quote {
+    font-size: 20px;
+  }
+
+  .quote__author {
+    font-size: 24px;
+  }
+
+  .quote__organization {
+    font-size: 16px;
+  }
 }
-.description2:hover {
-  color: #80ced7;
+
+/**/
+
+.testimonial__image {
+  position: relative;
+  margin: 0 30px;
+}
+
+@media screen and (min-width: 768px) {
+  .testimonial__image {
+    margin: 0;
+  }
+
+  .testimonial .quote,
+  .testimonial .quote__author {
+    font-size: 24px;
+  }
+
+  .testimonial .quote {
+    margin-left: 60px;
+    margin-right: 0;
+  }
 }

@@ -21,7 +21,8 @@ station.forEach(station => {
    newcard.querySelector(".star-image").id = "save-" + CardId;
    newcard.querySelector(".star-image").onclick = () => updateBookmark1(CardId, isBookmarked);
    newcard.querySelector(".star-image").src = '/star1.png';
-   
+   newcard.querySelector(".card-style").id = "card-style"+CardId;
+
    newcard.querySelector(".id-placeholder").id = "id-placeholder" + CardId;
    newcard.querySelector(".id-placeholder11").id = "id-placeholder11" + CardId;
    newcard.querySelector(".id-button").id = "id-button" + CardId;
@@ -118,3 +119,6 @@ function updateBookmark1(id, isBookmarked) {
 
       document.getElementById("id-button2" + id).click();
    }
+
+ 
+   
