@@ -496,6 +496,31 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
     res.redirect('/confirmation?paymentType='+paymentType);
 });
 
+
+app.get('/confirmation', sessionValidation, (req, res) => {
+    function generateuuid() {
+        const uuid = uuidv4().replace(/-/g, ''); 
+        return uuid.slice(0, 24);
+      }
+      let total = req.query.total;
+      let paymentType = req.query.paymentType;
+      let service = req.query.service;
+      let orderNumber = generateuuid();
+      let timestamp = new Date().toISOString();
+
+
+      let id = new ObjectId(orderNumber);
+      ordersCollection.insertOne({ 
+        _id: id, 
+        timestamp: timestamp, 
+        paymentType: paymentType, 
+        customerId: req.session._id, 
+        total: total, 
+        service: service});
+
+    res.render("confirmation", { orderNumber: orderNumber});
+});
+
 const general = database.db('Services').collection('General')
 const fs = require('fs');
 const { time } = require("console");
@@ -881,29 +906,6 @@ app.get("/"+sendEmails, (req, res) => {
     res.redirect('/');
 });
 
-app.get('/confirmation', sessionValidation, (req, res) => {
-    function generateuuid() {
-        const uuid = uuidv4().replace(/-/g, ''); 
-        return uuid.slice(0, 24);
-      }
-      let total = req.query.total;
-      let paymentType = req.query.paymentType;
-      let service = req.query.service;
-      let orderNumber = generateuuid();
-      let timestamp = new Date().toISOString();
-
-
-      let id = new ObjectId(orderNumber);
-      ordersCollection.insertOne({ 
-        _id: id, 
-        timestamp: timestamp, 
-        paymentType: paymentType, 
-        customerId: req.session._id, 
-        total: total, 
-        service: service});
-
-    res.render("confirmation", { orderNumber: orderNumber});
-});
 
 app.get("*", (req, res) => {
     res.status(404);
