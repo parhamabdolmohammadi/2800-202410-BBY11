@@ -484,14 +484,14 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
     }
     try{
         const station = await stationsCollection.findOne({_id: new ObjectId(stationId)});
-        current = station.robots_available;
-        await stationsCollection.updateOne({_id: new ObjectId(stationId)}, {$set: {robots_available: current - 1}});
+        current = station.robots_in_stock;
+        await stationsCollection.updateOne({_id: new ObjectId(stationId)}, {$set: {robots_in_stock: current - 1}});
 
         setTimeout(() => {
-            current = station.robots_available;
+            current = station.robots_in_stock;
             current ++;
             console.log("15 Seconds passed")
-            stationsCollection.updateOne({_id: new ObjectId(stationId)}, {$set: {robots_available: current}});
+            stationsCollection.updateOne({_id: new ObjectId(stationId)}, {$set: {robots_in_stock: current}});
         }, 1000 * 60 * 60);
     }catch(e){
         console.log(e);
