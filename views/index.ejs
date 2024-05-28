@@ -10,62 +10,90 @@
         <button type='button' onclick="window.location.href = '/login';" class="btn btn-light btn-outline-secondary w-100 py-2 mb-2">Log in</button>
     </div> -->
 
-  <div
-    id="index-welcome-image-container"
-    style="background-image: url(robots-servicing.png)"
-  >
-    <!-- <img src="robots-servicing.png" id="index-welcome-img"/> -->
-    <h3 id="index-welcome-message">
-      <span style="font-weight: bold">Order robot services near you</span>
-    </h3>
-    <!-- Search bar -->
-    <form id="index-search-form" class="d-flex mx-auto" role="search">
-      <!-- Filter button and dropdown menu -->
-      <div class="dropdown d-flex justify-content-center">
-        <button
-          type="button"
-          id="filter-button"
-          class="btn btn-light dropdown-toggle"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-          data-bs-auto-close="outside"
-        >
-          <span class="material-symbols-outlined">location_on</span>
-        </button>
-      </div>
+  <section class="block">
+    <div
+      style="max-width: 1140px; margin: 0 auto"
+      class="container grid grid--1x2"
+    >
+      <header
+        style="
+          display: flex;
+          flex-direction: column;
+          justify-self: center;
+          justify-content: center;
+          align-content: center;
+          gap: 30px;
+        "
+        class="block__header hero__content"
+      >
+        <h3 id="index-welcome-message">
+          <span style="font-weight: bold; color: white"
+            >Order robot services near you</span
+          >
+        </h3>
+        <!-- Search bar -->
+        <form id="index-search-form" class="d-flex mx-auto" role="search">
+          <!-- Filter button and dropdown menu -->
+          <div class="dropdown d-flex justify-content-center">
+            <button
+              type="button"
+              id="filter-button"
+              class="btn btn-light dropdown-toggle"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              data-bs-auto-close="outside"
+            >
+              <span class="material-symbols-outlined">location_on</span>
+            </button>
+          </div>
 
-      <!-- Search bar text input -->
-      <input
-        id="search-text"
-        class="form-control"
-        type="search"
-        placeholder="Enter delivery address"
-        aria-label="Search"
-        aria-describedby="search-addon"
+          <!-- Search bar text input -->
+          <input
+            id="search-text"
+            class="form-control"
+            type="search"
+            placeholder="Enter delivery address"
+            aria-label="Search"
+            aria-describedby="search-addon"
+          />
+          <!-- Search button -->
+          <button id="search-button" class="btn btn-light" type="submit">
+            <span class="material-symbols-outlined">search</span>
+          </button>
+        </form>
+        <div id="index-login-signup-button-container">
+          <button
+            type="button"
+            onclick="window.location.href = '/login';"
+            class="btn btn-light btn-outline-secondary py-2 rounded-pill index-signup-login-buttons"
+          >
+            Log in
+          </button>
+          <button
+            type="button"
+            onclick="window.location.href = '/signup';"
+            class="btn py-2 rounded-pill index-signup-login-buttons"
+            style="background-color: #003249 !important; color: white"
+          >
+            Sign up
+          </button>
+        </div>
+      </header>
+
+      <img
+        style="
+          position: relative;
+          top: 120px;
+          left: 0px;
+          margin-top: 0;
+          width: 100%;
+        "
+        class="hero__image"
+        src="robo.png"
+        alt=""
       />
-      <!-- Search button -->
-      <button id="search-button" class="btn btn-light" type="submit">
-        <span class="material-symbols-outlined">search</span>
-      </button>
-    </form>
-    <div id="index-login-signup-button-container">
-      <button
-        type="button"
-        onclick="window.location.href = '/login';"
-        class="btn btn-light btn-outline-secondary py-2 rounded-pill index-signup-login-buttons"
-      >
-        Log in
-      </button>
-      <button
-        type="button"
-        onclick="window.location.href = '/signup';"
-        class="btn py-2 rounded-pill index-signup-login-buttons"
-        style="background-color: #003249 !important; color: white"
-      >
-        Sign up
-      </button>
     </div>
-  </div>
+  </section>
 
   <div style="margin: 30px 0">
     <header
