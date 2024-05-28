@@ -1,33 +1,48 @@
 <%- include("templates/header") %>
 <div class="my-3">
-    <a href='/setting' class="btn btn-secondary back-btn">Back</a>
+  <a href='/setting' class="btn btn-secondary back-btn">Back</a>
 </div>
+<div class="signup-login-page-container">
+    <main style="max-width: 504px;" class="form-signin py-3 px-3 w-100 m-auto signup-login-form-container">
+      <form action="#" method="post">
+        <h4 class="h4 mb-3 fw-bold text-center">Edit Profile</h4>
+        <div>
+          <label for="signupUsername" class="form-label">Username</label>
+          <br/>
+          
+          <input
+            name="username"
+            type="text"
+            placeholder="<%= name %>"
+            class="signup-login-form-input-style"
+            id="signupUsername"
+          />      
+        </div>
+        <br/>
+        
+        <div>
+          <label for="signupEmail" class="form-label">Email address</label>
+          <br/>
+          
+          <input
+            name="email"
+            type="email"
+            placeholder="<%= email %>"
+            class="signup-login-form-input-style"
+            id="signupEmail"
+          />      
+        </div>
+        <br/>
 
-<div class="container">
-    <h1 id="profile-h1">Edit profile</h1>
-    <div id="emailHelp" class="form-text">User with id <%= userId %>.</div>
-
-    <div class="edit-account-form">
-        <form>
-            <div class="mb-3">
-                <label for="edit-user-email" class="form-label">Email</label>
-                <input placeholder="<%= email %>" type="email" class="form-control" id="edit-user-email" aria-describedby="emailHelp" required>
-                <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-            </div>
-            <div class="mb-3">
-                <label for="edit-user-name"  class="form-label">Name</label>
-                <input placeholder="<%= name %>" type="text" class="form-control" id="edit-user-name" aria-describedby="nameHelp" required>
-            </div>
-            <div class="mb-3">
-                <label for="current-password" class="form-label">Current Password</label>
-                <input type="password" class="form-control" id="current-password" required>
-            </div>
-            <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="apply-changes">
-                <label class="form-check-label" for="apply-changes">Apply</label>
-            </div>
-            <button type="submit" class="button">Submit</button>
-        </form>
-    </div>
+        <button
+          style="background-color: #003249 !important; color: white;"
+          class="btn w-100 py-2"
+          type="submit"
+        >
+          Apply Changes
+        </button>
+      </form>
+    </main>
   </div>
+  
   <%- include("templates/footer") %>
