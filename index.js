@@ -2,7 +2,7 @@
 require("./utils.js");
 
 const url = require('url');
-
+const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
@@ -66,6 +66,7 @@ const mongodb_database2 = process.env.MONGODB_DATABASE2;
 
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* END secret section */
+const ordersCollection = database.db(mongodb_database).collection('orders');
 
 const userCollection = database.db(mongodb_database).collection('users');
 const stationsCollection = database.db(mongodb_database2).collection('Stations');
@@ -450,9 +451,10 @@ app.get('/checkout', sessionValidation, async (req, res) => {
 });
 
 app.post('/submit-payment', sessionValidation, async (req, res) => {
-    stationId= req.body.stationID;
+    let stationId= req.body.stationID;
+    let paymentType = req.body.paymentType;
+
     try {
-        let paymentType = req.body.paymentType;
         let userId = new ObjectId(req.session._id);
         let remember = req.body.remember;
         if(remember === "on") {
@@ -483,19 +485,50 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
     try{
         const station = await stationsCollection.findOne({_id: new ObjectId(stationId)});
         current = station.robots_available;
-        console.log(current);
         await stationsCollection.updateOne({_id: new ObjectId(stationId)}, {$set: {robots_available: current - 1}});
-        
+
+        setTimeout(() => {
+            current = station.robots_available;
+            current ++;
+            console.log("15 Seconds passed")
+            stationsCollection.updateOne({_id: new ObjectId(stationId)}, {$set: {robots_available: current}});
+        }, 1000 * 60 * 60);
     }catch(e){
         console.log(e);
     }
 
 
-    res.redirect('/confirmation');
+    res.redirect('/confirmation?paymentType='+paymentType);
+});
+
+
+app.get('/confirmation', sessionValidation, (req, res) => {
+    function generateuuid() {
+        const uuid = uuidv4().replace(/-/g, ''); 
+        return uuid.slice(0, 24);
+      }
+      let total = req.query.total;
+      let paymentType = req.query.paymentType;
+      let service = req.query.service;
+      let orderNumber = generateuuid();
+      let timestamp = new Date().toISOString();
+
+
+      let id = new ObjectId(orderNumber);
+      ordersCollection.insertOne({ 
+        _id: id, 
+        timestamp: timestamp, 
+        paymentType: paymentType, 
+        customerId: req.session._id, 
+        total: total, 
+        service: service});
+
+    res.render("confirmation", { orderNumber: orderNumber});
 });
 
 const general = database.db('Services').collection('General')
-const fs = require('fs')
+const fs = require('fs');
+const { time } = require("console");
 let isNewDataInserted = false; // This should be false when all data in service.json is stored in mongo db
 if (isNewDataInserted) {
     const jsonData = fs.readFileSync('service.json', 'utf8');
@@ -878,9 +911,6 @@ app.get("/"+sendEmails, (req, res) => {
     res.redirect('/');
 });
 
-app.get('/confirmation', sessionValidation, (req, res) => {
-    res.render("confirmation");
-});
 
 app.get("*", (req, res) => {
     res.status(404);
