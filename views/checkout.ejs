@@ -159,13 +159,25 @@
                                         <a href="#"></a>
                                     </div>
                                 </div>
-                                <% } else {} %>
-
+                                <% } else { %>
+                                    <div class="p-3">
+                                        <div style="color:#038CB2" class="text-center">
+                                            <b>Enter Payment Method to proceed</b>
+                                        </div>
+                                    </div>
+                                    <% }%>
                     </div>
                 </div>
             </form>
         </div>
     </div>
     <script src="/checkout.js"></script>
+    <script>
+        <% if (query.error==="emptypp") { %>
+          alert('Please enter a valid email');
+        <% } else if (query.error==="emptycc") {%>
+            alert('Please fill out all fields');
+        <% } %>
+      </script>
 
     <%- include("templates/footer") %>

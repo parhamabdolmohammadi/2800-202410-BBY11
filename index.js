@@ -414,7 +414,6 @@ app.get('/checkout', sessionValidation, async (req, res) => {
     } catch (error) {
         console.error("Cannot find remember", error.message);
     }
-    console.log("remember: " + req.body.remember);
     if (remember) {
         let paypalEmail = "";
         let cardnumber = "";
@@ -454,6 +453,7 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
     let stationId = req.body.stationID;
     let paymentType = req.body.paymentType;
 
+
     try {
         let userId = new ObjectId(req.session._id);
         let remember = req.body.remember;
@@ -467,21 +467,36 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
             let expirydate = req.body.expirydate;
             let cvv = req.body.cvv;
 
+            if(!cardnumber || !expirydate || !cvv){
+                res.redirect('/checkout?type=credit&stationId=' + stationId + '&error=emptycc');
+                return;
+            }
+
             const encryptedCardNumber = CryptoJS.AES.encrypt(cardnumber, key, { iv: iv }).toString();
             const encryptedExpirydate = CryptoJS.AES.encrypt(expirydate, key, { iv: iv }).toString();
             const encryptedCvv = CryptoJS.AES.encrypt(cvv, key, { iv: iv }).toString();
             await userCollection.findOneAndUpdate({ _id: userId },
                 { $set: { cardnumber: encryptedCardNumber, expirydate: encryptedExpirydate, cvv: encryptedCvv } });
-
+                removeRobotFromDatabase()
 
         } else if (paymentType === "paypal") {
             let paypalEmail = req.body.paypalEmail;
+            if(!paypalEmail){
+                res.redirect('/checkout?type=paypal&stationId=' + stationId + '&error=emptypp');
+                return;
+            }
             const encryptedPaypalEmail = CryptoJS.AES.encrypt(paypalEmail, key, { iv: iv }).toString();
             await userCollection.findOneAndUpdate({ _id: userId }, { $set: { paypalEmail: encryptedPaypalEmail } });
+            removeRobotFromDatabase()
         }
     } catch (e) {
         console.log(e);
     }
+
+    res.redirect('/confirmation?paymentType=' + paymentType);
+});
+
+async function removeRobotFromDatabase(){
     try {
         const station = await stationsCollection.findOne({ _id: new ObjectId(stationId) });
         current = station.robots_in_stock;
@@ -490,14 +505,12 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
         setTimeout(() => {
             current = station.robots_in_stock;
             current++;
-            console.log("15 Seconds passed")
             stationsCollection.updateOne({ _id: new ObjectId(stationId) }, { $set: { robots_in_stock: current } });
         }, 1000 * 60 * 60);
     } catch (e) {
         console.log(e);
     }
-    res.redirect('/confirmation?paymentType=' + paymentType);
-});
+}
 
 
 app.get('/confirmation', sessionValidation, (req, res) => {
