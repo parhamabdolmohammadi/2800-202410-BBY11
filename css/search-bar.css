@@ -7,7 +7,8 @@
   z-index: 2;
 
   padding: 0;
-  width: 350pt;
+  min-width: 20em;
+  width: 40%;
   height: 40pt;
 
   margin-bottom: 1%;

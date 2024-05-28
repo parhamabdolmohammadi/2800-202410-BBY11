@@ -493,7 +493,7 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
 
 const general = database.db('Services').collection('General')
 const fs = require('fs')
-let isNewDataInserted = false; // This should be false when all data in service.json is stored in mongo db
+let isNewDataInserted = true; // This should be false when all data in service.json is stored in mongo db
 if (isNewDataInserted) {
     const jsonData = fs.readFileSync('service.json', 'utf8');
     const dataArray = JSON.parse(jsonData);
@@ -505,7 +505,7 @@ if (isNewDataInserted) {
         if (!existingData) {
             data.background = `${data.name.trim().replace(/\s+/g, '')}.png`;
             await general.insertOne(data);
-            console.log('Inserted new data:', data);
+            // console.log('Inserted new data:', data);
         } else {
             if (existingData.description !== data.description) {
                 await general.updateOne({ name: data.name}, {$set: {description: data.description}})
