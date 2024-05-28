@@ -1,0 +1,15 @@
+<%- include("templates/header") %> 
+<form action="/submit" method="POST">
+    <label for="robotCount">Number of Robots:</label>
+    <input type="number" id="robotCount" name="robotCount" required>
+
+    <label for="services">Services:</label>
+    <select id="services" name="services" multiple>
+        <% services.forEach(service => { %>
+            <option value="<%= service %>"><%= service %></option>
+        <% }) %>
+    </select>
+
+    <button type="submit">Submit</button>
+</form>
+<%- include("templates/footer") %>
