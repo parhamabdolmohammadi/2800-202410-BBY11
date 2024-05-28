@@ -7,6 +7,7 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
+const MongoClient = require('mongodb');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
 const CryptoJS = require('crypto-js')
@@ -325,6 +326,49 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
+
+app.get('/deleteAccount', (req, res) => {
+
+const { MongoClient, ObjectId } = require('mongodb');
+
+async function deleteUserAccount(userId) {
+    
+    const uri = 'mongodb+srv://Seohyeon:Qkrtjgus8663!@atlascluster.u56alig.mongodb.net/AtlasCluster?retryWrites=true&w=majority';
+    
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+    try {
+        
+        await client.connect();
+        
+        const database = client.db('AtlasCluster');
+        
+        const collection = database.collection('users'); 
+
+        
+        const result = await collection.deleteOne({ _id: new ObjectId(userId) });
+
+        
+        if (result.deletedCount === 1) {
+            console.log('Successfully deleted one document.');
+        } else {
+            console.log('No documents matched the query. Deleted 0 documents.');
+        }
+    } catch (err) {
+        console.error('An error occurred while deleting the user account:', err);
+    } finally {
+
+        await client.close();
+    }
+}
+    
+    // Example usage:
+    let userId = new ObjectId(req.session._id);
+    deleteUserAccount(userId);
+
+
+    res.redirect('/logout')
+})
 
 
 app.get('/main', async (req, res) => {
