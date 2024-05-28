@@ -709,16 +709,45 @@ app.post('/displayStation', async (req, res) => {
 
 
     const objectId = new ObjectId(cardId);
-
-    const currentStation = await stationsCollection.findOne({ _id: objectId });
-    res.render('station', { station1: currentStation, distance: distance });
+  
+    const currentStation = await stationsCollection.findOne({_id: objectId});
+    res.render('station', {station1: currentStation , distance: distance, cardId });
 });
 
+app.post('/DisplaybusinessCheckout', async (req, res) => {
+
+    const currentUser = await userCollection.findOne(
+        { username: req.session.username },
+        {
+          projection: {
+            username: 1,
+            user_type: 1, 
+            businessOwnerRequestInProgress: 1,
+          },
+        }
+      );
+      console.log(currentUser.user_type == "user");
+    const cardId = req.body.data;
+    const distance = req.body.data2;
+ 
+    
+    const objectId = new ObjectId(cardId);
+    const services = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
+
+    const currentStation = await stationsCollection.findOne({_id: objectId});
+
+    res.render('businessCheckout', {station1: currentStation , distance: distance , services, cardId, user_type: currentUser.user_type});
+});
 
 app.get('/station', async (req, res) => {
 
 
     res.render("station");
+});
+
+app.get('/businessCheckout', async (req, res) => {
+   res.render('businessCheckout', {station1: currentStation , distance: distance , services});
+  
 });
 
 app.get('/bussinessOwnerForm', async (req, res) => {
