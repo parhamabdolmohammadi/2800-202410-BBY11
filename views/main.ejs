@@ -57,18 +57,20 @@
     </button>
   </form>
 
-  <h1 class="app-name dance1">
-    <span id="span1" onclick="dow(1)">R</span>
-    <span id="span2" onclick="re(2)">O</span>
-    <span id="span3" onclick="mi(3)">B</span>
-    <span id="span4" onclick="fa(4)">O</span>
-    <span id="span5">&nbsp;</span>
-    <span id="span6" onclick="sol()">R</span>
-    <span id="span7" onclick="la()">E</span>
-    <span id="span8" onclick="si()">N</span>
-    <span id="span9" onclick="dow(9)">T</span>
-    <span id="span10" onclick="re(10)">A</span>
-    <span id="span11" onclick="mi(11)">L</span>
+  <h1 class="app-name dance1 alphabets">
+    <div style="display: inline;">
+      <span id="span1" onclick="dow(1)">R</span>
+      <span id="span2" onclick="re(2)">O</span>
+      <span id="span3" onclick="mi(3)">B</span>
+      <span id="span4" onclick="fa(4)">O</span>
+      <span id="span5">&nbsp;</span>
+      <span id="span6" onclick="sol()">R</span>
+      <span id="span7" onclick="la()">E</span>
+      <span id="span8" onclick="si()">N</span>
+      <span id="span9" onclick="dow(9)">T</span>
+      <span id="span10" onclick="re(10)">A</span>
+      <span id="span11" onclick="mi(11)">L</span>
+    </div>
     <div onclick="animateRobo();" class="robo">
       <img style="padding: 10px; width: 100%" src="./roboto.png" alt="" />
     </div>
@@ -152,7 +154,7 @@
   </header>
   <div style="max-width: 1340px; 
   margin: 0 auto;  border: 1px solid rgba(0, 0, 0, 0.1); box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);">
-    <div style="border: none;  padding: 30px" >
+    <div style="border: none;  padding: 30px;" >
       <div class="grid grid--1x2 " style="gap: 20px;">
         <div class="testimonial__image">
           <img style="width: 100%; height: 100%;" src="persona.png" alt="A happy, smiling customer">

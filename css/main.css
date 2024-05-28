@@ -217,7 +217,6 @@ q .card-subtitle {
 @media screen and (min-width: 768px) {
   .callout .grid--1x2 {
     grid-template-columns: 1fr auto;
-    /* that will make the button wide enough to fit its column and all the extra space would be dedicated to the other column with on fraction of space*/
   }
 
   .callout__content {
@@ -553,6 +552,22 @@ q .card-subtitle {
 
 .flipped {
   transform: rotateY(180deg);
+}
+
+.alphabets {
+  transform: scale(1);
+}
+@media screen and (max-width: 440px) {
+  .alphabets {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .alphabets span {
+    width: 3px;
+    height: 3px;
+    margin: 0 9px;
+  }
 }
 
 @media screen and (min-width: 1024px) {
