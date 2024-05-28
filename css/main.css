@@ -45,7 +45,6 @@
 }
 
 @media only screen and (max-width: 700px) {
-
   #services-header {
     display: inline;
     font-size: 16pt;
@@ -54,7 +53,6 @@
 }
 
 @media only screen and (min-width: 701px) and (max-width: 1000px) {
-
   #services-header {
     display: inline;
     font-size: 24pt;
@@ -63,7 +61,6 @@
 }
 
 @media only screen and (min-width: 1001px) {
-
   #services-header {
     display: inline;
     font-size: 32pt;
@@ -86,7 +83,7 @@
   margin: 10px;
   padding: 10px 10px 10px 25px;
   border-radius: 0px;
-
+  transition: transform 1s linear;
   text-align: left;
 }
 
@@ -128,11 +125,12 @@
   position: relative;
   z-index: 1;
   color: white;
+}
+.cardi33 {
   display: grid;
   grid-template-columns: 70% 30%;
   align-items: center;
 }
-
 .service {
   display: grid;
 
@@ -203,7 +201,7 @@ q .card-subtitle {
 .callout__heading {
   color: #fff;
   margin-top: 0;
-  font-size: 3rem;
+  font-size: 30px;
 }
 
 .callout .btn1 {
@@ -219,7 +217,6 @@ q .card-subtitle {
 @media screen and (min-width: 768px) {
   .callout .grid--1x2 {
     grid-template-columns: 1fr auto;
-    /* that will make the button wide enough to fit its column and all the extra space would be dedicated to the other column with on fraction of space*/
   }
 
   .callout__content {
@@ -384,7 +381,6 @@ q .card-subtitle {
 .dance {
   animation: dance 1s infinite;
 }
-
 
 @keyframes dance {
   0% {
@@ -552,4 +548,61 @@ q .card-subtitle {
 
 .robocircle {
   animation: rotate 2s linear infinite;
+}
+
+.flipped {
+  transform: rotateY(180deg);
+}
+
+.alphabets {
+  transform: scale(1);
+}
+@media screen and (max-width: 440px) {
+  .alphabets {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .alphabets span {
+    width: 3px;
+    height: 3px;
+    margin: 0 9px;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .quote {
+    font-size: 20px;
+  }
+
+  .quote__author {
+    font-size: 24px;
+  }
+
+  .quote__organization {
+    font-size: 16px;
+  }
+}
+
+/**/
+
+.testimonial__image {
+  position: relative;
+  margin: 0 30px;
+}
+
+@media screen and (min-width: 768px) {
+  .testimonial__image {
+    margin: 0;
+  }
+
+  .testimonial .quote,
+  .testimonial .quote__author {
+    font-size: 24px;
+  }
+
+  .testimonial .quote {
+    margin-left: 60px;
+    margin-right: 0;
+  }
 }

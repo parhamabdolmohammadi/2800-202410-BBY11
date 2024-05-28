@@ -2,11 +2,12 @@
 require("./utils.js");
 
 const url = require('url');
-
+const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
+const MongoClient = require('mongodb');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
 const CryptoJS = require('crypto-js')
@@ -44,9 +45,10 @@ const navLinks = [
 // To determine if the user is at the index page
 // Header.ejs uses to determine if it should load the navbar side panel or not
 var atIndexPage = false;
-
+let username1 = 'aran';
 app.use("/", (req, res, next) => {
     app.locals.navLinks = navLinks;
+    app.locals.username = username1;
     app.locals.currentURL = url.parse(req.url).pathname;
     app.locals.atIndexPage = false;
     next();
@@ -65,6 +67,7 @@ const mongodb_database2 = process.env.MONGODB_DATABASE2;
 
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* END secret section */
+const ordersCollection = database.db(mongodb_database).collection('orders');
 
 const userCollection = database.db(mongodb_database).collection('users');
 const stationsCollection = database.db(mongodb_database2).collection('Stations');
@@ -233,7 +236,8 @@ app.post('/submitUser', async (req, res) => {
     req.session.username = username;
     req.session.cookie.maxAge = expireTime;
     req.session.user_type = "user";
-
+    username1 = username;
+    
 
     res.redirect("/main");
 });
@@ -298,6 +302,7 @@ app.post('/loggingin', async (req, res) => {
       
         req.session.cookie.maxAge = expireTime;
         req.session.email = result[0].email;
+        username1 = result[0].username;
 
         res.redirect('/main');
         return;
@@ -321,6 +326,49 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
+
+app.get('/deleteAccount', (req, res) => {
+
+const { MongoClient, ObjectId } = require('mongodb');
+
+async function deleteUserAccount(userId) {
+    
+    const uri = 'mongodb+srv://Seohyeon:Qkrtjgus8663!@atlascluster.u56alig.mongodb.net/AtlasCluster?retryWrites=true&w=majority';
+    
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+    try {
+        
+        await client.connect();
+        
+        const database = client.db('AtlasCluster');
+        
+        const collection = database.collection('users'); 
+
+        
+        const result = await collection.deleteOne({ _id: new ObjectId(userId) });
+
+        
+        if (result.deletedCount === 1) {
+            console.log('Successfully deleted one document.');
+        } else {
+            console.log('No documents matched the query. Deleted 0 documents.');
+        }
+    } catch (err) {
+        console.error('An error occurred while deleting the user account:', err);
+    } finally {
+
+        await client.close();
+    }
+}
+    
+    // Example usage:
+    let userId = new ObjectId(req.session._id);
+    deleteUserAccount(userId);
+
+
+    res.redirect('/logout')
+})
 
 
 app.get('/main', async (req, res) => {
@@ -447,9 +495,10 @@ app.get('/checkout', sessionValidation, async (req, res) => {
 });
 
 app.post('/submit-payment', sessionValidation, async (req, res) => {
-    stationId= req.body.stationID;
+    let stationId= req.body.stationID;
+    let paymentType = req.body.paymentType;
+
     try {
-        let paymentType = req.body.paymentType;
         let userId = new ObjectId(req.session._id);
         let remember = req.body.remember;
         if(remember === "on") {
@@ -479,21 +528,52 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
     }
     try{
         const station = await stationsCollection.findOne({_id: new ObjectId(stationId)});
-        current = station.robots_available;
-        console.log(current);
-        await stationsCollection.updateOne({_id: new ObjectId(stationId)}, {$set: {robots_available: current - 1}});
-        
+        current = station.robots_in_stock;
+        await stationsCollection.updateOne({_id: new ObjectId(stationId)}, {$set: {robots_in_stock: current - 1}});
+
+        setTimeout(() => {
+            current = station.robots_in_stock;
+            current ++;
+            console.log("15 Seconds passed")
+            stationsCollection.updateOne({_id: new ObjectId(stationId)}, {$set: {robots_in_stock: current}});
+        }, 1000 * 60 * 60);
     }catch(e){
         console.log(e);
     }
 
 
-    res.redirect('/confirmation');
+    res.redirect('/confirmation?paymentType='+paymentType);
+});
+
+
+app.get('/confirmation', sessionValidation, (req, res) => {
+    function generateuuid() {
+        const uuid = uuidv4().replace(/-/g, ''); 
+        return uuid.slice(0, 24);
+      }
+      let total = req.query.total;
+      let paymentType = req.query.paymentType;
+      let service = req.query.service;
+      let orderNumber = generateuuid();
+      let timestamp = new Date().toISOString();
+
+
+      let id = new ObjectId(orderNumber);
+      ordersCollection.insertOne({ 
+        _id: id, 
+        timestamp: timestamp, 
+        paymentType: paymentType, 
+        customerId: req.session._id, 
+        total: total, 
+        service: service});
+
+    res.render("confirmation", { orderNumber: orderNumber});
 });
 
 const general = database.db('Services').collection('General')
-const fs = require('fs')
-let isNewDataInserted = true; // This should be false when all data in service.json is stored in mongo db
+const fs = require('fs');
+const { time } = require("console");
+let isNewDataInserted = false; // This should be false when all data in service.json is stored in mongo db
 if (isNewDataInserted) {
     const jsonData = fs.readFileSync('service.json', 'utf8');
     const dataArray = JSON.parse(jsonData);
@@ -781,11 +861,100 @@ app.post('/DemoteToUser', async (req, res) => {
     res.redirect("/admin");
 });
 
+app.post('/submitEmailBL', async (req, res) => {
+    var email=req.body.email;
+    await emailsCollection.insertOne({ email:email });
+    try {
+        let transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+                user: 'roborental.team@gmail.com',
+                pass: process.env.EMAIL_PASSWORD
+            }
+        });
+        if (!email) {
+            res.render("index");
+            return;
+        }
+        let mailOptions = {
+            from: 'roborental.team@gmail.com',
+            to: email,
+            subject: 'Robo Rental Launch',
+            text:`Exciting news! Robo Rental, the app that makes it easy to rent robots for various services, is launching soon.
+            By signing up you will be notified on the day of our apps launch.
+            Robo Rental offers a seamless solution for renting robots to assist with a variety of tasks. Stay tuned for more details!
 
+            Thank you for your interest.
 
-app.get('/confirmation', sessionValidation, (req, res) => {
-    res.render("confirmation");
+            Best regards,
+
+            The Robo Rental Team`,
+        };
+        let info = await transporter.sendMail(mailOptions);
+        console.log('Email sent:', info.messageId);
+        res.redirect('/index2');
+    } catch (error) {
+        console.error('Error occurred:', error);
+    }
 });
+
+
+async function sendAllEmails() {
+    try {
+        // Fetch email addresses from the collection
+        let emails = await emailsCollection.find({}, { projection: { email: 1 } }).toArray();
+        console.log("Emails array:", emails);
+
+        // Create a transporter object using the default SMTP transport
+        let transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+                user: 'roborental.team@gmail.com',
+                pass: process.env.EMAIL_PASSWORD
+            }
+        });
+
+        // Iterate over each email and send the notification
+        for (let { email } of emails) {
+            console.log("Sending email to:", email);
+
+            // Email options
+            let mailOptions = {
+                from: 'roborental.team@gmail.com',
+                to: email,
+                subject: 'Robo Rental Launched',
+                text: `We are thrilled to announce that Robo Rental, the app that makes it easy to rent robots for various services, has officially launched!
+
+With Robo Rental, you can seamlessly rent robots to assist with a variety of tasks, providing you with innovative solutions for your needs. Our app is designed to offer you convenience and efficiency at your fingertips.
+
+Thank you for your interest and support. We invite you to explore the app and discover the future of robotic services.
+
+Stay tuned for more updates and features coming soon!
+
+Best regards,
+
+The Robo Rental Team`
+            };
+
+            // Send email
+            try {
+                let info = await transporter.sendMail(mailOptions);
+                console.log('Email sent:', info.messageId);
+            } catch (error) {
+                console.error('Error sending email:', error);
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching emails:', error);
+    }
+}
+
+const sendEmails = process.env.SEND_EMAILS_PAGE_NAME;
+app.get("/"+sendEmails, (req, res) => {
+    sendAllEmails();
+    res.redirect('/');
+});
+
 
 app.get("*", (req, res) => {
     res.status(404);
