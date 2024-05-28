@@ -52,19 +52,6 @@
   border-radius: 30px;
 }
 
-/* Hero */
-.hero {
-}
-.hero__tagline {
-  font-size: 2rem;
-  color: #b9c3cf;
-  letter-spacing: 1px;
-  margin: 2rem 0 5rem;
-}
-.hero__image {
-  width: 100%;
-}
-
 /* blocks */
 .block {
   padding: 0 2rem;
@@ -73,19 +60,8 @@
   padding-bottom: calc(100px);
   clip-path: polygon(0% 0%, 100% 0%, 100% 90%, 0% 100%);
 }
-.block__heading {
-  margin-top: 0;
-}
+
 .block__header {
   text-align: center;
   margin-bottom: 4rem;
-}
-.block--dark {
-}
-
-.block--skewed-left {
-}
-.container {
-  max-width: 1140px;
-  margin: 0 auto; /*if we have extra space the space would be equally distributed to the sides of the block so it'd be center aligned*/
 }

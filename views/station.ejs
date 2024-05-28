@@ -74,15 +74,14 @@
             </div>
             <div class="list">
               <img src="/price.png" style="width: 20px" alt="" />
-              <span id="price" style="font-size: 12px"
-                > </span
+              <span id="price" style="font-size: 12px"> </span
               ><span class="card-availability" id="card-phone"></span>
             </div>
           </div>
         </div>
       </div>
       <div class="text-center buttons">
-        <div class="button">
+        <div class="button1">
           <a class="link-style"
             ><span class="icon-container">
               <p style="margin-bottom: 0">Add</p>
@@ -96,12 +95,35 @@
             </span></a
           >
         </div>
+        <form
+          style="display: none"
+          action="/DisplaybusinessCheckout"
+          method="POST"
+        >
+          <input
+            type="text"
+            class="id-placeholder2"
+            name="data"
+            required
+          /><br /><br />
+          <input
+            type="text"
+            class="id-placeholder11"
+            name="data2"
+            required
+          /><br /><br />
+
+          <button class="id-button2" type="submit">Submit</button>
+        </form>
       </div>
     </div>
   </div>
   <script>
     const station = <%- JSON.stringify(station1) %>;
     console.log(station);
+
+    const IDCard = <%- JSON.stringify(cardId) %>;
+    console.log(IDCard);
 
     const distance1 = <%- JSON.stringify(distance) %>;
     console.log(distance1);
