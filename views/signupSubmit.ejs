@@ -1,9 +1,16 @@
 <%- include("templates/header") %>
-<p><%= problem %> is required</p>
+
+<% if (problem == "EmailExists") { %>
+  <p>The email you entered already exists</p>
+<% } else { %>
+  <p><%= problem %> is required</p>
+<% } %>
+
 <!-- <form action="/signup" method="get">
   <button class="btn btn-secondary rounded-pill px-3" type="submit">
     Try Again
   </button>
 </form> -->
 <a href='/signup' class="btn" style="background-color: #003249 !important; color: white;">Try again</a>
+
 <%- include("templates/footer") %>

@@ -82,6 +82,7 @@ const node_session_secret = process.env.NODE_SESSION_SECRET;
 const ordersCollection = database.db(mongodb_database).collection('orders');
 
 const userCollection = database.db(mongodb_database).collection('users');
+
 const stationsCollection = database.db(mongodb_database2).collection('Stations');
 
 app.set('view engine', 'ejs');
@@ -279,14 +280,34 @@ app.post('/submitUser', async (req, res) => {
         return;
     }
 
+    // Check if the entered email for signup already exists in the database:
+    try {
+        // Get all of the users from the 'users' collection in db using .find with empty query '{}'
+        const dbUserEmails = await userCollection.find({}).project({email: 1, _id: 1}).toArray();
 
+        // Decrypt each email, comparing each with the user entered email in sign up page
+        dbUserEmails.forEach((dbEmail) => {
+
+            const decryptedDbEmail = CryptoJS.AES.decrypt(dbEmail.email, key, { iv: iv}).toString(CryptoJS.enc.Utf8);
+
+            // If the user entered email matches an email in the database
+            if (email == decryptedDbEmail) {
+                throw new Error("(USER ERROR) The email that the user entered already exists in the database");
+            }
+        });
+
+    } catch (emailExistsError) { // If a user in the db with the same email was found
+        console.log(emailExistsError);
+        res.redirect("/signupSubmit?problem=EmailExists");
+        return;
+    }
+    
     var hashedPassword = await bcrypt.hash(password, saltRounds);
     var encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString();
     var _id = new ObjectId();
     await userCollection.insertOne({ _id: _id, username: username, password: hashedPassword, email: encryptedEmail, user_type: "user" });
     console.log("Inserted user");
     // console.log(CryptoJS.AES.decrypt(encryptedEmail, key, { iv: iv}).toString(CryptoJS.enc.Utf8));
-
 
     var html = "successfully created user";
     console.log(html);
@@ -352,7 +373,7 @@ app.post('/loggingin', async (req, res) => {
 
     var encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString()
     // console.log(encryptedEmail === 'WTfm6CGGEKx6XwoGKopaRg==');
-    
+
     // Check if a user account with the entered email and password exists in the MongoDB database
     const result = await userCollection.find({ email: encryptedEmail }).project({ username: 1, email: 1, password: 1, user_type: 1, _id: 1 }).toArray();
 
