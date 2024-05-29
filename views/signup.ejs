@@ -24,7 +24,7 @@
   </symbol>
 </svg>
 
-<div class="signup-login-page-container">
+<div style="margin: 10px" class="signup-login-page-container">
   <main
     style="max-width: 504px"
     class="form-signin py-3 px-3 w-100 m-auto signup-login-form-container"
@@ -110,15 +110,31 @@
       >
         Sign up
       </button>
-      <a href="/auth/google?signup=true">Authenticate with Google</a>
     </form>
+
+    <br />
+
+    <a
+      style="color: black; text-decoration: none"
+      href="/auth/google?signup=true"
+      ><button
+        type="button"
+        class="btn btn-outline-primary btn w-100 py-2 mb-3"
+      >
+        <img
+          style="width: 30px; padding-right: 5px"
+          src="./google.png"
+          alt=""
+        />Sign Up with Google
+      </button></a
+    >
   </main>
 </div>
 <script>
   const userEmail = <%- JSON.stringify(userEmail) %>;
-   if (userEmail) {  document.getElementById("signupEmail").value = userEmail+1}
+   if (userEmail) {  document.getElementById("signupEmail").value = userEmail}
 
    const username = <%- JSON.stringify(username) %>;
-   if (username) {  document.getElementById("signupUsername").value = username+1}
+   if (username) {  document.getElementById("signupUsername").value = username}
 </script>
 <%- include("templates/footer") %>
