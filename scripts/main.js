@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     let cardTemplate = document.getElementById("ServiceCardTemplate");
-    
+    let i = 1;
 
 services.forEach(service => {
  
@@ -15,7 +15,7 @@ services.forEach(service => {
 
    let newcard = cardTemplate.content.cloneNode(true);
 
-   
+//    newcard.querySelector('.eachCard').classList.add(`card${i}`) // identify each card 
    newcard.querySelector(".service-name").innerHTML = name;
    newcard.querySelector(".service-description").innerHTML = description; 
    
@@ -61,6 +61,7 @@ services.forEach(service => {
   
    document.getElementById("main-service-list-container-2").appendChild(newcard);
 
+   i++;
 });
 
 function setID(id, name, price) {

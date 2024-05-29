@@ -956,6 +956,21 @@ app.get("/"+sendEmails, (req, res) => {
 });
 
 
+const orders = database.db('AtlasCluster').collection('orders');
+app.get('/history', async(req, res) => {
+    if (!req.session.authenticated) {
+        res.redirect('/');
+        return;
+    }
+    //timestamp:1, paymentType:1, customerId:1, total:1, service:1
+    // change it to customerId: req.session._id 
+    const history = await orders.find({customerId: '664fb094254567cab99f3cfa', business: { $ne: true }}).project({}).toArray()
+    var username = req.session.username;
+    // console.log(username);
+    // console.log(history);
+    // console.log(req.session._id);
+    res.render("history", {username, history})
+})
 app.get("*", (req, res) => {
     res.status(404);
     res.render("404",);

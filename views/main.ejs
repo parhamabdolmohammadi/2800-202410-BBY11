@@ -120,12 +120,23 @@ color: #003249;">
 
             <p class="card-text service-description"></p>
             <p class="card-text service-price"></p>
-            <form  action="/displayStation" method="POST">
+            <form  action="/displayStation" method="POST" >
             <button class="button-arrow" >Order Service</button>
             <input style="display: none;" class="stationInput" type="text" name="data"  >
             <input style="display: none;" class="DistanceInput" type="text" name="data2" >
-            <form action=""></form>
-          </div>
+            </form>
+          <!-- <div class="eachCard" >
+            <div class="front">
+              <h6 class="card-subtitle mb-2 service-name"></h6>
+              <p class="card-text service-price"></p>
+              <button class="card-link" >Details</button>
+            </div>
+           <div class="back">
+             <p class="card-text service-description"></p>
+           </div>
+            
+            
+          </div> -->
           <div>
             <form class="stations-button" action="/stations" method="GET">
               <button
@@ -215,6 +226,7 @@ color: #003249;">
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
+      
     var link = document.createElement("link");
     link.rel = "stylesheet";
     link.href = "/main.css";
@@ -222,7 +234,6 @@ color: #003249;">
   });
   document.addEventListener("DOMContentLoaded", function () {
       // * Search bar functionality
-
       // Get references to the search input and icon
       const searchInput = document.getElementById("search-text");
       const searchIcon = document.getElementById("search-button");
