@@ -40,13 +40,22 @@
 #index-login-signup-button-container {
   display: flex;
   min-width: 10em;
-  gap: 0.75em;
-  justify-content: space-evenly;
+  gap: 1.25em;
+  justify-content: center;
 }
 
 .index-signup-login-buttons {
   min-width: 5em;
 }
+
+#index-signup-button {
+  background-color: #007EA7
+}
+
+#index-signup-button:hover {
+  background-color: #003249;
+}
+
 
 .border-radius {
   border-radius: 30px;
@@ -64,4 +73,44 @@
 .block__header {
   text-align: center;
   margin-bottom: 4rem;
+}
+
+/* Responsive address search bar, login/signup, and welcome message container */
+
+/* Desktop view */
+@media screen and (min-width: 768px) {
+  #index-grid-item-address-bar {
+    width: 90%;
+  }
+
+  #grid-img-signup-login-address-bar {
+    gap: 3em;
+  }
+}
+
+/* Mobile view */
+@media screen and (max-width: 767px) {
+  #index-search-form {
+    z-index: 2 !important;
+  
+    padding: 0 !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    height: 40pt !important;
+  
+    margin-bottom: 1% !important;
+    
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  #index-grid-item-address-bar {
+    width: 80%;
+  }
+}
+
+@media screen and (max-width: 499px) {
+  #index-grid-item-address-bar {
+    width: 90%;
+  }
 }
