@@ -266,7 +266,7 @@ app.post('/submitUser', async (req, res) => {
         {
             username: Joi.string()
             .pattern(/^[a-zA-Z0-9 ]*$/)
-            .max(20)
+            .max(40)
             .required(),
             password: Joi.string().max(20).required(),
             email: Joi.string().max(40).required()
