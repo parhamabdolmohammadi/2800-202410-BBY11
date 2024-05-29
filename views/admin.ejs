@@ -27,10 +27,17 @@ color: #003249;">
  <p>You can Bookmark Your stations here so that you woudln't go through complexity of searching for it everytime you search the app.</p>
  <a href="/adminService"><button style="background-color: #003249 !important; color: white;"
   class="btn py-2 mb-3">Manage Services</button></a>
+
+  <p id="not-available" style="color: red;"> 
+    Currently we don't have any request to process.</p>
 </header>
 
   <% let b = 0; %> <% users.forEach((user, index) => { %> <% if
   (user.businessOwnerRequestInProgress) { %> <% b++; %>
+    <% if (b = 1) { %> 
+      <script> document.getElementById("not-available").innerHTML=""</script>
+    <%} %>
+  
   <div class="card-style form-signin w-100 m-auto">
     <div class="card-header">
       <img style="position: relative; bottom: 3px" src="/robot2.png" alt="" />
