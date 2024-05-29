@@ -48,6 +48,15 @@
   min-width: 5em;
 }
 
+#index-signup-button {
+  background-color: #007EA7
+}
+
+#index-signup-button:hover {
+  background-color: #003249;
+}
+
+
 .border-radius {
   border-radius: 30px;
 }
