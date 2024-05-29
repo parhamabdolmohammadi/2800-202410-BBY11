@@ -104,7 +104,7 @@ color: #003249;">
 <div id="main-service-list-container">
  
   <div id="services-header-container">
-   
+   <div class="reset-search">Reset search</div>
   </div>
   <div id="main-service-list-container-2" class="row mb-3 text-center service">
     <template id="ServiceCardTemplate">
@@ -238,8 +238,15 @@ color: #003249;">
       const searchInput = document.getElementById("search-text");
       const searchIcon = document.getElementById("search-button");
 
+      document.querySelector('.reset-search').addEventListener('click', () => {
+        // console.log('button is clicked');
+        searchInput.value = ''
+        searchIcon.click()
+      })
     // Add event listener to the search icon for click events
     searchIcon.addEventListener("click", function (event) {
+      console.log('clicked');
+      document.querySelector('#main-service-list-container-2').scrollIntoView({behavior: "smooth"})
       // console.log("clicked");
       event.preventDefault(); // Prevent default action (e.g., form submission)
 
