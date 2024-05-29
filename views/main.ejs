@@ -80,8 +80,10 @@
   </h2>
 </div>
 <script src="animation.js"></script>
+
+
 <!-- Section for AI -->
-<form role="search" style="display: inline;">
+<!-- <form role="search" style="display: inline;">
 <div id="aiAssistanceSection" >
 <div class="search-box">
     <button class="btn-search"><i class="fas fa-search"></i><img src="chatbot.png" style="width: 30px; height: 30px;"></button>
@@ -89,7 +91,7 @@
 </div>
 <button id="aiAssistanceSubmitBtn" class="btn-submit" type="submit">Submit</button>
 </div>
-</form>
+</form> -->
 
 
 <!-- Services list of cards -->
@@ -298,75 +300,75 @@ color: #003249;">
 
       // * AI Assistance text input functionality
 
-      const searchBox = document.querySelector(".search-box");
-      const submitButton = document.querySelector(".btn-submit");
+      // const searchBox = document.querySelector(".search-box");
+      // const submitButton = document.querySelector(".btn-submit");
 
-      searchBox.addEventListener("click", function () {
-        submitButton.style.display = "block";
-      });
+      // searchBox.addEventListener("click", function () {
+      //   submitButton.style.display = "block";
+      // });
 
-      document.addEventListener("click", function (event) {
-        if (
-          !searchBox.contains(event.target) &&
-          !submitButton.contains(event.target)
-        ) {
-          submitButton.style.display = "none";
-        }
-      });
+      // document.addEventListener("click", function (event) {
+      //   if (
+      //     !searchBox.contains(event.target) &&
+      //     !submitButton.contains(event.target)
+      //   ) {
+      //     submitButton.style.display = "none";
+      //   }
+      // });
 
-      // When submit button is pressed in AI input section
-      const aiAssistanceSubmitBtn = document.getElementById("aiAssistanceSubmitBtn");
+      // // When submit button is pressed in AI input section
+      // const aiAssistanceSubmitBtn = document.getElementById("aiAssistanceSubmitBtn");
 
-      aiAssistanceSubmitBtn.addEventListener("click", function (event) {
-        event.preventDefault();
+      // aiAssistanceSubmitBtn.addEventListener("click", function (event) {
+      //   event.preventDefault();
 
-        const aiAssistanceInput = document.getElementById("aiAssistanceInput");
+      //   const aiAssistanceInput = document.getElementById("aiAssistanceInput");
 
-        aiAssistanceInputValue = aiAssistanceInput.value;
+      //   aiAssistanceInputValue = aiAssistanceInput.value;
 
-        // Send post request to server (route /main/ai-assistance)
-        fetch("/main/ai-assistance", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ aiAssistanceInput: aiAssistanceInputValue }),
-        })
-        .then((AIResponse) => AIResponse.json())
-        .then((data) => {
+      //   // Send post request to server (route /main/ai-assistance)
+      //   fetch("/main/ai-assistance", {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({ aiAssistanceInput: aiAssistanceInputValue }),
+      //   })
+      //   .then((AIResponse) => AIResponse.json())
+      //   .then((data) => {
 
-          // If an AI response message <p> element has already been created
-          aiResponseMessageElement = document.getElementById("aiResponseMessage");
-          if (aiResponseMessageElement != null) {
+      //     // If an AI response message <p> element has already been created
+      //     aiResponseMessageElement = document.getElementById("aiResponseMessage");
+      //     if (aiResponseMessageElement != null) {
             
-            // Remove the existing element
-            aiResponseMessageElement.remove();
-          }
+      //       // Remove the existing element
+      //       aiResponseMessageElement.remove();
+      //     }
 
-          // Text response to user
-          var aiResponseText = document.createElement("p");
-          aiResponseText.id = "aiResponseMessage";
-          aiResponseText.innerHTML = String(data.aiResponseHTML);
-          aiResponseText.style.display = "inline-block";
-          aiResponseText.style.backgroundColor = "white";
-          aiResponseText.style.color = "black";
-          aiResponseText.style.fontFamily = "sans-serif";
-          aiResponseText.style.marginTop = "1em";
-          aiResponseText.style.padding = "2em";
-          aiResponseText.style.borderRadius = "15px";
+      //     // Text response to user
+      //     var aiResponseText = document.createElement("p");
+      //     aiResponseText.id = "aiResponseMessage";
+      //     aiResponseText.innerHTML = String(data.aiResponseHTML);
+      //     aiResponseText.style.display = "inline-block";
+      //     aiResponseText.style.backgroundColor = "white";
+      //     aiResponseText.style.color = "black";
+      //     aiResponseText.style.fontFamily = "sans-serif";
+      //     aiResponseText.style.marginTop = "1em";
+      //     aiResponseText.style.padding = "2em";
+      //     aiResponseText.style.borderRadius = "15px";
 
-          document.getElementById("aiAssistanceSection").appendChild(aiResponseText);
+      //     document.getElementById("aiAssistanceSection").appendChild(aiResponseText);
 
-          if (data.aiFoundServices == true) {
-            // Show the services found
-            renderServices(data.filteredServices);
-          }
-        })
+      //     if (data.aiFoundServices == true) {
+      //       // Show the services found
+      //       renderServices(data.filteredServices);
+      //     }
+      //   })
 
-        .catch((error) => {
-            console.error("Error sending search request:", error);
-        });
-      });
+      //   .catch((error) => {
+      //       console.error("Error sending search request:", error);
+      //   });
+      // });
 
     });
 
@@ -519,25 +521,22 @@ function undoDescription(serviceID) {
 }
   }
 </script>
+
 <script>
   const station = <%- JSON.stringify(stations) %>;
   console.log(station);
-  
 
   const currentUser = <%- JSON.stringify(currentUserName) %>;
   console.log(currentUser);
-
-  // Additional client-side scripts can go here
 </script>
+
+<!-- Link to add AI button and functionality -->
+<!-- Using SendBird Chatbot Button, Interface, integrated with OpenAI's GPT4o -->
+<script src="/ai-chatbot.js"></script>
+
+<!-- Additional client-side scripts can go here -->
 <script src="/map2.js"></script>
 <script src="/main.js"></script>
-
-
-<script>
-
-
-  
-</script>
 
 <%- include("templates/footer") %>
 
