@@ -19,6 +19,11 @@ var iv  = CryptoJS.enc.Utf8.parse('1583288699248111');
 const ObjectId = require('mongodb').ObjectId;
 const nodemailer = require('nodemailer');
 
+
+
+const passport = require('passport');
+require('./auth');
+
 // MongoDB database connection
 var { database } = include('databaseConnection');
 
@@ -104,6 +109,10 @@ app.use("/img", express.static("./public/img"));
 // WILL NEED TO UNCOMMENT THESE TWO IF WE PUT CSS AND IMAGES FOLDER INTO PUBLIC FOLDER, see footer.ejs line 30 for how to link-------------------------------------------------
 // app.use("/css", express.static("./public/css"));
 // app.use("/img", express.static("./public/images"));
+function isLoggedIn(req, res, next) {
+    req.user ? next() : res.sendStatus(401);
+  }
+
 
 app.use(session({
     secret: node_session_secret,
@@ -112,6 +121,8 @@ app.use(session({
     resave: true
 }
 ));
+app.use(passport.initialize());
+app.use(passport.session());
 
 function isValidSession(req) {
     if (req.session.authenticated) {
@@ -147,6 +158,31 @@ function adminAuthorization(req, res, next) {
         next();
     }
 }
+
+app.get('/auth/google',
+  passport.authenticate('google', { scope: [ 'email', 'profile' ] }
+));
+
+app.get( '/google/callback',
+  passport.authenticate( 'google', {
+    successRedirect: '/login',
+    failureRedirect: '/auth/google/failure'
+  })
+);
+
+// app.get('/loggingin', isLoggedIn, (req, res) => {
+//   res.send(`Hello ${req.user.displayName}`);
+// });
+
+// app.get('/logout', (req, res) => {
+//   req.logout();
+//   req.session.destroy();
+//   res.send('Goodbye!');
+// });
+
+app.get('/auth/google/failure', (req, res) => {
+  res.send('Failed to authenticate..');
+});
 
 app.get('/', (req, res) => {
     if (!req.session.authenticated) {
@@ -247,8 +283,13 @@ app.get("/signupSubmit", (req, res) => {
 });
 
 app.get('/login', (req, res) => {
+    if (req.user && req.user.displayName) {
+        console.log(req.user.displayName);
+    } 
+   
     res.render("login");
 });
+
 
 app.post('/loggingin', async (req, res) => {
     var email = req.body.email;
