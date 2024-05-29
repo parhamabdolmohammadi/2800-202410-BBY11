@@ -1139,6 +1139,25 @@ app.get('/history', async(req, res) => {
     // console.log(req.session._id);
     res.render("history", {username, history})
 })
+
+app.get ('/adminService', adminAuthorization, async(req, res) => {
+    const services = await general.find({}).project({}).toArray();
+    res.render('adminService', { services })
+})
+
+app.post('/update', async (req, res) => {
+    const id = req.body.modalId;
+    const updatedService = req.body.updatedService;
+    // console.log(id);
+    console.log(updatedService);
+    const service = await general.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { name: updatedService.name,
+             description: updatedService.description,
+            price:updatedService.price } }
+    );
+
+})
 app.get("*", (req, res) => {
     res.status(404);
     res.render("404",);
