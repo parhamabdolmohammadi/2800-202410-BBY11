@@ -1,0 +1,104 @@
+.content-container {
+    width: 60%;
+    margin: auto;
+}
+
+.serviceCard {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 1px solid #CCDBDC;
+    padding: 20px;             
+    margin: 10px;               
+    border-radius: 10px;         
+    background-color: #ffffff;   
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  
+    transition: transform 0.2s, box-shadow 0.2s; 
+}
+
+.serviceCard:hover {
+    transform: translateY(-5px);  
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); 
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    border-radius: 10px;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-body h2[contenteditable="true"],
+.modal-body p[contenteditable="true"] {
+    border: 1px dashed transparent;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.modal-body h2[contenteditable="true"]:focus,
+.modal-body p[contenteditable="true"]:focus {
+    border-color: #ccc;
+    outline: none;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.modal-actions button {
+    padding: 10px 20px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#save-button {
+    background-color: #2ecc71;
+    color: white;
+}
+
+#cancel-button {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.serviceName, #modal-name{
+    font-size: 18px;
+    font-weight: bold;
+    color: #333333;
+    margin-bottom: 5px;
+}
+
+.serviceDes, #modal-description {
+    font-size: 14px;
+    color: #666666;
+    margin-bottom: 5px;
+}
+
+.servicePrice, #modal-price {
+    font-size: 16px;
+    font-weight: bold;
+    color: #009688;
+}
+
+.top-container h1 {
+   margin: 10px;
+}

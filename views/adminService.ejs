@@ -1,0 +1,45 @@
+<%- include('templates/header') %>
+<div class="top-container">
+    <header style="text-align: center;
+    margin-bottom: 2rem;
+    margin-top: 1rem;
+    color: #003249;">
+     <h1>Manage Services</h1>
+     <p>You can Bookmark Your stations here so that you woudln't go through complexity of searching for it everytime you search the app.</p>
+     
+    </header>
+</div>
+<div class="content-container">
+    
+</div>
+
+<!-- modal -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <div class="modal-body">
+            <h2 id="modal-name" contenteditable="true"></h2>
+            <p id="modal-description" contenteditable="true"></p>
+            <p id="modal-price" contenteditable="true"></p>
+            <div class="modal-actions">
+                <button id="save-button">Save</button>
+                <button id="cancel-button">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = "/adminService.css";
+        document.head.appendChild(link);
+    });
+</script>
+<script>
+    const services = <%- JSON.stringify(services) %>;
+</script>
+
+<script src="adminService.js"></script>
+<%- include('templates/footer') %>

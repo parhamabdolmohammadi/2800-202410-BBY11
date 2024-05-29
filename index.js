@@ -352,6 +352,7 @@ app.post('/loggingin', async (req, res) => {
 
     var encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString()
     // console.log(encryptedEmail === 'WTfm6CGGEKx6XwoGKopaRg==');
+    
     // Check if a user account with the entered email and password exists in the MongoDB database
     const result = await userCollection.find({ email: encryptedEmail }).project({ username: 1, email: 1, password: 1, user_type: 1, _id: 1 }).toArray();
 
@@ -1202,6 +1203,25 @@ app.get('/history', async(req, res) => {
     // console.log(history);
     // console.log(req.session._id);
     res.render("history", {username, history})
+})
+
+app.get ('/adminService', adminAuthorization, async(req, res) => {
+    const services = await general.find({}).project({}).toArray();
+    res.render('adminService', { services })
+})
+
+app.post('/update', async (req, res) => {
+    const id = req.body.modalId;
+    const updatedService = req.body.updatedService;
+    // console.log(id);
+    console.log(updatedService);
+    const service = await general.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { name: updatedService.name,
+             description: updatedService.description,
+            price:updatedService.price } }
+    );
+
 })
 app.get("*", (req, res) => {
     res.status(404);

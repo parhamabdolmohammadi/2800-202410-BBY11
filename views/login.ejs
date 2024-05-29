@@ -64,30 +64,9 @@
   </main>
 </div>
 
-<!-- <script>
-  // Function that changes the the password input type 
-  // attribute to text when clicked on, and reveals the text entered
-  // Code adapted from:
-  // https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_toggle_password
-  function togglePasswordVisability() {
-    var passwordInput = document.getElementById("loginPassword");
-    if (passwordInput.type === "password") { // If the input type was initially "password"
-      // Change the input type to "text"
-      passwordInput.type = "text";
+<!-- Password visability function -->
+<script src="/js/signup-login.js"></script>
 
-      // Change the icon type to visable eye google icon
-      // let visabilityOnText = ;
-      document.getElementById("loginShowPswdButton").textContent = 'visibility';
-    } else { // If the input type was initially "text"
-      // Change the input type to "password"
-      passwordInput.type = "password";
-
-      // Change the icon type to invisable eye google icon
-      // let visabilityOffText = ;
-      document.getElementById("loginShowPswdButton").textContent = 'visibility_off';
-    }
-  }
-</script> -->
 <script>
   const userEmail = <%- JSON.stringify(userEmail) %>;
    if (userEmail) {  document.getElementById("loginEmail").value = userEmail}

@@ -34,7 +34,7 @@ function generateCards(orders) {
     if (orders.length == 0) {
         content.appendChild(nothing)
     }
-    
+
     orders.forEach((each) => {
         console.log(each);
         const card = document.createElement('div')
@@ -78,9 +78,9 @@ function fillDetail(each, detail) {
             detail.querySelector('.expandInfo').remove()
         }
         setTimeout(() => {
-           
 
-        }, 300); 
+
+        }, 300);
     });
     detail.appendChild(serviceName)
     detail.appendChild(arrow)
@@ -110,19 +110,31 @@ document.addEventListener('DOMContentLoaded', () => {
 function sortHistory(history) {
 
     history.forEach(each => {
-        const currentDate = new Date()
-        const eachTimeStamp = new Date(each.timestamp)
+        // const currentDate = new Date()
+        // const eachTimeStamp = new Date(each.timestamp)
 
-        // 1 hour is default duration of service. After storing duration of service in database, I can modify the logic accordingly 
-        let expiryHour = eachTimeStamp.getHours() + 1;
-        let expiryMinutes = eachTimeStamp.getMinutes();
+        // // 1 hour is default duration of service. After storing duration of service in database, I can modify the logic accordingly 
+        // let expiryHour = eachTimeStamp.getHours() + 1;
+        // let expiryMinutes = eachTimeStamp.getMinutes();
 
-        if (expiryHour > currentDate.getHours()) {
+        // if (expiryHour > currentDate.getHours()) {
+        //     activeOrders.push(each);
+        // } else if (expiryHour == currentDate.getHours() && expiryMinutes >= currentDate.getMinutes()) {
+        //     activeOrders.push(each);
+        // }
+        // else {
+        //     pastOrders.push(each);
+        // }
+        const currentDate = new Date();
+        const eachTimeStamp = new Date(each.timestamp);
+
+        // Set the expiry time to 1 hour after each.timestamp
+        eachTimeStamp.setHours(eachTimeStamp.getHours() + 1);
+
+        // Compare eachTimeStamp with currentDate
+        if (eachTimeStamp.getTime() > currentDate.getTime()) {
             activeOrders.push(each);
-        } else if (expiryHour == currentDate.getHours() && expiryMinutes >= currentDate.getMinutes()) {
-            activeOrders.push(each);
-        }
-        else {
+        } else {
             pastOrders.push(each);
         }
     })
