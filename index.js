@@ -264,7 +264,10 @@ app.post('/submitUser', async (req, res) => {
 
     const schema = Joi.object(
         {
-            username: Joi.string().alphanum().max(20).required(),
+            username: Joi.string()
+            .pattern(/^[a-zA-Z0-9 ]*$/)
+            .max(20)
+            .required(),
             password: Joi.string().max(20).required(),
             email: Joi.string().max(40).required()
         });
