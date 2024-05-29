@@ -6,7 +6,7 @@ station.forEach(station => {
  
    var name = station.station_name;
    var address = station.address;
-   var availability = station.robots_available;
+   var availability = station.robots_in_stock;
    var telephone1 = station.contact_number;
 
    let isBookmarked = false;
@@ -40,7 +40,7 @@ station.forEach(station => {
 
     newcard.querySelector(".telephone-icon").id = "more-info" + CardId;
 
-    newcard.querySelector(".telephone-icon").onclick = () => telephone(telephone1);
+    newcard.querySelector(".telephone-icon").onclick = () => openPhoneCall(telephone1);
    
    
 
@@ -60,26 +60,39 @@ station.forEach(station => {
 function moreInfo(id) {
    document.getElementById("footer-card" + id).classList.toggle("footer-special");
 }
+function openPhoneCall(phoneNumber) {
+   // Check if the browser supports the tel: protocol
+   if ('href' in HTMLAnchorElement.prototype) {
+     // If supported, create an anchor element with the tel: protocol
+     var link = document.createElement('a');
+     link.href = 'tel:' + phoneNumber;
+     // Simulate clicking the link
+     link.click();
+   } else {
+     // If not supported, display an error message
+     alert('Your browser does not support phone call functionality.');
+   }
+ } 
 
-function telephone(telephone) {
-   Swal.fire({
-      title: telephone,
-      showClass: {
-        popup: `
-          animate__animated
-          animate__fadeInUp
-          animate__faster
-        `
-      },
-      hideClass: {
-        popup: `
-          animate__animated
-          animate__fadeOutDown
-          animate__faster
-        `
-      }
-    });
-}
+// function telephone(telephone) {
+//    Swal.fire({
+//       title: telephone,
+//       showClass: {
+//         popup: `
+//           animate__animated
+//           animate__fadeInUp
+//           animate__faster
+//         `
+//       },
+//       hideClass: {
+//         popup: `
+//           animate__animated
+//           animate__fadeOutDown
+//           animate__faster
+//         `
+//       }
+//     });
+// }
 
 
 

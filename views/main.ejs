@@ -17,6 +17,8 @@
     link3.href =
       "https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap";
     document.head.appendChild(link3);
+
+   
   });
 </script>
 <div
@@ -528,6 +530,7 @@ function undoDescription(serviceID) {
 
   const currentUser = <%- JSON.stringify(currentUserName) %>;
   console.log(currentUser);
+  localStorage.setItem('username', currentUser[0].username);
 </script>
 
 <!-- Link to add AI button and functionality -->
