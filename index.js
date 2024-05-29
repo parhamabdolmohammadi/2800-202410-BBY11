@@ -327,6 +327,7 @@ app.get("/loginSubmit", (req, res) => {
 
 app.post('/updateProfile', async (req, res) => {
     const { username, email } = req.body;
+    var encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString();
     const userId = new ObjectId(req.session._id); // Replace with actual user ID (e.g., from session)
     const MONGODB_URI = 'mongodb+srv://Seohyeon:Qkrtjgus8663!@atlascluster.u56alig.mongodb.net/AtlasCluster?retryWrites=true&w=majority';
     const client = new MongoClient(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -346,7 +347,7 @@ app.post('/updateProfile', async (req, res) => {
 
         const result = await collection.updateOne(
             { _id: userId },
-            { $set: { username: username, email: email } }
+            { $set: { username: username, email: encryptedEmail } }
         );
 
         if (result.matchedCount > 0) {
