@@ -41,13 +41,32 @@
 }
 
 @media only screen and (max-width: 499px) {
+
     #aichatbot-widget-button {
         width: 80%;
+        margin-left: auto;
+        margin-right: auto;
+        left: 0;
+        right: 0;
+        text-align: center;
+
+    }
+
+    #aichatbot-widget-window {
+        margin-left: auto;
+        margin-right: auto;
+        left: 0;
+        right: 0;
+        text-align: center;
     }
 }
 
-@media only screen and (max-width: 914px) { /* Matches cards */
+@media only screen and (max-width: 914px) {
     #aichatbot-widget-button {
         height: 50px;
+    }
+
+    #aichatbot-widget-window {
+        margin-bottom: 0px;
     }
 }
