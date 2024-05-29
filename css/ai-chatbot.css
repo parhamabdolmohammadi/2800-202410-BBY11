@@ -1,0 +1,72 @@
+#aichatbot-widget-window {
+    margin-right: 5px;
+}
+
+#aichatbot-widget-button {
+    /* background: linear-gradient(to right, #003249,
+    #003249 25%, #007EA7 35%); */
+    background: radial-gradient(circle at -75%, #00779e, #006b8f 50%, #1e98a3 75%);
+    border-radius: 30px;
+}
+
+#ai-button-closed-div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    /* justify-content: space-evenly; */
+    column-gap: 1em;
+}
+
+#ai-button-open-div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+/* To toggle display of open and closed divs in aichatbot-widget-button */
+.hideAiButtonDiv {
+    display: none !important;
+}
+
+@media only screen and (min-width: 500px) {
+    #aichatbot-widget-button {
+        height: 70px;
+        width: 400px;
+    }
+
+    #aichatbot-widget-window {
+        margin-bottom: 20px;
+    }
+}
+
+@media only screen and (max-width: 499px) {
+
+    #aichatbot-widget-button {
+        width: 80%;
+        margin-left: auto;
+        margin-right: auto;
+        left: 0;
+        right: 0;
+        text-align: center;
+
+    }
+
+    #aichatbot-widget-window {
+        margin-left: auto;
+        margin-right: auto;
+        left: 0;
+        right: 0;
+        text-align: center;
+    }
+}
+
+@media only screen and (max-width: 914px) {
+    #aichatbot-widget-button {
+        height: 50px;
+    }
+
+    #aichatbot-widget-window {
+        margin-bottom: 0px;
+    }
+}

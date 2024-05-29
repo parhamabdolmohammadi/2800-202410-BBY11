@@ -25,11 +25,16 @@ const bodyParser = require('body-parser');
 const { MongoClient, ObjectId } = require('mongodb');
 const uri = 'mongodb+srv://Seohyeon:Qkrtjgus8663!@atlascluster.u56alig.mongodb.net/AtlasCluster?retryWrites=true&w=majority';
 
+
+
+const passport = require('passport');
+require('./auth');
+
 // MongoDB database connection
 var { database } = include('databaseConnection');
 
-// Groqcloud API connection and AI functionality
-var { makeAiReqAndRes, getGroqChatCompletion } = include('groqAIAPI');
+// // Groqcloud API connection and AI functionality
+// var { makeAiReqAndRes, getGroqChatCompletion } = include('groqAIAPI');
 
 const port = process.env.PORT || 3000;
 
@@ -43,7 +48,7 @@ const navLinks = [
     { name: "Main", link: "/main" },
     { name: "Login", link: "/login" },
     { name: "Admin", link: "/admin" },
-    { name: "404", link: "/*" },
+
     { name: "Bookmarks", link: "saved" },
     { name: "Setting", link: "/setting" },
     {name: 'History', link: '/history'}
@@ -52,7 +57,7 @@ const navLinks = [
 // To determine if the user is at the index page
 // Header.ejs uses to determine if it should load the navbar side panel or not
 var atIndexPage = false;
-let username1 = 'aran';
+let username1 = 'to RoboRental';
 app.use("/", (req, res, next) => {
     app.locals.navLinks = navLinks;
     app.locals.username = username1;
@@ -114,6 +119,10 @@ app.use("/img", express.static("./public/img"));
 // WILL NEED TO UNCOMMENT THESE TWO IF WE PUT CSS AND IMAGES FOLDER INTO PUBLIC FOLDER, see footer.ejs line 30 for how to link-------------------------------------------------
 // app.use("/css", express.static("./public/css"));
 // app.use("/img", express.static("./public/images"));
+function isLoggedIn(req, res, next) {
+    req.user ? next() : res.sendStatus(401);
+  }
+
 
 app.use(session({
     secret: node_session_secret,
@@ -122,6 +131,8 @@ app.use(session({
     resave: true
 }
 ));
+app.use(passport.initialize());
+app.use(passport.session());
 
 function isValidSession(req) {
     if (req.session.authenticated) {
@@ -157,6 +168,32 @@ function adminAuthorization(req, res, next) {
         next();
     }
 }
+app.get('/auth/google', (req, res, next) => {
+    const signup = req.query.signup === 'true';
+    passport.authenticate('google', {
+      scope: ['email', 'profile'],
+      state: signup ? 'signup' : 'login'
+    })(req, res, next);
+  });
+  
+  // Google callback route
+  app.get('/google/callback', (req, res, next) => {
+    passport.authenticate('google', (err, user, info) => {
+      if (err) { return next(err); }
+      if (!user) { return res.redirect('/auth/google/failure'); }
+  
+      req.logIn(user, (err) => {
+        if (err) { return next(err); }
+        const redirectUrl = req.query.state === 'signup' ? '/signup' : '/login';
+        return res.redirect(redirectUrl);
+      });
+    })(req, res, next);
+  });
+
+
+app.get('/auth/google/failure', (req, res) => {
+  res.send('Failed to authenticate..');
+});
 
 app.get('/', (req, res) => {
     if (!req.session.authenticated) {
@@ -176,7 +213,18 @@ app.get('/', (req, res) => {
 });
 
 app.get('/signup', (req, res) => {
-    res.render("signup")
+    let username = ""
+    let userEmail = ''
+
+    if (req.user && req.user.displayName) {
+       
+        userEmail = req.user.emails[0].value;
+        username = req.user.displayName;
+        console.log(userEmail);
+        console.log(username);
+    } 
+
+    res.render("signup", {username, userEmail})
 });
 
 
@@ -216,7 +264,10 @@ app.post('/submitUser', async (req, res) => {
 
     const schema = Joi.object(
         {
-            username: Joi.string().alphanum().max(20).required(),
+            username: Joi.string()
+            .pattern(/^[a-zA-Z0-9 ]*$/)
+            .max(40)
+            .required(),
             password: Joi.string().max(20).required(),
             email: Joi.string().max(40).required()
         });
@@ -257,8 +308,20 @@ app.get("/signupSubmit", (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-    res.render("login");
+    let username = ""
+    let userEmail = ''
+
+    if (req.user && req.user.displayName) {
+       
+        userEmail = req.user.emails[0].value;
+        username = req.user.displayName;
+        console.log(userEmail);
+    } 
+
+    
+    res.render("login",{username: username, userEmail});
 });
+
 
 app.post('/loggingin', async (req, res) => {
     var email = req.body.email;
@@ -313,6 +376,7 @@ app.post('/loggingin', async (req, res) => {
         req.session.cookie.maxAge = expireTime;
         req.session.email = result[0].email;
         username1 = result[0].username;
+        
 
         res.redirect('/main');
         return;
@@ -493,61 +557,61 @@ app.get('/main', async (req, res) => {
 
 });
 
-app.post('/main/ai-assistance', async (req, res) => {
-    // Get message from user
-    const AIRequestMsg = req.body.aiAssistanceInput;
+// app.post('/main/ai-assistance', async (req, res) => {
+//     // Get message from user
+//     const AIRequestMsg = req.body.aiAssistanceInput;
 
-    // Get list of services from the database, store the names in an array
-    var listOfServices = await general.find({}).project({ _id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
+//     // Get list of services from the database, store the names in an array
+//     var listOfServices = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
 
-    var filteredServices = [];
+//     var filteredServices = [];
 
-    var aiResponseHTML;
+//     var aiResponseHTML;
 
-    var aiFoundServices = false;
+//     var aiFoundServices = false;
 
-    console.log("AIRequestMsg: " + AIRequestMsg);
+//     console.log("AIRequestMsg: " + AIRequestMsg);
 
-    // Make AI request, passing in the user text message and the list of services. Save the AI response text
-    var AIResponse = await makeAiReqAndRes(AIRequestMsg, listOfServices);
+//     // Make AI request, passing in the user text message and the list of services. Save the AI response text
+//     var AIResponse = await makeAiReqAndRes(AIRequestMsg, listOfServices);
 
-    console.log("AIResponse: " + AIResponse);
+//     console.log("AIResponse: " + AIResponse);
 
-    //--------------------
+//     //--------------------
 
-    // If any applicable services were found in the list of services ('I'm sorry' is NOT contained in the response String)
-    if (!(AIResponse.includes("I'm sorry"))) {
+//     // If any applicable services were found in the list of services ('I'm sorry' is NOT contained in the response String)
+//     if (!(AIResponse.includes("I'm sorry"))) {
+    
+//     aiFoundServices = true;
 
-        aiFoundServices = true;
+//     var listOfAIRecommendedServices = [];
 
-        var listOfAIRecommendedServices = [];
+//     // Parse the AI-generated response - divide listOfAIRecommendedServices 
+//     // into an array of Strings, using '/' as delimeter
+//     listOfAIRecommendedServices = AIResponse.split('/');
 
-        // Parse the AI-generated response - divide listOfAIRecommendedServices 
-        // into an array of Strings, using '/' as delimeter
-        listOfAIRecommendedServices = AIResponse.split('/');
+//     // Remove first and last empty string elements (first and last = '')
+//     listOfAIRecommendedServices.shift();
+//     listOfAIRecommendedServices.pop();
 
-        // Remove first and last empty string elements (first and last = '')
-        listOfAIRecommendedServices.shift();
-        listOfAIRecommendedServices.pop();
+//     // Filter the listOfServices array (only include the ones that have name values in the listOfAIRecommendedServices array)
+//     filteredServices = listOfServices.filter(service => listOfAIRecommendedServices.includes(service.name));
 
-        // Filter the listOfServices array (only include the ones that have name values in the listOfAIRecommendedServices array)
-        filteredServices = listOfServices.filter(service => listOfAIRecommendedServices.includes(service.name));
+//     aiResponseHTML = "Here are some of our services that I can recommend based on your request:";
 
-        aiResponseHTML = "Here are some of our services that I can recommend based on your request:";
+//     } else {
+//         // only send the generated apology message
+//         // Remove '/' characters if they were included in the not found response
+//         if (AIResponse.includes('/')) {
+//             AIResponse = AIResponse.replace(/\//g, '');
+//         }
+//         aiFoundServices = false;
+//         aiResponseHTML = AIResponse;
+//     }
 
-    } else {
-        // only send the generated apology message
-        // Remove '/' characters if they were included in the not found response
-        if (AIResponse.includes('/')) {
-            AIResponse = AIResponse.replace(/\//g, '');
-        }
-        aiFoundServices = false;
-        aiResponseHTML = AIResponse;
-    }
-
-    // Send the filteredServices (array of json objects) back to the main page as a json object
-    res.json({ aiResponseHTML, filteredServices, aiFoundServices });
-});
+//     // Send the filteredServices (array of json objects) back to the main page as a json object
+//     res.json({aiResponseHTML, filteredServices, aiFoundServices});
+// });
 
 app.get('/checkout', sessionValidation, async (req, res) => {
     let stationId = req.query.stationId;
@@ -643,7 +707,7 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
 
 async function removeRobotFromDatabase(){
     try {
-        const station = await stationsCollection.findOne({ _id: new ObjectId(stationId) });
+        let station = await stationsCollection.findOne({ _id: new ObjectId(stationId) });
         current = station.robots_in_stock;
         await stationsCollection.updateOne({ _id: new ObjectId(stationId) }, { $set: { robots_in_stock: current - 1 } });
 
@@ -851,12 +915,12 @@ app.get('/saved', async (req, res) => {
 app.post('/displayStation', async (req, res) => {
     const cardId = req.body.data;
     const distance = req.body.data2;
-
+    console.log(cardId, distance)
 
     const objectId = new ObjectId(cardId);
   
     const currentStation = await stationsCollection.findOne({_id: objectId});
-    res.render('station', {station1: currentStation , distance: distance, cardId });
+    res.render('station', {station1: currentStation , distance: distance, cardId: cardId });
 });
 
 app.get('/businessCheckout', async (req, res) => {
@@ -872,9 +936,9 @@ app.get('/businessCheckout', async (req, res) => {
         }
       );
       console.log(currentUser.user_type == "user");
-    const cardId = req.body.data;
-    const distance = req.body.data2;
- 
+    const cardId = req.query.cardId;
+    const distance = req.query.distance;
+    console.log(cardId, distance)
     
     const objectId = new ObjectId(cardId);
     const services = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();

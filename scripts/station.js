@@ -16,11 +16,6 @@ let serviceName = localStorage.getItem('ServiceName');
    document.getElementById('price').innerHTML ='$'+price;
 
 
-    document.querySelector('.id-placeholder2').id =  "id-placeholder2" +IDCard  ;
-
-    document.querySelector('.id-placeholder11').id =  "id-placeholder11" + distance1;
-
-    document.querySelector('.button1').onclick  =  () => setInputs();
 
 
 }
@@ -47,13 +42,6 @@ if(station.robots_total_stock < 20) {
       document.getElementById('card-availability').style.color = "red";   
    }
 
-function setInputs() {
-   document.getElementById("id-placeholder2" + IDCard ).value = IDCard;
-   document.getElementById("id-placeholder11" + distance1).value = distance1;
-   document.querySelector('.id-button2').click();
-
- 
-}
 
 
 
