@@ -90,7 +90,7 @@
 <button id="aiAssistanceSubmitBtn" class="btn-submit" type="submit">Submit</button>
 </div>
 </form>
-
+<div class="search-top"></div>
 
 <!-- Services list of cards -->
 <header style="text-align: center;
@@ -246,7 +246,7 @@ color: #003249;">
     // Add event listener to the search icon for click events
     searchIcon.addEventListener("click", function (event) {
       console.log('clicked');
-      document.querySelector('#main-service-list-container-2').scrollIntoView({behavior: "smooth"})
+      document.querySelector('.search-top').scrollIntoView({behavior: "smooth"})
       // console.log("clicked");
       event.preventDefault(); // Prevent default action (e.g., form submission)
 
