@@ -246,6 +246,12 @@ q .card-subtitle {
   }
 }
 
+@media screen and (min-width: 1000px) {
+  .grid--1x2-special {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media screen and (max-width: 415px) {
   .callout {
     width: 90vw;
