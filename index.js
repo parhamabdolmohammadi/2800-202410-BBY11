@@ -374,6 +374,60 @@ app.post('/updateProfile', async (req, res) => {
     }
 });
 
+app.post('/updatePassword', async (req, res) => {
+    const { currentPassword, newPassword, confirmNewPassword } = req.body;
+    const userId = new ObjectId(req.session._id); // Replace with actual user ID (e.g., from session)
+    const MONGODB_URI = 'mongodb+srv://Seohyeon:Qkrtjgus8663!@atlascluster.u56alig.mongodb.net/AtlasCluster?retryWrites=true&w=majority';
+    const client = new MongoClient(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+    if (newPassword !== confirmNewPassword) {
+        return res.status(400).send('<div style="align-items: center;"><h1 style="text-align: center;">New password and confirm new password do not match.<br><a href="/edit-password">Try Again</a></h1><br></div>');
+    }
+
+    try {
+        await client.connect();
+        console.log('Connected to MongoDB');
+
+        const database = client.db('AtlasCluster'); // Use the database name directly
+        const collection = database.collection('users'); // Use the collection name directly
+
+        // Find the user by ID
+        const user = await collection.findOne({ _id: userId });
+
+        if (!user) {
+            return res.status(404).send('User not found.');
+        }
+
+        // Check if the current password matches the one in the database
+        const passwordMatch = await bcrypt.compare(currentPassword, user.password);
+
+        if (!passwordMatch) {
+            return res.status(400).send('<div style="align-items: center;"><h1 style="text-align: center;">Current password is incorrect.<br><a href="/edit-password">Try Again</a></h1><br></div>');
+        }
+
+        // Hash the new password
+        const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
+
+        // Update the password in the database
+        const result = await collection.updateOne(
+            { _id: userId },
+            { $set: { password: hashedNewPassword } }
+        );
+
+        if (result.matchedCount > 0) {
+            console.log('Successfully updated user password.');
+            res.redirect('/setting'); // Redirect to settings or a confirmation page
+        } else {
+            console.log('User not found.');
+            res.status(404).send('User not found.');
+        }
+    } catch (err) {
+        console.error('An error occurred while updating the user password:', err);
+        res.status(500).send('Internal Server Error');
+    } finally {
+        await client.close();
+    }
+});
 
 
 app.get('/logout', (req, res) => {
