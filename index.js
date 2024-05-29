@@ -283,11 +283,18 @@ app.get("/signupSubmit", (req, res) => {
 });
 
 app.get('/login', (req, res) => {
+    let username = ""
+    let userEmail = ''
+
     if (req.user && req.user.displayName) {
-        console.log(req.user.displayName);
+       
+        userEmail = req.user.emails[0].value;
+        username = req.user.displayName;
+        console.log(userEmail);
     } 
-   
-    res.render("login");
+
+    
+    res.render("login",{username: username, userEmail});
 });
 
 
