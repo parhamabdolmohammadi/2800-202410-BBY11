@@ -39,7 +39,8 @@ const navLinks = [
     { name: "Admin", link: "/admin" },
     { name: "404", link: "/*" },
     {name: "Bookmarks", link: "saved"},
-    { name: "Setting", link: "/setting" }
+    { name: "Setting", link: "/setting" },
+    {name: 'History', link: '/history'}
 ]
 
 // To determine if the user is at the index page
