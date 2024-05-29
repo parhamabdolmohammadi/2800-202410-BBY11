@@ -126,6 +126,6 @@ function handleLogout() {
         
         setTimeout(function() {
             window.location.href = '/edit-password';
-        }, 1300);
+        }, 2200);
         }
     

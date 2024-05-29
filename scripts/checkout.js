@@ -4,6 +4,9 @@ let stationId= localStorage.getItem('StationID');
 let pst = servicePrice * 0.07;
 let gst = servicePrice * 0.05;
 
+if (serviceName.length > 10){
+  serviceName = serviceName.substring(0, 15) + "...";
+}
 
 // Rounding to 2 decimal points
 pst = parseFloat(pst.toFixed(2));
