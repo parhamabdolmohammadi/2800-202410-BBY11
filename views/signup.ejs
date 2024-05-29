@@ -25,41 +25,52 @@
 </svg>
 
 <div class="signup-login-page-container">
-  <main style="max-width: 504px;" class="form-signin py-3 px-3 w-100 m-auto signup-login-form-container">
+  <main
+    style="max-width: 504px"
+    class="form-signin py-3 px-3 w-100 m-auto signup-login-form-container"
+  >
     <form action="/submitUser" method="post">
       <h4 class="h4 mb-3 fw-bold text-center">Sign up</h4>
-      <h6 class="mb-3 fw-normal text-center">Already have an account? <a href='/login' class="btn btn-sm" style="color: black; background-color: orange !important">Login</a></h6>
+      <h6 class="mb-3 fw-normal text-center">
+        Already have an account?
+        <a
+          href="/login"
+          class="btn btn-sm"
+          style="color: black; background-color: orange !important"
+          >Login</a
+        >
+      </h6>
       <div>
         <label for="signupUsername" class="form-label">Username</label>
-        <br/>
-        
+        <br />
+
         <input
           name="username"
           type="text"
           placeholder="Username"
           class="signup-login-form-input-style"
           id="signupUsername"
-        />      
+        />
       </div>
-      <br/>
-      
+      <br />
+
       <div>
         <label for="signupEmail" class="form-label">Email address</label>
-        <br/>
-        
+        <br />
+
         <input
           name="email"
           type="email"
           placeholder="name@example.com"
           class="signup-login-form-input-style"
           id="signupEmail"
-        />      
+        />
       </div>
-      <br/>
-      
-      <div style="position: relative;">
+      <br />
+
+      <div style="position: relative">
         <label for="signupPassword" class="form-label">Password</label>
-        <br/>
+        <br />
 
         <input
           name="password"
@@ -68,10 +79,15 @@
           class="signup-login-form-input-style"
           id="signupPassword"
         />
-        <span class="material-symbols-outlined showPswdButton" id="signupShowPswdButton" onclick="togglePasswordVisability('signupPassword', 'signupShowPswdButton')">visibility_off</span>
+        <span
+          class="material-symbols-outlined showPswdButton"
+          id="signupShowPswdButton"
+          onclick="togglePasswordVisability('signupPassword', 'signupShowPswdButton')"
+          >visibility_off</span
+        >
       </div>
-      <br/>
-      
+      <br />
+
       <!-- Remove this
 
       <div class="form-check text-start my-3">
@@ -88,14 +104,21 @@
       -->
 
       <button
-        style="background-color: #003249 !important; color: white;"
+        style="background-color: #003249 !important; color: white"
         class="btn w-100 py-2"
         type="submit"
       >
         Sign up
       </button>
+      <a href="/auth/google?signup=true">Authenticate with Google</a>
     </form>
   </main>
 </div>
+<script>
+  const userEmail = <%- JSON.stringify(userEmail) %>;
+   if (userEmail) {  document.getElementById("signupEmail").value = userEmail+1}
 
+   const username = <%- JSON.stringify(username) %>;
+   if (username) {  document.getElementById("signupUsername").value = username+1}
+</script>
 <%- include("templates/footer") %>

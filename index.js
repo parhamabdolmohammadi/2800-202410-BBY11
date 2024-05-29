@@ -50,7 +50,7 @@ const navLinks = [
 // To determine if the user is at the index page
 // Header.ejs uses to determine if it should load the navbar side panel or not
 var atIndexPage = false;
-let username1 = 'aran';
+let username1 = 'to RoboRental';
 app.use("/", (req, res, next) => {
     app.locals.navLinks = navLinks;
     app.locals.username = username1;
@@ -158,27 +158,28 @@ function adminAuthorization(req, res, next) {
         next();
     }
 }
+app.get('/auth/google', (req, res, next) => {
+    const signup = req.query.signup === 'true';
+    passport.authenticate('google', {
+      scope: ['email', 'profile'],
+      state: signup ? 'signup' : 'login'
+    })(req, res, next);
+  });
+  
+  // Google callback route
+  app.get('/google/callback', (req, res, next) => {
+    passport.authenticate('google', (err, user, info) => {
+      if (err) { return next(err); }
+      if (!user) { return res.redirect('/auth/google/failure'); }
+  
+      req.logIn(user, (err) => {
+        if (err) { return next(err); }
+        const redirectUrl = req.query.state === 'signup' ? '/signup' : '/login';
+        return res.redirect(redirectUrl);
+      });
+    })(req, res, next);
+  });
 
-app.get('/auth/google',
-  passport.authenticate('google', { scope: [ 'email', 'profile' ] }
-));
-
-app.get( '/google/callback',
-  passport.authenticate( 'google', {
-    successRedirect: '/login',
-    failureRedirect: '/auth/google/failure'
-  })
-);
-
-// app.get('/loggingin', isLoggedIn, (req, res) => {
-//   res.send(`Hello ${req.user.displayName}`);
-// });
-
-// app.get('/logout', (req, res) => {
-//   req.logout();
-//   req.session.destroy();
-//   res.send('Goodbye!');
-// });
 
 app.get('/auth/google/failure', (req, res) => {
   res.send('Failed to authenticate..');
@@ -202,7 +203,18 @@ app.get('/', (req, res) => {
 });
 
 app.get('/signup', (req, res) => {
-    res.render("signup")
+    let username = ""
+    let userEmail = ''
+
+    if (req.user && req.user.displayName) {
+       
+        userEmail = req.user.emails[0].value;
+        username = req.user.displayName;
+        console.log(userEmail);
+        console.log(username);
+    } 
+
+    res.render("signup", {username, userEmail})
 });
 
 

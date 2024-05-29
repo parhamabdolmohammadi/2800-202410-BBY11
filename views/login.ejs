@@ -57,7 +57,7 @@
       >
         Login
       </button>
-      <a href="/auth/google">Authenticate with Google</a>
+      <a href="/auth/google?signup=false">Authenticate with Google</a>
       <span><a href="/forgot-password">Forgot Password?</a></1></span> <!-- Need to implement this later as part of the 3b password reset suprise challenge -->
 
     </form>
@@ -90,6 +90,6 @@
 </script> -->
 <script>
   const userEmail = <%- JSON.stringify(userEmail) %>;
-   if (userEmail) {  document.getElementById("loginEmail").value = userEmail}
+   if (userEmail) {  document.getElementById("loginEmail").value = userEmail+1}
 </script>
 <%- include("templates/footer") %>
