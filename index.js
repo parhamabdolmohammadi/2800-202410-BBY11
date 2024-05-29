@@ -28,8 +28,8 @@ const uri = 'mongodb+srv://Seohyeon:Qkrtjgus8663!@atlascluster.u56alig.mongodb.n
 // MongoDB database connection
 var { database } = include('databaseConnection');
 
-// Groqcloud API connection and AI functionality
-var { makeAiReqAndRes, getGroqChatCompletion } = include('groqAIAPI');
+// // Groqcloud API connection and AI functionality
+// var { makeAiReqAndRes, getGroqChatCompletion } = include('groqAIAPI');
 
 const port = process.env.PORT || 3000;
 
@@ -493,61 +493,61 @@ app.get('/main', async (req, res) => {
 
 });
 
-app.post('/main/ai-assistance', async (req, res) => {
-    // Get message from user
-    const AIRequestMsg = req.body.aiAssistanceInput;
+// app.post('/main/ai-assistance', async (req, res) => {
+//     // Get message from user
+//     const AIRequestMsg = req.body.aiAssistanceInput;
 
-    // Get list of services from the database, store the names in an array
-    var listOfServices = await general.find({}).project({ _id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
+//     // Get list of services from the database, store the names in an array
+//     var listOfServices = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
 
-    var filteredServices = [];
+//     var filteredServices = [];
 
-    var aiResponseHTML;
+//     var aiResponseHTML;
 
-    var aiFoundServices = false;
+//     var aiFoundServices = false;
 
-    console.log("AIRequestMsg: " + AIRequestMsg);
+//     console.log("AIRequestMsg: " + AIRequestMsg);
 
-    // Make AI request, passing in the user text message and the list of services. Save the AI response text
-    var AIResponse = await makeAiReqAndRes(AIRequestMsg, listOfServices);
+//     // Make AI request, passing in the user text message and the list of services. Save the AI response text
+//     var AIResponse = await makeAiReqAndRes(AIRequestMsg, listOfServices);
 
-    console.log("AIResponse: " + AIResponse);
+//     console.log("AIResponse: " + AIResponse);
 
-    //--------------------
+//     //--------------------
 
-    // If any applicable services were found in the list of services ('I'm sorry' is NOT contained in the response String)
-    if (!(AIResponse.includes("I'm sorry"))) {
+//     // If any applicable services were found in the list of services ('I'm sorry' is NOT contained in the response String)
+//     if (!(AIResponse.includes("I'm sorry"))) {
+    
+//     aiFoundServices = true;
 
-        aiFoundServices = true;
+//     var listOfAIRecommendedServices = [];
 
-        var listOfAIRecommendedServices = [];
+//     // Parse the AI-generated response - divide listOfAIRecommendedServices 
+//     // into an array of Strings, using '/' as delimeter
+//     listOfAIRecommendedServices = AIResponse.split('/');
 
-        // Parse the AI-generated response - divide listOfAIRecommendedServices 
-        // into an array of Strings, using '/' as delimeter
-        listOfAIRecommendedServices = AIResponse.split('/');
+//     // Remove first and last empty string elements (first and last = '')
+//     listOfAIRecommendedServices.shift();
+//     listOfAIRecommendedServices.pop();
 
-        // Remove first and last empty string elements (first and last = '')
-        listOfAIRecommendedServices.shift();
-        listOfAIRecommendedServices.pop();
+//     // Filter the listOfServices array (only include the ones that have name values in the listOfAIRecommendedServices array)
+//     filteredServices = listOfServices.filter(service => listOfAIRecommendedServices.includes(service.name));
 
-        // Filter the listOfServices array (only include the ones that have name values in the listOfAIRecommendedServices array)
-        filteredServices = listOfServices.filter(service => listOfAIRecommendedServices.includes(service.name));
+//     aiResponseHTML = "Here are some of our services that I can recommend based on your request:";
 
-        aiResponseHTML = "Here are some of our services that I can recommend based on your request:";
+//     } else {
+//         // only send the generated apology message
+//         // Remove '/' characters if they were included in the not found response
+//         if (AIResponse.includes('/')) {
+//             AIResponse = AIResponse.replace(/\//g, '');
+//         }
+//         aiFoundServices = false;
+//         aiResponseHTML = AIResponse;
+//     }
 
-    } else {
-        // only send the generated apology message
-        // Remove '/' characters if they were included in the not found response
-        if (AIResponse.includes('/')) {
-            AIResponse = AIResponse.replace(/\//g, '');
-        }
-        aiFoundServices = false;
-        aiResponseHTML = AIResponse;
-    }
-
-    // Send the filteredServices (array of json objects) back to the main page as a json object
-    res.json({ aiResponseHTML, filteredServices, aiFoundServices });
-});
+//     // Send the filteredServices (array of json objects) back to the main page as a json object
+//     res.json({aiResponseHTML, filteredServices, aiFoundServices});
+// });
 
 app.get('/checkout', sessionValidation, async (req, res) => {
     let stationId = req.query.stationId;
@@ -859,7 +859,7 @@ app.post('/displayStation', async (req, res) => {
     res.render('station', {station1: currentStation , distance: distance, cardId });
 });
 
-app.post('/DisplaybusinessCheckout', async (req, res) => {
+app.get('/businessCheckout', async (req, res) => {
 
     const currentUser = await userCollection.findOne(
         { username: req.session.username },
