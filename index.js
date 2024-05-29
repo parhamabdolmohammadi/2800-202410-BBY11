@@ -48,7 +48,7 @@ const navLinks = [
     { name: "Main", link: "/main" },
     { name: "Login", link: "/login" },
     { name: "Admin", link: "/admin" },
-    { name: "404", link: "/*" },
+
     { name: "Bookmarks", link: "saved" },
     { name: "Setting", link: "/setting" },
     {name: 'History', link: '/history'}
@@ -373,6 +373,7 @@ app.post('/loggingin', async (req, res) => {
         req.session.cookie.maxAge = expireTime;
         req.session.email = result[0].email;
         username1 = result[0].username;
+        
 
         res.redirect('/main');
         return;

@@ -6,7 +6,7 @@ station.forEach(station => {
  
    var name = station.station_name;
    var address = station.address;
-   var availability = station.robots_available;
+   var availability = station.robots_in_stock;
    var telephone1 = station.contact_number;
 
    let isBookmarked = false;
@@ -72,8 +72,7 @@ function openPhoneCall(phoneNumber) {
      // If not supported, display an error message
      alert('Your browser does not support phone call functionality.');
    }
- }
-
+ } 
 
 // function telephone(telephone) {
 //    Swal.fire({
