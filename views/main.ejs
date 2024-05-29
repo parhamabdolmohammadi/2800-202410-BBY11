@@ -22,7 +22,7 @@
 <div
   id="main-welcome-container"
   style="
-    background: url(./hi.jpg) center / cover no-repeat;
+    background: url(./roboMain2.avif) center / cover no-repeat;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -93,12 +93,18 @@
 
 
 <!-- Services list of cards -->
-
+<header style="text-align: center;
+margin-bottom: ;
+margin-top: 5rem;
+color: #003249;">
+ <h1>Select Your Desired Service.</h1>
+ <p>You can either pick from Map or the closest station would be automatically picked for you.</p>
+ 
+</header>
 <div id="main-service-list-container">
+ 
   <div id="services-header-container">
-    <h3 id="services-header">
-      Find a Service
-    </h3>
+   
   </div>
   <div id="main-service-list-container-2" class="row mb-3 text-center service">
     <template id="ServiceCardTemplate">
@@ -114,12 +120,23 @@
 
             <p class="card-text service-description"></p>
             <p class="card-text service-price"></p>
-            <form  action="/displayStation" method="POST">
+            <form  action="/displayStation" method="POST" >
             <button class="button-arrow" >Order Service</button>
             <input style="display: none;" class="stationInput" type="text" name="data"  >
             <input style="display: none;" class="DistanceInput" type="text" name="data2" >
-            <form action=""></form>
-          </div>
+            </form>
+          <!-- <div class="eachCard" >
+            <div class="front">
+              <h6 class="card-subtitle mb-2 service-name"></h6>
+              <p class="card-text service-price"></p>
+              <button class="card-link" >Details</button>
+            </div>
+           <div class="back">
+             <p class="card-text service-description"></p>
+           </div>
+            
+            
+          </div> -->
           <div>
             <form class="stations-button" action="/stations" method="GET">
               <button
@@ -209,6 +226,7 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
+      
     var link = document.createElement("link");
     link.rel = "stylesheet";
     link.href = "/main.css";
@@ -216,7 +234,6 @@
   });
   document.addEventListener("DOMContentLoaded", function () {
       // * Search bar functionality
-
       // Get references to the search input and icon
       const searchInput = document.getElementById("search-text");
       const searchIcon = document.getElementById("search-button");
