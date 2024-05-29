@@ -82,7 +82,7 @@
       </div>
       <div class="text-center buttons">
         <div id="addButton" class="button1">
-          <a class="link-style" href="/businessCheckout"
+          <a class="link-style" href="/businessCheckout?cardId=<%= cardId %>&distance=<%= distance %>"
             ><span class="icon-container">
               <p style="margin-bottom: 0">Add</p>
             </span></a
@@ -95,10 +95,10 @@
             </span></a
           >
         </div>
-        <form
+        <!-- <form
           style="display: none"
-          action="/DisplaybusinessCheckout"
-          method="POST"
+          action="/businessCheckout"
+          method="get"
         >
           <input
             type="text"
@@ -111,9 +111,9 @@
             class="id-placeholder11"
             name="data2"
             required
-          /><br /><br />
+          /><br /><br /> -->
 
-          <button class="id-button2" type="submit">Submit</button>
+          <!-- <button class="id-button2" type="submit">Submit</button> -->
         </form>
       </div>
     </div>

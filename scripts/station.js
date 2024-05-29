@@ -1,6 +1,7 @@
 console.log(distance1);
 console.log(IDCard);
 fillCard(station);
+setInputs();
 function fillCard(stat) {
    document.getElementById('card-address').innerHTML = stat.address;
    document.getElementById('station-name').innerHTML = stat.station_name;

@@ -18,8 +18,6 @@ document.getElementById('stationId').innerHTML = '<small style="font-size:8pt">'
 
 document.addEventListener('DOMContentLoaded', (event) => {
     const links = document.querySelectorAll('.dynamic-link');
-    const additionalParam = 'stationId=' + stationId;
-
     links.forEach(link => {
       let currentHref = new URL(link.href);
       currentHref.searchParams.append('stationId', stationId);

@@ -707,7 +707,7 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
 
 async function removeRobotFromDatabase(){
     try {
-        const station = await stationsCollection.findOne({ _id: new ObjectId(stationId) });
+        let station = await stationsCollection.findOne({ _id: new ObjectId(stationId) });
         current = station.robots_in_stock;
         await stationsCollection.updateOne({ _id: new ObjectId(stationId) }, { $set: { robots_in_stock: current - 1 } });
 
@@ -915,12 +915,12 @@ app.get('/saved', async (req, res) => {
 app.post('/displayStation', async (req, res) => {
     const cardId = req.body.data;
     const distance = req.body.data2;
-
+    console.log(cardId, distance)
 
     const objectId = new ObjectId(cardId);
   
     const currentStation = await stationsCollection.findOne({_id: objectId});
-    res.render('station', {station1: currentStation , distance: distance, cardId });
+    res.render('station', {station1: currentStation , distance: distance, cardId: cardId });
 });
 
 app.get('/businessCheckout', async (req, res) => {
@@ -936,9 +936,9 @@ app.get('/businessCheckout', async (req, res) => {
         }
       );
       console.log(currentUser.user_type == "user");
-    const cardId = req.body.data;
-    const distance = req.body.data2;
- 
+    const cardId = req.query.cardId;
+    const distance = req.query.distance;
+    console.log(cardId, distance)
     
     const objectId = new ObjectId(cardId);
     const services = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
