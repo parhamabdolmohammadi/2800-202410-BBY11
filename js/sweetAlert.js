@@ -67,4 +67,34 @@ function handleLogout() {
         }
       });
     }
+
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+      var logoutSettingLink = document.getElementById('editProfileBtn');
+    
+      
+      if (logoutSettingLink) {
+          
+          logoutSettingLink.addEventListener('click', function(event) {
+    
+              handleEdit();
+          });
+      }
+    });
+    
+    function handleEdit() {
+        Swal.fire({
+          // position: "middle",
+          icon: "success",
+          title: "You've changed your info succesfully!",
+          showConfirmButton: false,
+          timer: 1000
+      });
+      
+      setTimeout(function() {
+          window.location.href = '/edit-profile';
+      }, 1300);
+      }
     
