@@ -12,19 +12,26 @@
 
   <section class="block">
     <div
-      style="max-width: 1140px; margin: 0 auto"
+      style="max-width: 1140px; margin: 0 auto;"
       class="container grid grid--1x2"
     >
       <header
-        style="
-          display: flex;
-          flex-direction: column;
-          justify-self: center;
-          justify-content: center;
-          align-content: center;
-          gap: 30px;
-          margin-top: 100px;
-        "
+      style="
+      display: flex;
+      flex-direction: column;
+      justify-self: flex-end;
+      justify-content: center;
+      align-content: center;
+      gap: 30px;
+      margin-top: 100px;
+      height: fit-content;
+      align-self: center;
+      justify-self: center;
+      margin-bottom: 0px; 
+      position: relative; 
+      top: 45px;
+    "
+        id="index-grid-item-address-bar"
         class="block__header hero__content"
       >
         <h3 id="index-welcome-message">
@@ -74,22 +81,24 @@
             type="button"
             onclick="window.location.href = '/signup';"
             class="btn py-2 rounded-pill index-signup-login-buttons"
-            style="background-color: #003249 !important; color: white"
+            style="background-color: #007EA7 !important; color: white"
           >
             Sign up
           </button>
         </div>
       </header>
 
+      <!-- moved top: 120px; to index.css to be able to change top margin when in mobile view -->
       <img
         style="
-          position: relative;
           top: 120px;
+          position: relative;
           left: 0px;
           margin-top: 0;
           width: 100%;
         "
         class="hero__image"
+        id="index-hero__image"
         src="robo.png"
         alt=""
       />

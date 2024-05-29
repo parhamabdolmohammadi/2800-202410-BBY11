@@ -352,6 +352,7 @@ app.post('/loggingin', async (req, res) => {
 
     var encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString()
     // console.log(encryptedEmail === 'WTfm6CGGEKx6XwoGKopaRg==');
+    
     // Check if a user account with the entered email and password exists in the MongoDB database
     const result = await userCollection.find({ email: encryptedEmail }).project({ username: 1, email: 1, password: 1, user_type: 1, _id: 1 }).toArray();
 
