@@ -37,15 +37,17 @@ const navLinks = [
     { name: "Login", link: "/login" },
     { name: "Admin", link: "/admin" },
     { name: "404", link: "/*" },
+    {name: "Bookmarks", link: "saved"},
     { name: "Setting", link: "/setting" }
 ]
 
 // To determine if the user is at the index page
 // Header.ejs uses to determine if it should load the navbar side panel or not
 var atIndexPage = false;
-
+let username1 = 'aran';
 app.use("/", (req, res, next) => {
     app.locals.navLinks = navLinks;
+    app.locals.username = username1;
     app.locals.currentURL = url.parse(req.url).pathname;
     app.locals.atIndexPage = false;
     next();
@@ -232,7 +234,8 @@ app.post('/submitUser', async (req, res) => {
     req.session.username = username;
     req.session.cookie.maxAge = expireTime;
     req.session.user_type = "user";
-
+    username1 = username;
+    
 
     res.redirect("/main");
 });
@@ -297,6 +300,7 @@ app.post('/loggingin', async (req, res) => {
       
         req.session.cookie.maxAge = expireTime;
         req.session.email = result[0].email;
+        username1 = result[0].username;
 
         res.redirect('/main');
         return;
@@ -780,12 +784,119 @@ app.post('/DemoteToUser', async (req, res) => {
     res.redirect("/admin");
 });
 
+app.post('/submitEmailBL', async (req, res) => {
+    var email=req.body.email;
+    await emailsCollection.insertOne({ email:email });
+    try {
+        let transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+                user: 'roborental.team@gmail.com',
+                pass: process.env.EMAIL_PASSWORD
+            }
+        });
+        if (!email) {
+            res.render("index");
+            return;
+        }
+        let mailOptions = {
+            from: 'roborental.team@gmail.com',
+            to: email,
+            subject: 'Robo Rental Launch',
+            text:`Exciting news! Robo Rental, the app that makes it easy to rent robots for various services, is launching soon.
+            By signing up you will be notified on the day of our apps launch.
+            Robo Rental offers a seamless solution for renting robots to assist with a variety of tasks. Stay tuned for more details!
 
+            Thank you for your interest.
+
+            Best regards,
+
+            The Robo Rental Team`,
+        };
+        let info = await transporter.sendMail(mailOptions);
+        console.log('Email sent:', info.messageId);
+        res.redirect('/index2');
+    } catch (error) {
+        console.error('Error occurred:', error);
+    }
+});
+
+
+async function sendAllEmails() {
+    try {
+        // Fetch email addresses from the collection
+        let emails = await emailsCollection.find({}, { projection: { email: 1 } }).toArray();
+        console.log("Emails array:", emails);
+
+        // Create a transporter object using the default SMTP transport
+        let transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+                user: 'roborental.team@gmail.com',
+                pass: process.env.EMAIL_PASSWORD
+            }
+        });
+
+        // Iterate over each email and send the notification
+        for (let { email } of emails) {
+            console.log("Sending email to:", email);
+
+            // Email options
+            let mailOptions = {
+                from: 'roborental.team@gmail.com',
+                to: email,
+                subject: 'Robo Rental Launched',
+                text: `We are thrilled to announce that Robo Rental, the app that makes it easy to rent robots for various services, has officially launched!
+
+With Robo Rental, you can seamlessly rent robots to assist with a variety of tasks, providing you with innovative solutions for your needs. Our app is designed to offer you convenience and efficiency at your fingertips.
+
+Thank you for your interest and support. We invite you to explore the app and discover the future of robotic services.
+
+Stay tuned for more updates and features coming soon!
+
+Best regards,
+
+The Robo Rental Team`
+            };
+
+            // Send email
+            try {
+                let info = await transporter.sendMail(mailOptions);
+                console.log('Email sent:', info.messageId);
+            } catch (error) {
+                console.error('Error sending email:', error);
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching emails:', error);
+    }
+}
+
+const sendEmails = process.env.SEND_EMAILS_PAGE_NAME;
+app.get("/"+sendEmails, (req, res) => {
+    sendAllEmails();
+    res.redirect('/');
+});
 
 app.get('/confirmation', sessionValidation, (req, res) => {
     res.render("confirmation");
 });
 
+const orders = database.db('AtlasCluster').collection('orders');
+app.get('/history', async(req, res) => {
+    if (!req.session.authenticated) {
+        res.redirect('/');
+        return;
+    }
+    //timestamp:1, paymentType:1, customerId:1, total:1, service:1
+    // change it to customerId: req.session._id 
+    const history = await orders.find({customerId: '664fb094254567cab99f3cfa', business: { $ne: true }}).project({}).toArray()
+    var username = req.session.username;
+    // console.log(username);
+    // console.log(history);
+    // console.log(req.session._id);
+    res.render("history", {username, history})
+})
 app.get("*", (req, res) => {
     res.status(404);
     res.render("404",);

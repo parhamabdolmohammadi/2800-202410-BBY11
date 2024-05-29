@@ -44,9 +44,28 @@
   margin-right: calc(2em + 10px);
 }
 
-#services-header {
-  display: inline;
-  margin-bottom: 0;
+@media only screen and (max-width: 700px) {
+  #services-header {
+    display: inline;
+    font-size: 16pt;
+    margin-bottom: 0;
+  }
+}
+
+@media only screen and (min-width: 701px) and (max-width: 1000px) {
+  #services-header {
+    display: inline;
+    font-size: 24pt;
+    margin-bottom: 0;
+  }
+}
+
+@media only screen and (min-width: 1001px) {
+  #services-header {
+    display: inline;
+    font-size: 32pt;
+    margin-bottom: 0;
+  }
 }
 
 .service-container {
@@ -64,7 +83,7 @@
   margin: 10px;
   padding: 10px 10px 10px 25px;
   border-radius: 0px;
-
+  transition: transform 1s linear;
   text-align: left;
   transform-style: preserve-3d;
     transition: transform 0.6s;
@@ -108,14 +127,14 @@
   position: relative;
   z-index: 1;
   color: white;
+}
+.cardi33 {
   display: grid;
   grid-template-columns: 70% 30%;
   align-items: center;
   /* transform-style: preserve-3d; */
 
 }
-
-
 .service {
   display: grid;
 
@@ -239,7 +258,7 @@ q .card-subtitle {
   margin: 0px;
   padding: 0px;
   width: 100vw;
-  height: 10vh;
+  height: 20vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -360,61 +379,26 @@ q .card-subtitle {
   font-family: "Alfa Slab One", serif;
   font-weight: 400;
   font-style: normal;
-  color: yellow;
+  /* color: yellow; */
+  color: #fcc358;
+}
+
+.dance {
+  animation: dance 1s infinite;
 }
 
 /* @keyframes dance {
   0% {
-    transform: translateY(-5px);
+    transform: translateY(1em);
   }
-  25% {
-    transform: translateY(5px);
-  }
+
   50% {
-    transform: translateY(-5px);
+    transform: translateY(-1em);
   }
-  75% {
-    transform: translateY(5px);
-  }
+
   100% {
-    transform: translateY(-5px);
+    transform: translateY(1em);
   }
-} */
-
-.dance1 span {
-  display: inline-block;
-  transition: transform 0 ease, color 0.5s ease;
-}
-
-.odd-span {
-  animation: dance1 2s linear infinite;
-}
-
-.even-span {
-  animation: oppositedance 2s linear infinite;
-  color: red;
-}
-
-#main-search-form {
-  max-width: 100vw;
-}
-
-.card-background {
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
-}
-
-.robo {
-  height: 70px;
-  width: 70px;
-  display: inline-block;
-  border-radius: 50px;
-  background-color: black;
-}
-
-.robocircle {
-  animation: rotate 2s linear infinite;
 }
 
 .card-link {
@@ -490,13 +474,6 @@ q .card-subtitle {
   margin-left: 10px;
 }
 
-.app-name {
-  font-family: "Alfa Slab One", serif;
-  font-weight: 400;
-  font-style: normal;
-  color: yellow;
-}
-
 @keyframes dance1 {
   0% {
     transform: translateY(-5px);
@@ -568,4 +545,50 @@ q .card-subtitle {
   100% {
     transform: translateY(1em);
   }
+}
+
+.flipped {
+  transform: rotateY(180deg);
+}
+
+.description:hover {
+  color: #80ced7;
+}
+.description2:hover {
+  color: #80ced7;
+}
+
+.flipped {
+  transform: rotateY(180deg);
+}
+
+.description:hover {
+  color: #80ced7;
+}
+.description2:hover {
+  color: #80ced7;
+}
+
+.dance1:hover span:nth-child(2n) {
+  /* Change the color of even spans to red on hover */
+}
+
+.odd-span {
+  animation: dance1 2s linear infinite;
+}
+
+.even-span {
+  animation: oppositedance 2s linear infinite;
+}
+
+.robo {
+  height: 70px;
+  width: 70px;
+  display: inline-block;
+  border-radius: 50px;
+  background-color: black;
+}
+
+.robocircle {
+  animation: rotate 2s linear infinite;
 }

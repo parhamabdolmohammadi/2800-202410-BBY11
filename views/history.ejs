@@ -1,0 +1,30 @@
+<%- include("templates/header") %>
+    <div class="top-container">
+        <h1>
+            Order History
+        </h1>
+    </div>
+    <div class="content-container">
+        <div class="order-types">
+            <span id="active-orders" class="orders-btn ">Active Orders (<span id="active-orders-number"></span>)</span>
+            <span id="past-orders" class="orders-btn">Past Orders (<span id="past-orders-number"></span>)</span>
+        </div>
+        <div class="history-content">
+            <div class="nothing">Nothing here..</div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.href = "/history.css";
+            document.head.appendChild(link);
+        });
+    </script>
+    <script>
+        const history = <%- JSON.stringify(history) %>;
+    </script>
+    <script defer src="history.js"></script>
+    <%- include('templates/footer') %>

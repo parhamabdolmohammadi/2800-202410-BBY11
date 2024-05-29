@@ -1,3 +1,4 @@
+
 let cardTemplate = document.getElementById("StationCardTemplate");
 
 
@@ -6,6 +7,7 @@ station.forEach(station => {
    var name = station.station_name;
    var address = station.address;
    var availability = station.robots_available;
+   var telephone1 = station.contact_number;
 
    let isBookmarked = false;
 
@@ -28,6 +30,17 @@ station.forEach(station => {
    newcard.querySelector(".id-placeholder2").id = "id-placeholder2" + CardId;
    newcard.querySelector(".id-button2").id = "id-button2" + CardId;
     newcard.querySelector(".select-button").onclick = () => transfer(CardId);
+
+
+    newcard.querySelector(".footer-card").id = "footer-card" + CardId;
+    newcard.querySelector(".more-info").id = "more-info" + CardId;
+
+    newcard.querySelector(".more-info").onclick = () => moreInfo(CardId);
+
+    newcard.querySelector(".telephone-icon").id = "more-info" + CardId;
+
+    newcard.querySelector(".telephone-icon").onclick = () => telephone(telephone1);
+   
    
 
    if (currentUser) {
@@ -43,8 +56,29 @@ station.forEach(station => {
 
 });
 
+function moreInfo(id) {
+   document.getElementById("footer-card" + id).classList.toggle("footer-special");
+}
 
-
+function telephone(telephone) {
+   Swal.fire({
+      title: telephone,
+      showClass: {
+        popup: `
+          animate__animated
+          animate__fadeInUp
+          animate__faster
+        `
+      },
+      hideClass: {
+        popup: `
+          animate__animated
+          animate__fadeOutDown
+          animate__faster
+        `
+      }
+    });
+}
 
 
 
@@ -56,7 +90,6 @@ function updateBookmark1(id, isBookmarked) {
   if (isBookmarked) {
    Swal.fire({
       icon: "error",
-      title: "Oops...",
       text: "Bookmark Removed",
       showConfirmButton: false,
    });
@@ -69,6 +102,7 @@ function updateBookmark1(id, isBookmarked) {
       timer: 1500
    });
   }
+
 
 
 
