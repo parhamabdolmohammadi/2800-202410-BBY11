@@ -73,6 +73,10 @@
   #index-grid-item-address-bar {
     width: 90%;
   }
+
+  #grid-img-signup-login-address-bar {
+    gap: 3em;
+  }
 }
 
 /* Mobile view */
