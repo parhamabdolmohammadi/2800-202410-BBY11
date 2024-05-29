@@ -25,6 +25,11 @@ const bodyParser = require('body-parser');
 const { MongoClient, ObjectId } = require('mongodb');
 const uri = 'mongodb+srv://Seohyeon:Qkrtjgus8663!@atlascluster.u56alig.mongodb.net/AtlasCluster?retryWrites=true&w=majority';
 
+
+
+const passport = require('passport');
+require('./auth');
+
 // MongoDB database connection
 var { database } = include('databaseConnection');
 
@@ -43,7 +48,7 @@ const navLinks = [
     { name: "Main", link: "/main" },
     { name: "Login", link: "/login" },
     { name: "Admin", link: "/admin" },
-    { name: "404", link: "/*" },
+
     { name: "Bookmarks", link: "saved" },
     { name: "Setting", link: "/setting" },
     {name: 'History', link: '/history'}
@@ -52,7 +57,7 @@ const navLinks = [
 // To determine if the user is at the index page
 // Header.ejs uses to determine if it should load the navbar side panel or not
 var atIndexPage = false;
-let username1 = 'aran';
+let username1 = 'to RoboRental';
 app.use("/", (req, res, next) => {
     app.locals.navLinks = navLinks;
     app.locals.username = username1;
@@ -114,6 +119,10 @@ app.use("/img", express.static("./public/img"));
 // WILL NEED TO UNCOMMENT THESE TWO IF WE PUT CSS AND IMAGES FOLDER INTO PUBLIC FOLDER, see footer.ejs line 30 for how to link-------------------------------------------------
 // app.use("/css", express.static("./public/css"));
 // app.use("/img", express.static("./public/images"));
+function isLoggedIn(req, res, next) {
+    req.user ? next() : res.sendStatus(401);
+  }
+
 
 app.use(session({
     secret: node_session_secret,
@@ -122,6 +131,8 @@ app.use(session({
     resave: true
 }
 ));
+app.use(passport.initialize());
+app.use(passport.session());
 
 function isValidSession(req) {
     if (req.session.authenticated) {
@@ -157,6 +168,32 @@ function adminAuthorization(req, res, next) {
         next();
     }
 }
+app.get('/auth/google', (req, res, next) => {
+    const signup = req.query.signup === 'true';
+    passport.authenticate('google', {
+      scope: ['email', 'profile'],
+      state: signup ? 'signup' : 'login'
+    })(req, res, next);
+  });
+  
+  // Google callback route
+  app.get('/google/callback', (req, res, next) => {
+    passport.authenticate('google', (err, user, info) => {
+      if (err) { return next(err); }
+      if (!user) { return res.redirect('/auth/google/failure'); }
+  
+      req.logIn(user, (err) => {
+        if (err) { return next(err); }
+        const redirectUrl = req.query.state === 'signup' ? '/signup' : '/login';
+        return res.redirect(redirectUrl);
+      });
+    })(req, res, next);
+  });
+
+
+app.get('/auth/google/failure', (req, res) => {
+  res.send('Failed to authenticate..');
+});
 
 app.get('/', (req, res) => {
     if (!req.session.authenticated) {
@@ -176,7 +213,18 @@ app.get('/', (req, res) => {
 });
 
 app.get('/signup', (req, res) => {
-    res.render("signup")
+    let username = ""
+    let userEmail = ''
+
+    if (req.user && req.user.displayName) {
+       
+        userEmail = req.user.emails[0].value;
+        username = req.user.displayName;
+        console.log(userEmail);
+        console.log(username);
+    } 
+
+    res.render("signup", {username, userEmail})
 });
 
 
@@ -257,8 +305,20 @@ app.get("/signupSubmit", (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-    res.render("login");
+    let username = ""
+    let userEmail = ''
+
+    if (req.user && req.user.displayName) {
+       
+        userEmail = req.user.emails[0].value;
+        username = req.user.displayName;
+        console.log(userEmail);
+    } 
+
+    
+    res.render("login",{username: username, userEmail});
 });
+
 
 app.post('/loggingin', async (req, res) => {
     var email = req.body.email;
@@ -313,6 +373,7 @@ app.post('/loggingin', async (req, res) => {
         req.session.cookie.maxAge = expireTime;
         req.session.email = result[0].email;
         username1 = result[0].username;
+        
 
         res.redirect('/main');
         return;
