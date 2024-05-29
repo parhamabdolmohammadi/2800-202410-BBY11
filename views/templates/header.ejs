@@ -88,7 +88,13 @@
             <h5 class="offcanvas-title" id="offcanvasNavbarLabel"><span class="fs-4">&nbsp;Robo Rental <p
                   style="display:inline; position: relative; bottom:1px">|</p><img
                   style="position: relative; bottom:3px;" width="34px;" src="robot.png">&nbsp; &nbsp;&nbsp;&nbsp;<br><div style="font-size: 18px;">
-                    &nbsp;Welcome <span id="h-name"></span> !
+                    &nbsp;Welcome <% if(locals.currentURL === "/main") { %>
+                      <%= username %>
+                    <% } else if (locals.currentURL === "/login" || locals.currentURL === "/signup") { %>
+                      to RoboRental
+                    <% } else { %>
+                      <span id="h-name"></span>
+                    <% } %> !
                   </div></span>
             <br></h5>
             
