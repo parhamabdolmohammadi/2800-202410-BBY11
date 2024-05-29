@@ -449,32 +449,71 @@ app.post('/updatePassword', async (req, res) => {
     const client = new MongoClient(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
     if (newPassword !== confirmNewPassword) {
-        return res.status(400).send('<div style="align-items: center;"><h1 style="text-align: center;">New password and confirm new password do not match.<br><a href="/edit-password">Try Again</a></h1><br></div>');
+        return res.status(400).send(`
+            <div style=" margin-top:50px; align-items: center;">
+                <h1 style="text-align: center;">New password and confirm new password do not match.<br><a href="/edit-password">Try Again</a></h1><br>
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'New password and confirm new password do not match!',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            </script>
+        `);
     }
 
     try {
         await client.connect();
         console.log('Connected to MongoDB');
 
-        const database = client.db('AtlasCluster'); // Use the database name directly
-        const collection = database.collection('users'); // Use the collection name directly
+        const database = client.db('AtlasCluster');
+        const collection = database.collection('users');
 
         // Find the user by ID
         const user = await collection.findOne({ _id: userId });
 
         if (!user) {
-            return res.status(404).send('User not found.');
+            return res.status(404).send(`
+                <div style=" margin-top:50px; align-items: center;">
+                    <h1 style="text-align: center;">User not found.<br><a href="/edit-password"></a></h1><br>
+                </div>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <script>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'User not found!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                </script>
+            `);
         }
 
         // Check if the current password matches the one in the database
         const passwordMatch = await bcrypt.compare(currentPassword, user.password);
 
         if (!passwordMatch) {
-            return res.status(400).send('<div style="align-items: center;"><h1 style="text-align: center;">Current password is incorrect.<br><a href="/edit-password">Try Again</a></h1><br></div>');
+            return res.status(400).send(`
+                <div style=" margin-top:50px; align-items: center;">
+                    <h1 style="text-align: center;">Current password is incorrect.<br><a href="/edit-password">Try Again</a></h1><br>
+                </div>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <script>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Current password is incorrect!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                </script>
+            `);
         }
 
         // Hash the new password
-        const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
+        const hashedNewPassword = await bcrypt.hash(newPassword, 10); // Adjust salt rounds as necessary
 
         // Update the password in the database
         const result = await collection.updateOne(
@@ -484,19 +523,62 @@ app.post('/updatePassword', async (req, res) => {
 
         if (result.matchedCount > 0) {
             console.log('Successfully updated user password.');
-            res.redirect('/setting'); // Redirect to settings or a confirmation page
+            return res.status(400).send(`
+            <div style=" margin-top:50px; align-items: center;">
+                <h1 style="text-align: center;">You've changed your password succesfully.<br><a href="/edit-password">Go To Edit Password</a></h1><br>
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script>
+            Swal.fire({
+                // position: "middle",
+                icon: "success",
+                title: "You've changed your password succesfully.!",
+                showConfirmButton: false,
+                timer: 1000
+            });
+            
+            setTimeout(function() {
+                window.location.href = '/edit-password';
+            }, 1200);
+            </script>
+        `);
         } else {
             console.log('User not found.');
-            res.status(404).send('User not found.');
+            return res.status(404).send(`
+                <div style=" margin-top:50px; align-items: center;">
+                    <h1 style="text-align: center;">User not found.<br><a href="/edit-password">Try Again</a></h1><br>
+                </div>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <script>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'User not found!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                </script>
+            `);
         }
     } catch (err) {
         console.error('An error occurred while updating the user password:', err);
-        res.status(500).send('Internal Server Error');
+        return res.status(500).send(`
+            <div style="align-items: center;">
+                <h1 style="text-align: center;">Internal Server Error.<br><a href="/edit-password">Try Again</a></h1><br>
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Internal Server Error!',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            </script>
+        `);
     } finally {
         await client.close();
     }
 });
-
 
 app.get('/logout', (req, res) => {
     req.session.destroy();

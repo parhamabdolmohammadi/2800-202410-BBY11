@@ -381,7 +381,7 @@ q .card-subtitle {
   font-weight: 400;
   font-style: normal;
   /* color: yellow; */
-  color: #fcc358;
+  color: rgb(199, 150, 65);
 }
 
 .dance {
@@ -735,13 +735,6 @@ border: 1px solid white;
 
 .robocircle {
   animation: rotate 2s linear infinite;
-}
-
-.app-name {
-  font-family: "Alfa Slab One", serif;
-  font-weight: 400;
-  font-style: normal;
-  color: yellow;
 }
 
 #main-search-form {
