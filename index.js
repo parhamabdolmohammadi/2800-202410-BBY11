@@ -191,7 +191,7 @@ app.get('/', (req, res) => {
         atIndexPage = true;
 
         res.render('index', { atIndexPage: atIndexPage });
-
+a
         // Reset atIndexPage to false
         atIndexPage = false;
 
@@ -254,7 +254,10 @@ app.post('/submitUser', async (req, res) => {
 
     const schema = Joi.object(
         {
-            username: Joi.string().alphanum().max(20).required(),
+            username: Joi.string()
+            .pattern(/^[a-zA-Z0-9 ]*$/)
+            .max(20)
+            .required(),
             password: Joi.string().max(20).required(),
             email: Joi.string().max(40).required()
         });
