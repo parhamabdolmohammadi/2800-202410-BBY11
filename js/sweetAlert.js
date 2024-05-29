@@ -67,4 +67,65 @@ function handleLogout() {
         }
       });
     }
+
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+      var logoutSettingLink = document.getElementById('editProfileBtn');
+    
+      
+      if (logoutSettingLink) {
+          
+          logoutSettingLink.addEventListener('click', function(event) {
+    
+              handleEdit();
+          });
+      }
+    });
+    
+    function handleEdit() {
+        Swal.fire({
+          // position: "middle",
+          icon: "success",
+          title: "You've changed your info succesfully!",
+          showConfirmButton: false,
+          timer: 1000
+      });
+      
+      setTimeout(function() {
+          window.location.href = '/edit-profile';
+      }, 1300);
+      }
+
+
+
+      
+      document.addEventListener('DOMContentLoaded', function() {
+
+        var logoutSettingLink = document.getElementById('editPasswordBtn');
+      
+        
+        if (logoutSettingLink) {
+            
+            logoutSettingLink.addEventListener('click', function(event) {
+      
+                handlePassword();
+            });
+        }
+      });
+      
+      function handlePassword() {
+          Swal.fire({
+            // position: "middle",
+            icon: "success",
+            title: "You've changed your password succesfully!",
+            showConfirmButton: false,
+            timer: 1000
+        });
+        
+        setTimeout(function() {
+            window.location.href = '/edit-password';
+        }, 1300);
+        }
     

@@ -7,7 +7,7 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-const MongoClient = require('mongodb');
+// const MongoClient = require('mongodb');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
 const CryptoJS = require('crypto-js')
@@ -16,8 +16,12 @@ const CryptoJS = require('crypto-js')
 // const salt = CryptoJS.enc.Hex.parse('')
 var key = CryptoJS.enc.Utf8.parse('b75524255a7f54d2726a951bb39204df');
 var iv  = CryptoJS.enc.Utf8.parse('1583288699248111');
-const ObjectId = require('mongodb').ObjectId;
+// const ObjectId = require('mongodb').ObjectId;
 const nodemailer = require('nodemailer');
+//Edit-profile
+const bodyParser = require('body-parser');
+const { MongoClient, ObjectId } = require('mongodb');
+const uri = 'mongodb+srv://Seohyeon:Qkrtjgus8663!@atlascluster.u56alig.mongodb.net/AtlasCluster?retryWrites=true&w=majority';
 
 // MongoDB database connection
 var { database } = include('databaseConnection');
@@ -77,6 +81,9 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: false }));
 
 app.use(express.json());
+
+//Edit profile
+app.use(bodyParser.urlencoded({ extended: true })); 
 
 var mongoStore = MongoStore.create({
     mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
@@ -174,12 +181,12 @@ app.get('/setting', (req, res) => {
     res.render("setting")
 });
 
-app.get('/edit-profile', async (req,res) => {
-    let id = await req.session._id;
-    let email = await req.session.email;
-    console.log(email);
-    let unencryptedEmail = CryptoJS.AES.decrypt(email, key, { iv: iv}).toString(CryptoJS.enc.Utf8);
-    res.render("edit-profile", {name : req.session.username, email : unencryptedEmail, userId : id});
+app.get('/edit-profile', async (req, res) => {
+    let id = req.session._id;
+    let email = req.session.email;
+    console.log("Emails is: " + email);
+    let unencryptedEmail = CryptoJS.AES.decrypt(email, key, { iv: iv }).toString(CryptoJS.enc.Utf8);
+    res.render("edit-profile", { name: req.session.username, email: unencryptedEmail, userId: id });
 });
 
 app.get('/edit-password', (req, res) => {
@@ -318,6 +325,109 @@ app.get("/loginSubmit", (req, res) => {
     res.render("loginSubmit");
 });
 
+app.post('/updateProfile', async (req, res) => {
+    const { username, email } = req.body;
+    const userId = new ObjectId(req.session._id); // Replace with actual user ID (e.g., from session)
+    const MONGODB_URI = 'mongodb+srv://Seohyeon:Qkrtjgus8663!@atlascluster.u56alig.mongodb.net/AtlasCluster?retryWrites=true&w=majority';
+    const client = new MongoClient(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+    try {
+        await client.connect();
+        console.log('Connected to MongoDB');
+
+        const database = client.db('AtlasCluster'); // Use the database name directly
+        const collection = database.collection('users'); // Use the collection name directly
+
+        // Ensure email is not empty before updating
+        if (!email || !username) {
+            console.log('Invalid username or email.');
+            return res.status(400).send('Invalid username or email.');
+        }
+
+        const result = await collection.updateOne(
+            { _id: userId },
+            { $set: { username: username, email: email } }
+        );
+
+        if (result.matchedCount > 0) {
+            console.log('Successfully updated user profile.');
+
+            // Encrypt the email before storing it in the session
+            const encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString();
+
+            // Update session data with new username and email
+            req.session.username = username;
+            req.session.email = encryptedEmail;
+
+            console.log("Session updated with email: " + req.session.email);
+
+            res.redirect('/edit-profile'); // Redirect to settings or a confirmation page
+        } else {
+            console.log('User not found.');
+            res.status(404).send('User not found.');
+        }
+    } catch (err) {
+        console.error('An error occurred while updating the user profile:', err);
+        res.status(500).send('Internal Server Error');
+    } finally {
+        await client.close();
+    }
+});
+
+app.post('/updatePassword', async (req, res) => {
+    const { currentPassword, newPassword, confirmNewPassword } = req.body;
+    const userId = new ObjectId(req.session._id); // Replace with actual user ID (e.g., from session)
+    const MONGODB_URI = 'mongodb+srv://Seohyeon:Qkrtjgus8663!@atlascluster.u56alig.mongodb.net/AtlasCluster?retryWrites=true&w=majority';
+    const client = new MongoClient(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+    if (newPassword !== confirmNewPassword) {
+        return res.status(400).send('<div style="align-items: center;"><h1 style="text-align: center;">New password and confirm new password do not match.<br><a href="/edit-password">Try Again</a></h1><br></div>');
+    }
+
+    try {
+        await client.connect();
+        console.log('Connected to MongoDB');
+
+        const database = client.db('AtlasCluster'); // Use the database name directly
+        const collection = database.collection('users'); // Use the collection name directly
+
+        // Find the user by ID
+        const user = await collection.findOne({ _id: userId });
+
+        if (!user) {
+            return res.status(404).send('User not found.');
+        }
+
+        // Check if the current password matches the one in the database
+        const passwordMatch = await bcrypt.compare(currentPassword, user.password);
+
+        if (!passwordMatch) {
+            return res.status(400).send('<div style="align-items: center;"><h1 style="text-align: center;">Current password is incorrect.<br><a href="/edit-password">Try Again</a></h1><br></div>');
+        }
+
+        // Hash the new password
+        const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
+
+        // Update the password in the database
+        const result = await collection.updateOne(
+            { _id: userId },
+            { $set: { password: hashedNewPassword } }
+        );
+
+        if (result.matchedCount > 0) {
+            console.log('Successfully updated user password.');
+            res.redirect('/setting'); // Redirect to settings or a confirmation page
+        } else {
+            console.log('User not found.');
+            res.status(404).send('User not found.');
+        }
+    } catch (err) {
+        console.error('An error occurred while updating the user password:', err);
+        res.status(500).send('Internal Server Error');
+    } finally {
+        await client.close();
+    }
+});
 
 
 app.get('/logout', (req, res) => {
@@ -328,47 +438,34 @@ app.get('/logout', (req, res) => {
 
 
 app.get('/deleteAccount', (req, res) => {
+    async function deleteUserAccount(userId) {
+        const uri = 'mongodb+srv://Seohyeon:Qkrtjgus8663!@atlascluster.u56alig.mongodb.net/AtlasCluster?retryWrites=true&w=majority';
+        const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-const { MongoClient, ObjectId } = require('mongodb');
+        try {
+            await client.connect();
+            const database = client.db('AtlasCluster');
+            const collection = database.collection('users'); 
 
-async function deleteUserAccount(userId) {
-    
-    const uri = 'mongodb+srv://Seohyeon:Qkrtjgus8663!@atlascluster.u56alig.mongodb.net/AtlasCluster?retryWrites=true&w=majority';
-    
-    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+            const result = await collection.deleteOne({ _id: new ObjectId(userId) });
 
-    try {
-        
-        await client.connect();
-        
-        const database = client.db('AtlasCluster');
-        
-        const collection = database.collection('users'); 
-
-        
-        const result = await collection.deleteOne({ _id: new ObjectId(userId) });
-
-        
-        if (result.deletedCount === 1) {
-            console.log('Successfully deleted one document.');
-        } else {
-            console.log('No documents matched the query. Deleted 0 documents.');
+            if (result.deletedCount === 1) {
+                console.log('Successfully deleted one document.');
+            } else {
+                console.log('No documents matched the query. Deleted 0 documents.');
+            }
+        } catch (err) {
+            console.error('An error occurred while deleting the user account:', err);
+        } finally {
+            await client.close();
         }
-    } catch (err) {
-        console.error('An error occurred while deleting the user account:', err);
-    } finally {
-
-        await client.close();
     }
-}
     
-    // Example usage:
     let userId = new ObjectId(req.session._id);
     deleteUserAccount(userId);
 
-
     res.redirect('/logout')
-})
+});
 
 
 app.get('/main', async (req, res) => {

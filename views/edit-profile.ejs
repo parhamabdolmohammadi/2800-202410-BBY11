@@ -4,16 +4,15 @@
 </div>
 <div class="signup-login-page-container">
     <main style="max-width: 504px;" class="form-signin py-3 px-3 w-100 m-auto signup-login-form-container">
-      <form action="#" method="post">
+      <form action="/updateProfile" method="post">
         <h4 class="h4 mb-3 fw-bold text-center">Edit Profile</h4>
         <div>
           <label for="signupUsername" class="form-label">Username</label>
           <br/>
-          
           <input
             name="username"
             type="text"
-            placeholder="<%= name %>"
+            value="<%= name %>"
             class="signup-login-form-input-style"
             id="signupUsername"
           />      
@@ -23,11 +22,10 @@
         <div>
           <label for="signupEmail" class="form-label">Email address</label>
           <br/>
-          
           <input
             name="email"
             type="email"
-            placeholder="<%= email %>"
+            value="<%= email %>"
             class="signup-login-form-input-style"
             id="signupEmail"
           />      
@@ -38,11 +36,11 @@
           style="background-color: #003249 !important; color: white;"
           class="btn w-100 py-2"
           type="submit"
+          id="editProfileBtn"
         >
           Apply Changes
         </button>
       </form>
     </main>
   </div>
-  
-  <%- include("templates/footer") %>
+<%- include("templates/footer") %>
