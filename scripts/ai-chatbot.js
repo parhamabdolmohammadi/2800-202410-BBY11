@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
           // Check if the added node was the aichatbot-widget-button element
           if (node.id === 'aichatbot-widget-button') {
-            observer.disconnect(); // Disconnect the MutationObserver object 
+            // observer.disconnect(); // Disconnect the MutationObserver object 
                                    // to stop watching the DOM for mutations
 
             // document.querySelector("link[href='/ai-chatbot.css']").href = "/ai-chatbot.css"; // Keep in case of script tag loading bugs

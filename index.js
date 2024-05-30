@@ -1454,6 +1454,39 @@ app.post('/delete', async (req, res) => {
     res.status(200).json({ message: 'Entry deleted successfully.' });
 
 })
+
+app.use('/sbWebhook', bodyParser.json({ limit: '10mb' }));
+
+// TO BE ABLE TO RECIEVE WEBHOOKS WHEN ON LOCALHOST:
+// install: npm install -g ngrok
+// start node server: npm run watch - or - nodemon index.js
+// start new terminal window
+// sign up: https://dashboard.ngrok.com/signup
+// go to: https://dashboard.ngrok.com/get-started/your-authtoken
+// enter the command into the terminal shown on the website (ex. ngrok config add-authtoken <authtoken>)
+// run: ngrok http <port number - MUST BE THE SAME AS YOU NODE SERVER>
+// ^ creates a public URL that tunnels to the local server
+// the url will be in the format: https://abcd-ab-abd-ab-abc.ngrok-free.app
+
+// Webhook event to receive information from the Sendbird server
+app.post('/sbWebhook', async (req, res) => {
+    const event = req.body;
+    
+    // console.log("Received webhook event: " + event);
+    // console.log("Received webhook event type: " + event.type);
+    // console.log("Received webhook event category: " + event.category);
+
+    // Only look for bot_message_send events fro Sendbird
+    if (event.category == 'group_channel:bot_message_send') {
+
+            const botMessage = event.payload;
+            console.log(botMessage);
+    }
+
+    res.status(200).send('Event received');
+
+});
+
 app.get("*", (req, res) => {
     res.status(404);
     res.render("404", { username: req.session.username });
