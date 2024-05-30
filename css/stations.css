@@ -38,7 +38,25 @@
   width: 30px;
   height: 30px;
 }
-
+.content-div {
+  display: grid;
+  grid-template-rows: 65vh 100vh; /* Corrected to vh for viewport height */
+  grid-template-columns: 100vw; /* Corrected to vw for viewport width */
+  grid-template-areas:
+    "map"
+    "stations-placeholder";
+}
+.stations-placeholder {
+  grid-area: stations-placeholder;
+  height: 100%;
+  overflow: scroll;
+}
+#map {
+  width: 100%;
+  height: 100%; /* 400px*/
+  background-color: grey;
+  grid-area: map;
+}
 @media screen and (min-width: 1000px) {
   #map {
     width: 100%;

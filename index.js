@@ -352,7 +352,7 @@ app.get('/login', async (req, res) => {
     }
     const services = await general.find({}).project({ _id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
     const stations = await stationsCollection.find({}).toArray();
-    
+
 
     res.render("login", { username: username, userEmail, services, stations });
 });
