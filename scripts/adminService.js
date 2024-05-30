@@ -64,9 +64,9 @@ let currentServiceIndex = null;
 
 function openModal(service, index) {
     modal.style.display = 'block';
-    modalName.textContent = document.querySelector('.serviceName').textContent  
-    modalDescription.textContent = document.querySelector('.serviceDes').textContent  
-    modalPrice.textContent = document.querySelector('.servicePrice').textContent  
+    modalName.textContent = document.querySelectorAll('.serviceName')[index].textContent  
+    modalDescription.textContent = document.querySelectorAll('.serviceDes')[index].textContent  
+    modalPrice.textContent = document.querySelectorAll('.servicePrice')[index].textContent  
     currentServiceIndex = index;
     modalId = service._id
     // console.log(modalId);
@@ -201,7 +201,10 @@ createButton.addEventListener('click', () => {
             setTimeout(() => {
                 createdPopUp.style.display = 'none';
             }, 1500);
-            location.reload()
+            setTimeout(() => {
+                location.reload()
+            }, 1000);
+            
         } else {
             // Handle other messages
             // Example: display an error message to the user
