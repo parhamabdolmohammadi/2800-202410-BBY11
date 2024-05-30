@@ -853,7 +853,7 @@ app.get('/confirmation', sessionValidation, (req, res) => {
     let orderNumber = generateuuid();
     let timestamp = new Date().toISOString();
 
-    res.render("confirmation", { orderNumber: orderNumber });
+    res.render("confirmation", { orderNumber: orderNumber, total: total });
     if (total != null) {
         let id = new ObjectId(orderNumber);
         ordersCollection.insertOne({
