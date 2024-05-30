@@ -1325,10 +1325,22 @@ app.get('/history', async (req, res) => {
     // change it to customerId: req.session._id '664fb094254567cab99f3cfa'
     const history = await orders.find({ customerId: req.session._id, business: { $ne: true } }).project({}).toArray()
     var username = req.session.username;
+    const historyUrl = [];
+    const fetchUrls = async () => {
+        for (const each of history) {
+            const result = await general.findOne({ name: each.service }, { projection: { background: 1, name:1} });
+            historyUrl.push(result);
+        }
+    };
+
+    await fetchUrls()
+    // await general.find({name: each.service}).project({background:1}).toArray()
+    
+    console.log(historyUrl);
     // console.log(username);
     // console.log(history);
     // console.log(req.session._id);
-    res.render("history", { username, history })
+    res.render("history", {username, history, historyUrl})
 })
 
 app.get('/adminService', adminAuthorization, async (req, res) => {

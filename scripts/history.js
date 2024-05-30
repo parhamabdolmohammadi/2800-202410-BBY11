@@ -29,7 +29,7 @@ past_orders.addEventListener('click', () => {
 
 //{data.name.trim().replace(/\s+/g, '')}.png
 
-function generateCards(orders) {
+function generateCards(orders, historyUrl) {
     content.innerHTML = ''
     if (orders.length == 0) {
         content.appendChild(nothing)
@@ -41,7 +41,13 @@ function generateCards(orders) {
         card.classList.add('card')
 
         // this image will be placed at the left side of the card
-        let backUrl = each.service.trim().replace(/\s+/g, '') + '.png'
+        let backUrl
+        historyUrl.forEach(url => {
+            if (each.service == url.name) {
+                backUrl = url.background
+            }
+        })
+        //  backUrl = each.service.trim().replace(/\s+/g, '') + '.png'
         const img = document.createElement('img')
         img.src = backUrl
 
@@ -98,12 +104,13 @@ function fillDetail(each, detail) {
     // return detail
 
 }
-
+console.log(historyUrl);
 
 document.addEventListener('DOMContentLoaded', () => {
     active_orders.click()
     sortHistory(history) // active orders and past orders are filled 
-    generateCards(activeOrders)
+    // console.log(history);
+    generateCards(activeOrders, historyUrl)
 
 })
 
