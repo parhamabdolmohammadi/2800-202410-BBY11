@@ -31,8 +31,6 @@ require('./auth');
 // MongoDB database connection
 var { database } = include('databaseConnection');
 
-// // Groqcloud API connection and AI functionality
-// var { makeAiReqAndRes, getGroqChatCompletion } = include('groqAIAPI');
 
 const port = process.env.PORT || 3001;
 
@@ -1366,6 +1364,28 @@ app.post('/create', upload.single('image'), async (req, res) => {
     var _id = new ObjectId();
     await general.insertOne({ _id, name, description, price, background: image.originalname });
     res.status(200).json({ message: 'Entry created successfully.' });
+})
+
+app.post('/delete', async (req, res) => {
+    const name = req.body.cardName
+    // console.log(name);
+    
+    const entry = await general.findOne({name: name})
+    const background = entry.background
+    // console.log(background);
+    const imgPath = './images/' + background;
+    fs.unlink(imgPath, (err) => {
+        if (err) {
+            console.error('Error deleting file:', err);
+            return;
+        }
+        
+        console.log('File deleted successfully');
+    })
+    await general.deleteOne({name:name})
+    // console.log(entry);
+    res.status(200).json({ message: 'Entry deleted successfully.' });
+     
 })
 app.get("*", (req, res) => {
     res.status(404);
