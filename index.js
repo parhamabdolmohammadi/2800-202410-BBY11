@@ -264,11 +264,11 @@ app.post('/submitUser', async (req, res) => {
     }
 
     // Import schema to validate username, email, and password
-    const {schema} = include('signup-joi-schema');
+    const {signupSchema} = include('signup-joi-schema');
 
     // Validate the username, email, password
     // (abortEarly: retrieve all validation errors, not just the first one)
-    const validationResult = schema.validate({ username, password, email}, {abortEarly: false});
+    const validationResult = signupSchema.validate({ username, password, email}, {abortEarly: false});
     
     if (validationResult.error != null) { // If error occured
         console.log(validationResult.error);
@@ -365,11 +365,11 @@ app.post('/loggingin', async (req, res) => {
     var incorrectFields = false;
 
     // Import schema to validate username, email, and password
-    const {schema} = include('login-joi-schema');
+    const {loginSchema} = include('login-joi-schema');
 
     // Validate the username, email, password
     // (abortEarly: retrieve all validation errors, not just the first one)
-    const validationResult = schema.validate({ email, password }, {abortEarly: false});
+    const validationResult = loginSchema.validate({ email, password }, {abortEarly: false});
     
     // If the email and password are not valid:
     if (validationResult.error != null) { // If error occured

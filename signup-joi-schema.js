@@ -1,6 +1,6 @@
 const Joi = require("joi");
 
-const schema = Joi.object(
+const signupSchema = Joi.object(
     {
         username: Joi.string()
         .pattern(/^[a-zA-Z0-9 ]*$/)
@@ -8,7 +8,7 @@ const schema = Joi.object(
         .required()
         .messages({
             'string.base': 'Username cannot contain non-text characters',
-            'string.pattern.base': 'Username can only contain letters, numbers, and spaces.',
+            'string.pattern.base': 'Username can only contain letters, numbers, and spaces',
             'string.max': 'Username cannot be longer than 40 characters',
             'string.empty': "Username is required"
         }),
@@ -36,4 +36,4 @@ const schema = Joi.object(
     }
 );
 
-exports.schema = schema;
+exports.signupSchema = signupSchema;

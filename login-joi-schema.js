@@ -1,6 +1,6 @@
 const Joi = require("joi");
 
-const schema = Joi.object(
+const loginSchema = Joi.object(
     {
         email: Joi.string()
         .email({tlds: {allow: false}})
@@ -11,7 +11,7 @@ const schema = Joi.object(
             'string.max': 'Email cannot be longer than 40 characters',
             'string.email': "Email must be a valid email",
             'string.domain': "Email must be a valid email",
-            'string.empty': "Email is required",
+            'string.empty': "Email is required"
         }),
 
         password: Joi.string()
@@ -25,4 +25,4 @@ const schema = Joi.object(
     }
 );
 
-exports.schema = schema;
+exports.loginSchema = loginSchema;
