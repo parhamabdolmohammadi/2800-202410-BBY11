@@ -34,7 +34,7 @@
       let d = distance(station.lat, station.lng);
       let id = "id-placeholder11" + station._id;
     
-      if (d < closest) {
+      if (d < closest && station.robots_in_stock > 0) {
         closest = d;
         closestID = station._id;
     }

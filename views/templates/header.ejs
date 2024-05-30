@@ -43,14 +43,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     
-    @media (min-width: 768px) {
-  .my-form {
-    width: 500pt;
-  }
-  .station{
-    width: 250pt;
-  }
-}
+
     .active {
       background-color: #003249 !important;
       color: white !important;
@@ -60,6 +53,16 @@
 
       color: silver !important;
     }
+
+    @media screen and (max-width: 767.5px) {
+    
+      .span-header {
+        position: relative;
+        top: 5px;
+      }
+    }
+
+   
   </style>
 </head>
 
@@ -71,7 +74,7 @@
       <div class="container-fluid">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
           <!-- <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>  -->
-          <span class="fs-4">&nbsp;Robo Rental <p style="display:inline; position: relative; bottom:1px">|</p><img
+          <span  class="fs-4 span-header">&nbsp;Robo Rental <p style="display:inline; position: relative; ">|</p><img
               style="position: relative; bottom:3px;" width="34px;" src="robot.png">&nbsp; &nbsp;&nbsp;&nbsp;</span>
         </a>
 
@@ -84,19 +87,28 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-          <div class="offcanvas-header">
+          <div class="offcanvas-header" style="padding-bottom:0px">
             <h5 class="offcanvas-title" id="offcanvasNavbarLabel"><span class="fs-4">&nbsp;Robo Rental <p
                   style="display:inline; position: relative; bottom:1px">|</p><img
-                  style="position: relative; bottom:3px;" width="34px;" src="robot.png">&nbsp; &nbsp;&nbsp;&nbsp;</span>
-            </h5>
+                  style="position: relative; bottom:3px;" width="34px;" src="robot.png">&nbsp; &nbsp;&nbsp;&nbsp;<br><div style="font-size: 18px;">
+                    &nbsp;Welcome <% if(locals.currentURL === "/main") { %>
+                      <%= username %>
+                    <% } else if (locals.currentURL === "/login" || locals.currentURL === "/signup") { %>
+                      to RoboRental
+                    <% } else { %>
+                      <span id="h-name"></span>
+                    <% } %> !
+                  </div></span>
+            <br></h5>
+            
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
           </div>
-          <div class="offcanvas-body">
+          <div class="offcanvas-body" style="padding-top:0px">
             <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
               <% for(var i=0; i < locals.navLinks.length; i++) { %>
                 <li class="nav-item">
                   <a href="<%= locals.navLinks[i].link %>" style="color: black;"
-                    class="nav-link <% if (locals.navLinks[i].link == currentURL)  { %> active <% }%>"
+                    class="nav-link <% if (locals.navLinks[i].link == currentURL || (currentURL == "/main" && locals.navLinks[i].name == "Home"))  { %> active <% }%>"
                     aria-current="page" onmouseover="this.style.color='silver'" onmouseout="this.style.color='black'">
                     <%= locals.navLinks[i].name %>
                   </a>
@@ -117,7 +129,9 @@
       </div>
     </nav>
   </header>
-
+  <script>
+    document.getElementById('h-name').innerHTML = localStorage.getItem('username');
+  </script>
   <body>
 
     <div id="content-and-footer-flex-container">

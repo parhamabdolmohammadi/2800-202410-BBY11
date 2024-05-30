@@ -22,10 +22,12 @@
 <div
   id="main-welcome-container"
   style="
-    background: url(./hi.jpg) center / cover no-repeat;
+    background: url(./roboMain2.avif) center / cover no-repeat;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+    position: relative;
+    bottom: 1.5px;
 
     height: 400px;
   "
@@ -57,29 +59,35 @@
     </button>
   </form>
 
-  <h1 class="app-name dance1">
-    <span id="span1" onclick="dow(1)">R</span>
-    <span id="span2" onclick="re(2)">O</span>
-    <span id="span3" onclick="mi(3)">B</span>
-    <span id="span4" onclick="fa(4)">O</span>
-    <span id="span5">&nbsp;</span>
-    <span id="span6" onclick="sol()">R</span>
-    <span id="span7" onclick="la()">E</span>
-    <span id="span8" onclick="si()">N</span>
-    <span id="span9" onclick="dow(9)">T</span>
-    <span id="span10" onclick="re(10)">A</span>
-    <span id="span11" onclick="mi(11)">L</span>
+  <h1 class="app-name dance1 alphabets">
+    <div style="display: inline;">
+      <span id="span1" onclick="dow(1)">R</span>
+      <span id="span2" onclick="re(2)">O</span>
+      <span id="span3" onclick="mi(3)">B</span>
+      <span id="span4" onclick="fa(4)">O</span>
+      <span id="span5">&nbsp;</span>
+      <span id="span6" onclick="sol()">R</span>
+      <span id="span7" onclick="la()">E</span>
+      <span id="span8" onclick="si()">N</span>
+      <span id="span9" onclick="dow(9)">T</span>
+      <span id="span10" onclick="re(10)">A</span>
+      <span id="span11" onclick="mi(11)">L</span>
+    </div>
     <div onclick="animateRobo();" class="robo">
       <img style="padding: 10px; width: 100%" src="./roboto.png" alt="" />
     </div>
   </h1>
-  <h2 id="main-welcome-message" style="color: white">
-    &nbsp;Welcome <%= username %>!
-  </h2>
+  <div style="display: flex; justify-content: center; padding: 0 100px;">
+    <h2 id="main-welcome-message" style="color: #CCDBDC; text-align: center; font-family: 'Alfa Slab One', serif; letter-spacing: 1.2px;">
+      &nbsp;Welcome <%= username %>!
+    </h2>
+  </div>
 </div>
 <script src="animation.js"></script>
+
+
 <!-- Section for AI -->
-<form role="search" style="display: inline;">
+<!-- <form role="search" style="display: inline;">
 <div id="aiAssistanceSection" >
 <div class="search-box">
     <button class="btn-search"><i class="fas fa-search"></i><img src="chatbot.png" style="width: 30px; height: 30px;"></button>
@@ -87,35 +95,57 @@
 </div>
 <button id="aiAssistanceSubmitBtn" class="btn-submit" type="submit">Submit</button>
 </div>
-</form>
+</form> -->
 
+<div class="search-top"></div>
 
 <!-- Services list of cards -->
-
+<header style="text-align: center;
+margin-bottom: ;
+margin-top: 5rem;
+color: #003249;">
+ <h1>Select Your Desired Service.</h1>
+ <p>You can either pick from Map or the closest station would be automatically picked for you.</p>
+ 
+</header>
 <div id="main-service-list-container">
+ 
   <div id="services-header-container">
-    <h3 id="services-header">
-      Find a Service
-    </h3>
+   <div class="reset-search">Reset search</div>
   </div>
   <div id="main-service-list-container-2" class="row mb-3 text-center service">
     <template id="ServiceCardTemplate">
       <div class="card cardi">
         <div class="card-bg cardi2 card-background"></div>
-        <div class="card-body cardi3">
+        <div class="card-body cardi3 cardi33">
           <div>
             <!-- <h5 class="card-title">Card title</h5> -->
+            
             <h6 class="card-subtitle mb-2 service-name"></h6>
+             <p class="description"> <i>See description</i></p>
+             <p class="description2"> <i>Close description</i></p>
+
             <p class="card-text service-description"></p>
             <p class="card-text service-price"></p>
-            <form  action="/displayStation" method="POST">
-            <button class="button-arrow" >Order Service</button>
+            <form  action="/displayStation" method="POST" >
+            <button class="button-arrow" style="position: relative; top: 30px;" >Order Service</button>
             <input style="display: none;" class="stationInput" type="text" name="data"  >
             <input style="display: none;" class="DistanceInput" type="text" name="data2" >
-            <form action=""></form>
-          </div>
+            </form>
+          <!-- <div class="eachCard" >
+            <div class="front">
+              <h6 class="card-subtitle mb-2 service-name"></h6>
+              <p class="card-text service-price"></p>
+              <button class="card-link" >Details</button>
+            </div>
+           <div class="back">
+             <p class="card-text service-description"></p>
+           </div>
+            
+            
+          </div> -->
           <div>
-            <form action="/stations" method="GET">
+            <form class="stations-button" action="/stations" method="GET" style="position: relative; left: 55px; bottom: 70px;">
               <button
                 style="float: right"
                 type="submit"
@@ -136,14 +166,56 @@
   </div>
 </div>
 
+
+<div style="margin: 30px 0">
+  <header style="text-align: center;
+  margin-bottom: 3.6rem;
+  margin-top: 5rem;
+  color: #003249;">
+   <h1>What our Customers are Saying</h1>
+   <p>Our customers love the quality of service we provide. Discover why they choose us.</p>
+   
+  </header>
+  <div style="max-width: 1340px; 
+  margin: 0 auto;  border: 1px solid rgba(0, 0, 0, 0.1); box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);">
+    <div style="border: none;  padding: 30px;" >
+      <div class="grid grid--1x2-special " style="gap: 20px;">
+        <div class="testimonial__image">
+          <img style="width: 100%; height: 100%;" src="persona.png" alt="A happy, smiling customer">
+        </div>
+        <div class="quote" style=" font-size: 20px;
+        font-style: italic;
+        color: orangered;
+        line-height: 1.3;">
+          <p class="quote__text">
+            "As someone who often juggles regular tasks, I have to say RoboRental has been a game-changer for me. This platform offers an impressive variety of robots that help with everything from household chores to office tasks and even specialized services.
+<br>
+One of the best things about RoboRental is its affordable pricing. It makes cutting-edge robotic technology accessible to everyone, not just big companies. This cost-effectiveness means that even small businesses and everyday users like myself can enjoy the boost in efficiency and productivity these robots bring."
+            <br>
+
+          </p>
+          <br><br>
+          <div style="display: flex; gap: 10px; ">
+             <img style="display: inline; width: 80px;"  src="robot2.png" alt="">
+         <div>
+           <h1 style="display: inline;">Bernard Jackson</h1>
+           <h3 style='display: block;'> Robot Rental App</h3>
+         </div>
+          </div>
+         
+         <h1> </h1>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="callout callout--primary">
   <div class="grid grid--1x2">
     <div class="callout__content">
       <h2 class="callout__heading">Get Started As a Business Owner?</h2>
-      <p>
-        This could be a good chance to enroll for becomming a business Owner
-        You'd get the chance to Provide robots for our stations and and take
-        advantage of being payed.
+      <p>This is a great opportunity to apply for a business owner role on our site. 
+        By joining us, you can provide robots for our stations and benefit from earning a steady income.
       </p>
     </div>
     <form class="form-class" action="/bussinessOwnerForm" method="GET">
@@ -159,6 +231,7 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
+      
     var link = document.createElement("link");
     link.rel = "stylesheet";
     link.href = "/main.css";
@@ -166,13 +239,19 @@
   });
   document.addEventListener("DOMContentLoaded", function () {
       // * Search bar functionality
-
       // Get references to the search input and icon
       const searchInput = document.getElementById("search-text");
       const searchIcon = document.getElementById("search-button");
 
+      document.querySelector('.reset-search').addEventListener('click', () => {
+        // console.log('button is clicked');
+        searchInput.value = ''
+        searchIcon.click()
+      })
     // Add event listener to the search icon for click events
     searchIcon.addEventListener("click", function (event) {
+      console.log('clicked');
+      document.querySelector('.search-top').scrollIntoView({behavior: "smooth"})
       // console.log("clicked");
       event.preventDefault(); // Prevent default action (e.g., form submission)
 
@@ -224,75 +303,75 @@
 
       // * AI Assistance text input functionality
 
-      const searchBox = document.querySelector(".search-box");
-      const submitButton = document.querySelector(".btn-submit");
+      // const searchBox = document.querySelector(".search-box");
+      // const submitButton = document.querySelector(".btn-submit");
 
-      searchBox.addEventListener("click", function () {
-        submitButton.style.display = "block";
-      });
+      // searchBox.addEventListener("click", function () {
+      //   submitButton.style.display = "block";
+      // });
 
-      document.addEventListener("click", function (event) {
-        if (
-          !searchBox.contains(event.target) &&
-          !submitButton.contains(event.target)
-        ) {
-          submitButton.style.display = "none";
-        }
-      });
+      // document.addEventListener("click", function (event) {
+      //   if (
+      //     !searchBox.contains(event.target) &&
+      //     !submitButton.contains(event.target)
+      //   ) {
+      //     submitButton.style.display = "none";
+      //   }
+      // });
 
-      // When submit button is pressed in AI input section
-      const aiAssistanceSubmitBtn = document.getElementById("aiAssistanceSubmitBtn");
+      // // When submit button is pressed in AI input section
+      // const aiAssistanceSubmitBtn = document.getElementById("aiAssistanceSubmitBtn");
 
-      aiAssistanceSubmitBtn.addEventListener("click", function (event) {
-        event.preventDefault();
+      // aiAssistanceSubmitBtn.addEventListener("click", function (event) {
+      //   event.preventDefault();
 
-        const aiAssistanceInput = document.getElementById("aiAssistanceInput");
+      //   const aiAssistanceInput = document.getElementById("aiAssistanceInput");
 
-        aiAssistanceInputValue = aiAssistanceInput.value;
+      //   aiAssistanceInputValue = aiAssistanceInput.value;
 
-        // Send post request to server (route /main/ai-assistance)
-        fetch("/main/ai-assistance", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ aiAssistanceInput: aiAssistanceInputValue }),
-        })
-        .then((AIResponse) => AIResponse.json())
-        .then((data) => {
+      //   // Send post request to server (route /main/ai-assistance)
+      //   fetch("/main/ai-assistance", {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({ aiAssistanceInput: aiAssistanceInputValue }),
+      //   })
+      //   .then((AIResponse) => AIResponse.json())
+      //   .then((data) => {
 
-          // If an AI response message <p> element has already been created
-          aiResponseMessageElement = document.getElementById("aiResponseMessage");
-          if (aiResponseMessageElement != null) {
+      //     // If an AI response message <p> element has already been created
+      //     aiResponseMessageElement = document.getElementById("aiResponseMessage");
+      //     if (aiResponseMessageElement != null) {
             
-            // Remove the existing element
-            aiResponseMessageElement.remove();
-          }
+      //       // Remove the existing element
+      //       aiResponseMessageElement.remove();
+      //     }
 
-          // Text response to user
-          var aiResponseText = document.createElement("p");
-          aiResponseText.id = "aiResponseMessage";
-          aiResponseText.innerHTML = String(data.aiResponseHTML);
-          aiResponseText.style.display = "inline-block";
-          aiResponseText.style.backgroundColor = "white";
-          aiResponseText.style.color = "black";
-          aiResponseText.style.fontFamily = "sans-serif";
-          aiResponseText.style.marginTop = "1em";
-          aiResponseText.style.padding = "2em";
-          aiResponseText.style.borderRadius = "15px";
+      //     // Text response to user
+      //     var aiResponseText = document.createElement("p");
+      //     aiResponseText.id = "aiResponseMessage";
+      //     aiResponseText.innerHTML = String(data.aiResponseHTML);
+      //     aiResponseText.style.display = "inline-block";
+      //     aiResponseText.style.backgroundColor = "white";
+      //     aiResponseText.style.color = "black";
+      //     aiResponseText.style.fontFamily = "sans-serif";
+      //     aiResponseText.style.marginTop = "1em";
+      //     aiResponseText.style.padding = "2em";
+      //     aiResponseText.style.borderRadius = "15px";
 
-          document.getElementById("aiAssistanceSection").appendChild(aiResponseText);
+      //     document.getElementById("aiAssistanceSection").appendChild(aiResponseText);
 
-          if (data.aiFoundServices == true) {
-            // Show the services found
-            renderServices(data.filteredServices);
-          }
-        })
+      //     if (data.aiFoundServices == true) {
+      //       // Show the services found
+      //       renderServices(data.filteredServices);
+      //     }
+      //   })
 
-        .catch((error) => {
-            console.error("Error sending search request:", error);
-        });
-      });
+      //   .catch((error) => {
+      //       console.error("Error sending search request:", error);
+      //   });
+      // });
 
     });
 
@@ -355,24 +434,42 @@
       newcard.querySelector(
         ".card-background"
       ).style.backgroundImage = `url(${background})`;
+      newcard.querySelector(".card-background").style.backgroundSize = 'cover';
+   newcard.querySelector(".card-background").style.backgroundRepeat = 'no-repeat';
+   newcard.querySelector(".card-background").style.backgroundPosition = 'center';
 
-      newcard.querySelector(".button-location").id =
-        "button-location-" + serviceID;
-        newcard.querySelector(".button-arrow").id = "button-arrow-" + serviceID;
-        
-      newcard.querySelector(".button-location").onclick = () =>
-        setID(serviceID, name);
-        newcard.querySelector(".button-arrow").onclick= () =>  setID(serviceID, name, price);
-      
 
-        let stationInput = newcard.querySelector(".stationInput");
+
+
+
+    newcard.querySelector(".service-name").id = 'service-name'+ serviceID;
+   newcard.querySelector(".stations-button").id = 'stations-button'+ serviceID;
+   newcard.querySelector(".service-price").id = 'service-price'+ serviceID;
+   newcard.querySelector(".button-location").id = "button-location-" + serviceID;                                    
+   newcard.querySelector(".button-arrow").id = "button-arrow-" + serviceID;                                    
+   newcard.querySelector(".description").id = "description" + serviceID;                                    
+   newcard.querySelector(".description2").id = "description2" + serviceID;                                    
+   newcard.querySelector(".cardi").id = "cardi" + serviceID;   
+   newcard.querySelector(".cardi3").id = "cardi3" + serviceID;                                  
+   newcard.querySelector(".service-description").id = "service-description" + serviceID; 
+   newcard.querySelector(".service-description").style.display = 'none'; 
+
+   
+   newcard.querySelector(".button-location").onclick = () => setID(serviceID, name, price);
+   newcard.querySelector(".button-arrow").onclick= () =>  setID(serviceID, name, price)
+   newcard.querySelector(".description").onclick= () =>  setDescription(serviceID);
+   newcard.querySelector(".description2").onclick= () =>  undoDescription(serviceID);
+   newcard.querySelector(".description2").style.display = 'none'; 
+
+   let stationInput = newcard.querySelector(".stationInput");
    stationInput.id = "stationInput-" + serviceID;
    stationInput.value = localStorage.getItem('ClosestStationID');
 
-   
+   // Set ID and value for DistanceInput
    let distanceInput = newcard.querySelector(".DistanceInput");
    distanceInput.id = "DistanceInput-" + serviceID;
    distanceInput.value = localStorage.getItem('ClosestStationDistance');
+ 
 
         document
         .getElementById("main-service-list-container-2")
@@ -383,28 +480,66 @@
     function setID(id, name) {
       localStorage.setItem("ServiceID", id);
       localStorage.setItem("ServiceName", name);
+      localStorage.setItem('ServicePrice', price);
     }
+
+    function setDescription(serviceID) {
+    // Toggle the 'flipped' class on the card
+    document.getElementById("cardi" + serviceID).classList.toggle("flipped");
+    document.getElementById( "description" + serviceID).classList.toggle("flipped");
+    document.getElementById("service-description" + serviceID).classList.toggle("flipped");
+    document.getElementById("description2" + serviceID).classList.toggle("flipped");
+    document.getElementById( "service-description" + serviceID).style.display = 'block'; 
+    document.getElementById( "description2" + serviceID).style.display = 'block'; 
+    document.getElementById( "description" + serviceID).style.display = 'block'; 
+    document.getElementById( "description" + serviceID).style.display = 'none'; 
+    // Hide the button-arrow element by setting its display style to 'none'
+    document.getElementById("button-arrow-" + serviceID).style.display = 'none';
+    
+    document.getElementById('service-price'+ serviceID).style.display = 'none';
+    document.getElementById('stations-button'+ serviceID).style.display = 'none';
+    document.getElementById('service-name'+ serviceID).style.display = 'none';
+
+    document.getElementById("cardi3" + serviceID).classList.toggle("cardi33");
+    
+}
+
+function undoDescription(serviceID) {
+    document.getElementById("cardi" + serviceID).classList.toggle("flipped");
+    document.getElementById( "description" + serviceID).classList.toggle("flipped");
+    document.getElementById("service-description" + serviceID).classList.toggle("flipped");
+    document.getElementById("description2" + serviceID).classList.toggle("flipped");
+    
+    document.getElementById( "service-description" + serviceID).style.display = 'none'; 
+    document.getElementById( "description2" + serviceID).style.display = 'none'; 
+
+    document.getElementById( "description" + serviceID).style.display = 'block'; 
+    document.getElementById("button-arrow-" + serviceID).style.display = 'block';
+    
+    document.getElementById('service-price'+ serviceID).style.display = 'block';
+    document.getElementById('stations-button'+ serviceID).style.display = 'block';
+    document.getElementById('service-name'+ serviceID).style.display = 'block';
+
+    document.getElementById("cardi3" + serviceID).classList.toggle("cardi33");
+}
   }
 </script>
+
 <script>
   const station = <%- JSON.stringify(stations) %>;
   console.log(station);
-  
 
   const currentUser = <%- JSON.stringify(currentUserName) %>;
   console.log(currentUser);
-
-  // Additional client-side scripts can go here
 </script>
+
+<!-- Link to add AI button and functionality -->
+<!-- Using SendBird Chatbot Button, Interface, integrated with OpenAI's GPT4o -->
+<script src="/ai-chatbot.js"></script>
+
+<!-- Additional client-side scripts can go here -->
 <script src="/map2.js"></script>
 <script src="/main.js"></script>
-
-
-<script>
-
-
-  
-</script>
 
 <%- include("templates/footer") %>
 

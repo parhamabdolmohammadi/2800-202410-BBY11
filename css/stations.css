@@ -60,3 +60,48 @@
     grid-template-areas: "stations-placeholder map";
   }
 }
+
+.footer-special {
+  background-color: silver;
+  display: flex !important;
+  margin: -13px;
+  justify-content: center;
+  transition: all 2s ease;
+  padding: 20px;
+}
+
+.footer-card {
+  display: none;
+
+  transition: all 2s ease;
+}
+
+@keyframes fadeRedToWhite {
+  from {
+    background-color: #003249;
+  }
+  to {
+    background-color: white;
+  }
+}
+
+.highlight {
+  animation: fadeRedToWhite 2s linear forwards;
+}
+
+.media {
+  display: flex;
+  margin-bottom: 4rem;
+}
+
+.media__title {
+  margin-top: 0;
+}
+
+.media__body {
+  margin: 0 2rem;
+}
+
+.media__image {
+  margin-top: 1rem;
+}

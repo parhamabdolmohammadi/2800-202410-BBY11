@@ -1,0 +1,22 @@
+<%- include("templates/header") %>
+
+<div class="parent">
+  <div class="container-conf">
+    <div class="tracking-number-conf"><b>Transaction Number: <%= orderNumber %></b></div>
+    <div class="purchase-info-conf">
+        <p>Thank you for your addition!</p>
+        <p id="price">Price will be determined after your order has been processed</p>
+        <p>Estimated Delivery:2-5 business days</p>
+        <a
+        style="
+          padding: 7px;
+          border-radius: 100px;
+          background-color: #003249;
+          text-decoration: none;
+        "
+        href="/main"
+        >Go to Main</a
+      >
+    </div>
+</div>
+<%- include("templates/footer") %>

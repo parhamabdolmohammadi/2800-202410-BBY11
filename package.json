@@ -23,11 +23,15 @@
     "groq-sdk": "^0.3.3",
     "joi": "^17.13.1",
     "mongodb": "^6.6.2",
+    "multer": "^1.4.5-lts.1",
     "node": "^20.13.1",
     "nodemailer": "^6.9.13",
     "nodemon": "^3.1.0",
+    "passport": "^0.7.0",
+    "passport-google-oauth2": "^0.2.0",
     "require": "^0.4.4",
     "sweetalert2": "^11.6.13",
-    "url": "^0.11.3"
+    "url": "^0.11.3",
+    "uuid": "^9.0.1"
   }
 }

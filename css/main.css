@@ -45,7 +45,6 @@
 }
 
 @media only screen and (max-width: 700px) {
-
   #services-header {
     display: inline;
     font-size: 16pt;
@@ -54,7 +53,6 @@
 }
 
 @media only screen and (min-width: 701px) and (max-width: 1000px) {
-
   #services-header {
     display: inline;
     font-size: 24pt;
@@ -63,7 +61,6 @@
 }
 
 @media only screen and (min-width: 1001px) {
-
   #services-header {
     display: inline;
     font-size: 32pt;
@@ -86,8 +83,10 @@
   margin: 10px;
   padding: 10px 10px 10px 25px;
   border-radius: 0px;
-
+  transition: transform 1s linear;
   text-align: left;
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
 }
 
 @media only screen and (max-width: 915px) {
@@ -128,16 +127,20 @@
   position: relative;
   z-index: 1;
   color: white;
+}
+
+.cardi33 {
   display: grid;
   grid-template-columns: 70% 30%;
   align-items: center;
+  /* transform-style: preserve-3d; */
 }
 
 .service {
   display: grid;
 
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
   overflow: auto;
   margin-left: 2em;
   margin-right: 2em;
@@ -176,14 +179,15 @@
 .form-class {
   justify-self: center;
 }
+
 q .card-subtitle {
   font-weight: bold;
   font-size: 1.5em;
 }
 
 .card-link {
-  text-decoration: none;
-  color: white;
+  /* text-decoration: none; */
+  color: black;
 }
 
 #main-search-form {
@@ -203,7 +207,7 @@ q .card-subtitle {
 .callout__heading {
   color: #fff;
   margin-top: 0;
-  font-size: 3rem;
+  font-size: 30px;
 }
 
 .callout .btn1 {
@@ -219,7 +223,6 @@ q .card-subtitle {
 @media screen and (min-width: 768px) {
   .callout .grid--1x2 {
     grid-template-columns: 1fr auto;
-    /* that will make the button wide enough to fit its column and all the extra space would be dedicated to the other column with on fraction of space*/
   }
 
   .callout__content {
@@ -242,6 +245,12 @@ q .card-subtitle {
   }
 }
 
+@media screen and (min-width: 1000px) {
+  .grid--1x2-special {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media screen and (max-width: 415px) {
   .callout {
     width: 90vw;
@@ -252,7 +261,7 @@ q .card-subtitle {
 
 /* Section for AI */
 
-#aiAssistanceSection {
+/* #aiAssistanceSection {
   margin: 0px;
   padding: 0px;
   width: 100vw;
@@ -339,13 +348,13 @@ q .card-subtitle {
 .input-search {
   width: 100%;
   /* Initial width */
-  transition: all 500ms cubic-bezier(0, 0.11, 0.35, 2);
+/*  transition: all 500ms cubic-bezier(0, 0.11, 0.35, 2);
 }
 
 .btn-submit {
   display: none;
   /* Initially hidden */
-  margin-top: 10px;
+/*margin-top: 10px;
   width: 120px;
   height: 50px;
   border-style: none;
@@ -357,7 +366,7 @@ q .card-subtitle {
   background-color: #22a6b3;
   color: #ffffff;
   transition: all 0.5s ease-in-out;
-}
+} */
 
 /* .btn-search:hover ~ .input-search{
   width: 300px;
@@ -378,15 +387,14 @@ q .card-subtitle {
   font-weight: 400;
   font-style: normal;
   /* color: yellow; */
-  color: #fcc358;
+  color: rgb(199, 150, 65);
 }
 
 .dance {
   animation: dance 1s infinite;
 }
 
-
-@keyframes dance {
+/* @keyframes dance {
   0% {
     transform: translateY(1em);
   }
@@ -404,20 +412,22 @@ q .card-subtitle {
   display: inline-block;
   padding: 0.3em;
   margin: 5px;
-  /* background-color: #007bff; */
+  background-color: rgba(0, 123, 255, 0);
   color: white;
   text-align: center;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   user-select: none;
-  /* Prevent text selection */
-  text-decoration: none;
-  border: 1px solid white;
+   Prevent text selection 
+text-decoration: none;
+border: 1px solid white;
 }
+*/
 
 .card-link:hover {
   background-color: black;
+  color: white;
   transition: all 1s;
 }
 
@@ -446,6 +456,7 @@ q .card-subtitle {
   font-size: 2em;
 }
 
+/* Easter egg in main page  */
 .card:hover {
   box-shadow: #003249;
 }
@@ -461,13 +472,13 @@ q .card-subtitle {
   font-weight: bold;
 }
 
-.link-arrow::after {
+.button-arrow::after {
   content: "-->";
   margin-left: 5px;
   transition: margin 0.15s;
 }
 
-.link-arrow:hover::after {
+.button-arrow:hover::after {
   margin-left: 10px;
 }
 
@@ -475,15 +486,19 @@ q .card-subtitle {
   0% {
     transform: translateY(-5px);
   }
+
   25% {
     transform: translateY(5px);
   }
+
   50% {
     transform: translateY(-5px);
   }
+
   75% {
     transform: translateY(5px);
   }
+
   100% {
     transform: translateY(-5px);
   }
@@ -493,15 +508,19 @@ q .card-subtitle {
   0% {
     transform: translateY(5px);
   }
+
   25% {
     transform: translateY(-5px);
   }
+
   50% {
     transform: translateY(5px);
   }
+
   75% {
     transform: translateY(-5px);
   }
+
   100% {
     transform: translateY(5px);
   }
@@ -511,23 +530,64 @@ q .card-subtitle {
   0% {
     transform: rotate(0deg);
   }
+
   25% {
     transform: rotate(90deg);
   }
+
   50% {
     transform: rotate(180deg);
   }
+
   75% {
     transform: rotate(270deg);
   }
+
   100% {
-    transform: rotate(360deg);
+    transform: translateY(1em);
   }
 }
 
-.dance1 span {
-  display: inline-block;
-  transition: transform 0 ease, color 0.5s ease;
+.dance {
+  animation: dance 1s infinite;
+}
+
+@keyframes dance {
+  0% {
+    transform: translateY(1em);
+  }
+
+  50% {
+    transform: translateY(-1em);
+  }
+
+  100% {
+    transform: translateY(1em);
+  }
+}
+
+.flipped {
+  transform: rotateY(180deg);
+}
+
+.description:hover {
+  color: #80ced7;
+}
+
+.description2:hover {
+  color: #80ced7;
+}
+
+.flipped {
+  transform: rotateY(180deg);
+}
+
+.description:hover {
+  color: #80ced7;
+}
+
+.description2:hover {
+  color: #80ced7;
 }
 
 .dance1:hover span:nth-child(2n) {
@@ -552,4 +612,162 @@ q .card-subtitle {
 
 .robocircle {
   animation: rotate 2s linear infinite;
+}
+
+.flipped {
+  transform: rotateY(180deg);
+}
+
+.alphabets {
+  transform: scale(1);
+}
+
+@media screen and (max-width: 440px) {
+  .alphabets {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .alphabets span {
+    width: 3px;
+    height: 3px;
+    margin: 0 9px;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .quote {
+    font-size: 20px;
+  }
+
+  .quote__author {
+    font-size: 24px;
+  }
+
+  .quote__organization {
+    font-size: 16px;
+  }
+}
+
+/**/
+
+.testimonial__image {
+  position: relative;
+  margin: 0 30px;
+}
+
+@media screen and (min-width: 768px) {
+  .testimonial__image {
+    margin: 0;
+  }
+
+  .testimonial .quote,
+  .testimonial .quote__author {
+    font-size: 24px;
+  }
+
+  .testimonial .quote {
+    margin-left: 60px;
+    margin-right: 0;
+  }
+}
+
+.reset-search {
+  display: inline-block;
+  padding: 10px 20px;
+  color: white;
+  background-color: #9ad1d4;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  width: 10%;
+}
+
+.reset-search:hover {
+  background-color: #0056b3; /* Darker shade of primary color */
+  transform: scale(1.05);
+}
+
+.reset-search:active {
+  background-color: #003f7f; /* Even darker shade for active state */
+}
+
+@media (max-width: 800px) {
+  .reset-search {
+    width: 100%;
+  }
+}
+
+#services-header {
+  display: inline;
+  margin-bottom: 0;
+}
+
+.dance1 span {
+  display: inline-block;
+  transition: transform 0 ease, color 0.5s ease;
+}
+
+.odd-span {
+  animation: dance1 2s linear infinite;
+}
+
+.even-span {
+  animation: oppositedance 2s linear infinite;
+  color: red;
+}
+
+#main-search-form {
+  max-width: 100vw;
+}
+
+.card-background {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.robo {
+  height: 70px;
+  width: 70px;
+  display: inline-block;
+  border-radius: 50px;
+  background-color: black;
+}
+
+.robocircle {
+  animation: rotate 2s linear infinite;
+}
+
+#main-search-form {
+  max-width: 100vw;
+}
+.card-background {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+.robo {
+  height: 70px;
+  width: 70px;
+  display: inline-block;
+  border-radius: 50px;
+  background-color: black;
+}
+
+.robocircle {
+  animation: rotate 2s linear infinite;
+}
+
+header.fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000; /* Ensures it stays above other content */
+  background: #444; /* Optional: Change background color when fixed */
 }

@@ -1,30 +1,74 @@
 [
     {
-        "name": "Plumbing",
-        "description": "plumbing description"
+        "name": "Health care",
+        "description": "Emergency care and transportation to hospitals, nursing, preventative health services."
     },
     {
-        "name": "Health",
-        "description": "health description"
+        "name": "Wellness and Mental Health services",
+        "description": "Provides counseling, therapy sessions, stress management workshops, and mental health assessments."
     },
     {
         "name": "Cleaning",
-        "description": "cleaning description"
+        "description": "Residential and commercial cleaning. Includes housekeeping cleaning, dusting, carpet cleaning, window washing. Also includes pressure washing, deep cleaning, dry cleaning, sanitizing, event cleaning, disaster cleaning and restoration. "
     },
     {
         "name": "Cooking",
-        "description": "cooking description"
+        "description": "Meal preparation, catering for events, personalized meal plans, and private chef services."
     },
     {
         "name": "Middle school education",
-        "description": "middle school education description"
+        "description": "Subject-specific teaching and tutoring, special education support."
     },
     {
         "name": "High school education",
-        "description": "high school education description"
+        "description": "Subject-specific teaching and tutoring, college preparatory assistance, and vocational training."
     },
     {
-        "name": "Education for adult",
-        "description": "education for adult description"
+        "name": "Education for adults",
+        "description": "Assistance with continuing education courses, professional certification programs, language courses, adult literacy programs."
+    },
+    {
+        "name": "Building Construction",
+        "description": "Building, renovations, maintenance and repair, carpentry."
+    },
+    {
+        "name": "Electrical",
+        "description": "Wiring installation, electrical repair and maintenance"
+    },
+    {
+        "name": "Plumbing",
+        "description": "Installation of pipes, fixtures, appliances, boilers, drainage systems. Repair and maintenance of leaks or blockages, pipe replacements."
+    },
+    {
+        "name": "Landscaping",
+        "description": "Lawn care and mowing, tree and foliage planting and maintenance, irragation system installation. Landscape design consulting."
+    },
+    {
+        "name": "IT and computer support",
+        "description": "IT support, computer repair, network setup, software installation, cybersecurity consulting."
+    },
+    {
+        "name": "Finance and Insurance consulting",
+        "description": "Financial planning, investment advice, risk management, insurance consulting and evaluation."
+    },
+    {
+        "name": "Childcare",
+        "description": "Daycare services, after-school care, babysitting, and early childhood education programs."
+    },
+    {
+        "name": "Food Service",
+        "description": "Private home chef services, event catering, and personalized cooking assistance."
+    },
+    {
+        "name": "Training services",
+        "description": "Job coaching and consulting, skill development assistance, safety training."
+    },
+    {
+        "name": "Fitness",
+        "description": "Personal training, group fitness classes, nutrition coaching, and fitness assessments."
+    },
+    {
+        "name": "Pest Removal Services",
+        "description": "Extermination of insects, rodent control, and wildlife removal."
     }
 ]

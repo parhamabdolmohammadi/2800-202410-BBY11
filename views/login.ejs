@@ -1,14 +1,17 @@
 <%- include("templates/header") %>
+
 <div class="signup-login-page-container">
   <main style="max-width: 504px;" class="form-signin py-3 px-3 w-100 m-auto signup-login-form-container">
     <form action="/loggingin" method="post">
       <h4 class="h4 mb-3 fw-bold text-center">Log in to RoboRental</h4>
       <h6 class="mb-3 fw-normal text-center">Don't have an account? <a href='/signup' class="btn btn-sm" style="color: black; background-color: orange !important">Sign up</a></h6>
-      <div>
+      <div>   
+   
         <label for="loginEmail" class="form-label">Email address</label>
         <br/>
         
         <input
+        
           name="email"
           type="email"
           placeholder="name@example.com"
@@ -54,35 +57,18 @@
       >
         Login
       </button>
-
+      <a href="/auth/google?signup=false"><button type="button"style="color:black" class="btn btn-outline-primary w-100 py-2 mb-3"><img style="width: 30px;padding-right: 5px;" src="./google.png" alt="">Authenticate with Google</button></a>
       <span><a href="/forgot-password">Forgot Password?</a></1></span> <!-- Need to implement this later as part of the 3b password reset suprise challenge -->
 
     </form>
   </main>
 </div>
 
-<!-- <script>
-  // Function that changes the the password input type 
-  // attribute to text when clicked on, and reveals the text entered
-  // Code adapted from:
-  // https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_toggle_password
-  function togglePasswordVisability() {
-    var passwordInput = document.getElementById("loginPassword");
-    if (passwordInput.type === "password") { // If the input type was initially "password"
-      // Change the input type to "text"
-      passwordInput.type = "text";
+<!-- Password visability function -->
+<script src="/js/signup-login.js"></script>
 
-      // Change the icon type to visable eye google icon
-      // let visabilityOnText = ;
-      document.getElementById("loginShowPswdButton").textContent = 'visibility';
-    } else { // If the input type was initially "text"
-      // Change the input type to "password"
-      passwordInput.type = "password";
-
-      // Change the icon type to invisable eye google icon
-      // let visabilityOffText = ;
-      document.getElementById("loginShowPswdButton").textContent = 'visibility_off';
-    }
-  }
-</script> -->
+<script>
+  const userEmail = <%- JSON.stringify(userEmail) %>;
+   if (userEmail) {  document.getElementById("loginEmail").value = userEmail}
+</script>
 <%- include("templates/footer") %>

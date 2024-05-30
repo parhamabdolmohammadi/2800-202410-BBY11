@@ -26,8 +26,21 @@
     
   
 <br>
+<header style="text-align: center;
+margin-bottom: ;
+margin-top: 1rem;
+color: #003249;">
+ <h1>Robot Stations for <%- JSON.stringify(currentUserName[0].username) %></h1>
+ <p>You can Bookmark Your stations here so that you woudln't go through complexity of searching for it everytime you search the app.</p>
+ 
 
-      <h3>Robot Stations</h3>
+ <p id="not-available" style="color: red;"> 
+  Currently you don't have any bookmark to display.</p>
+</header>
+
+      <div style="display: flex;justify-content: center;">
+        <h3 ></h3>
+      </div>
       <!--The div element for the map -->
       
        
@@ -44,7 +57,7 @@
       -->
 
       <template id="StationCardTemplate">
-        <div class="card-style form-signin w-100 m-auto">
+        <div class="card-style form-signin w-100 m-auto" style="overflow: hidden;">
             <div class="card-header">
               <img
                 style="position: relative; bottom: 3px"
@@ -52,10 +65,10 @@
                 alt=""
               />
               <p style="display: inline; font-weight: 500; font-size: 25px">
-                Station name:
-              </p> <span id="card-name" class="card-name"></span>
+                Station name: 
+              </p> <span id="card-name" class="card-name"></span> 
               <span
-                style="float: right; transform: scale(1.5)"
+                style="float: right; display: block;  transform: scale(1.5)"
                 
               >
                 <img style="width: 20px; font-weight: 500;" class="star-image" alt="">
@@ -80,30 +93,30 @@
                 <div class="row row-cols-4">
                   <div class="col">
                     <a class="p-3 link-style"
-                      ><span class="icon-container"
-                        ><img class="icon-size" id src="/call.png" alt="" />
-                        <p>Call</p>
+                      ><span class="icon-container telephone-icon"
+                        ><img href="/main" class="icon-size" id src="/call.png" alt="" />
+                        <p >Call</p>
                       </span></a
                     >
                   </div>
                   <div class="col">
-                    <a class="p-3 link-style"
+                    <a href="/main"  target="_blank" class="p-3 link-style"
                       ><span class="icon-container"
                         ><img class="icon-size"  src="/website.png" alt="" />
                         <p>Website</p>
                       </span></a
                     >
                   </div>
-                  <div class="col">
+                  <div  class="col more-info">
                     <a class="p-3 link-style link-style"
                       ><span class="icon-container"
                         ><img class="icon-size" id src="/info.png" alt="" />
-                        <p>More Info</p>
+                        <p>More </p>
                       </span></a
                     >
                   </div>
                   <div class="col">
-                    <a class="p-3 link-style"
+                    <a class="p-3 link-style select-button"
                       ><span
                         class="icon-container"
                         style="background-color: rgba(0, 50, 73, 0.9)"
@@ -113,16 +126,34 @@
                     >
                   </div>
                 </div>
+                
                 <form style="display: none;" action="/editBookmark" method="POST">
                   
                   <input type="text" class="id-placeholder" name="data" required><br><br>
+                
                   
                   <button class="id-button" type="submit">Submit</button>
               </form>
+              <form style="display: none;" action="/displayStation" method="POST">
+               
+                <input type="text" class="id-placeholder2" name="data" required><br><br>
+                <input type="text" class="id-placeholder11" name="data2" required><br><br>
+                
+                <button class="id-button2" type="submit">Submit</button>
+            </form>
               </div>
+              
             </div>
+            <footer class="footer-card " 
+           
+           
+            >
+              <img class="icon-size" id src="/info.png" alt="" style="position: relative; top:2px; width: 20px; height: 20px; margin-right: 2px;" />&nbsp;<p> You Can Select any Station and Purchase or add (if you are a business Owner) robots if you wish
+                 </p>
+         </footer>
           </div>
-      </template>
+         
+        </template>
       <script>
         const station = <%- JSON.stringify(stations) %>;
         console.log(station);
@@ -130,6 +161,8 @@
 
         const currentUser = <%- JSON.stringify(currentUserName) %>;
         console.log(currentUser);
+
+        
 
         // Additional client-side scripts can go here
       </script>
