@@ -18,13 +18,13 @@ function setActive(element) {
 
 active_orders.addEventListener('click', () => {
     setActive(active_orders)
-    generateCards(activeOrders)
+    generateCards(activeOrders, historyUrl)
 
 })
 
 past_orders.addEventListener('click', () => {
     setActive(past_orders)
-    generateCards(pastOrders)
+    generateCards(pastOrders, historyUrl)
 })
 
 //{data.name.trim().replace(/\s+/g, '')}.png
