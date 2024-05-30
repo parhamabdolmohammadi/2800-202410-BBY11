@@ -29,7 +29,7 @@
     style="max-width: 504px"
     class="form-signin py-3 px-3 w-100 m-auto signup-login-form-container"
   >
-    <form action="/submitUser" method="post">
+    <form action="/submitUser" method="post" id="signup-form" class="needs-validation" novalidate>
       <h4 class="h4 mb-3 fw-bold text-center">Sign up</h4>
       <h6 class="mb-3 fw-normal text-center">
         Already have an account?
@@ -48,9 +48,11 @@
           name="username"
           type="text"
           placeholder="Username"
-          class="signup-login-form-input-style"
+          class="signup-login-form-input-style" 
           id="signupUsername"
+          required
         />
+        <div class="username-msg invalid-feedback"></div>
       </div>
       <br />
 
@@ -64,7 +66,9 @@
           placeholder="name@example.com"
           class="signup-login-form-input-style"
           id="signupEmail"
+          required
         />
+        <div class="email-msg invalid-feedback"></div>
       </div>
       <br />
 
@@ -85,6 +89,7 @@
           onclick="togglePasswordVisability('signupPassword', 'signupShowPswdButton')"
           >visibility_off</span
         >
+        <div class="password-msg invalid-feedback"></div>
       </div>
       <br />
 
@@ -133,6 +138,9 @@
 
 <!-- Password visability function -->
 <script src="/js/signup-login.js"></script>
+
+<!-- Client-side validation -->
+<script defer src="/clientSideValidator-client.js"></script>
 
 <script>
   const userEmail = <%- JSON.stringify(userEmail) %>;
