@@ -118,3 +118,34 @@
     width: 90%;
   }
 }
+
+/* this is style code that make placeholder text visible all the time */
+.form-control::placeholder {
+  font-size: 1rem;
+}
+
+@media (max-width: 881px) {
+  .form-control::placeholder {
+    font-size: 0.8rem; /* Further adjust the size for even smaller screens */
+  }
+}
+@media (max-width: 530px) {
+  .form-control::placeholder {
+    font-size: 0.8rem; /* Adjust the size as needed for small screens */
+  }
+}
+
+@media (max-width: 450px) {
+  .form-control::placeholder {
+    font-size: 0.6rem; /* Further adjust the size for even smaller screens */
+  }
+}
+
+#search-text {
+  width: 100%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  padding-top: 0;
+  padding-bottom: 0;
+}

@@ -334,4 +334,12 @@
   </div>
 </div>
 
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      var link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "/index-.css";
+      document.head.appendChild(link);
+  });
+</script>
 <%- include("templates/footer")%>
