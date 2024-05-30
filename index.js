@@ -208,7 +208,7 @@ app.get('/', (req, res) => {
 
 });
 
-app.get('/signup', (req, res) => {
+app.get('/signup', async (req, res) => {
     let username = ""
     let userEmail = ''
 
@@ -220,7 +220,12 @@ app.get('/signup', (req, res) => {
         console.log(username);
     }
 
-    res.render("signup", { username, userEmail })
+    const services = await general.find({}).project({ _id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
+    const stations = await stationsCollection.find({}).toArray();
+    
+
+ 
+    res.render("signup", { username, userEmail , services, stations })
 });
 
 
@@ -335,7 +340,7 @@ app.get("/signupSubmit", (req, res) => {
     res.render("signupSubmit", { problem: req.query.problem });
 });
 
-app.get('/login', (req, res) => {
+app.get('/login', async (req, res) => {
     let username = ""
     let userEmail = ''
 
@@ -345,9 +350,11 @@ app.get('/login', (req, res) => {
         username = req.user.displayName;
         console.log(userEmail);
     }
+    const services = await general.find({}).project({ _id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
+    const stations = await stationsCollection.find({}).toArray();
+    
 
-
-    res.render("login", { username: username, userEmail });
+    res.render("login", { username: username, userEmail, services, stations });
 });
 
 
