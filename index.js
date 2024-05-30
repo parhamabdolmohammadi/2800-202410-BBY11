@@ -630,7 +630,6 @@ app.post('/updatePassword', async (req, res) => {
             console.log('Successfully updated user password.');
             return res.status(400).send(`
             <div style=" margin-top:50px; align-items: center;">
-                <h1 style="text-align: center;">You've changed your password succesfully.<br><a href="/edit-password">Go To Edit Password</a></h1><br>
             </div>
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             <script>
@@ -643,7 +642,7 @@ app.post('/updatePassword', async (req, res) => {
             });
             
             setTimeout(function() {
-                window.location.href = '/edit-password';
+                window.location.href = 'setting';
             }, 1200);
             </script>
         `);
