@@ -222,15 +222,15 @@ app.get('/signup', async (req, res) => {
 
     const services = await general.find({}).project({ _id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
     const stations = await stationsCollection.find({}).toArray();
-    
 
- 
-    res.render("signup", { username, userEmail , services, stations })
+
+
+    res.render("signup", { username, userEmail, services, stations })
 });
 
 
 app.get('/setting', (req, res) => {
-    res.render("setting", {username: req.session.username})
+    res.render("setting", { username: req.session.username })
 });
 
 app.get('/edit-profile', async (req, res) => {
@@ -264,12 +264,12 @@ app.post('/submitUser', async (req, res) => {
     }
 
     // Import schema to validate username, email, and password
-    const {signupSchema} = include('signup-joi-schema');
+    const { signupSchema } = include('signup-joi-schema');
 
     // Validate the username, email, password
     // (abortEarly: retrieve all validation errors, not just the first one)
-    const validationResult = signupSchema.validate({ username, password, email}, {abortEarly: false});
-    
+    const validationResult = signupSchema.validate({ username, password, email }, { abortEarly: false });
+
     if (validationResult.error != null) { // If error occured
         console.log(validationResult.error);
         res.redirect("/signup");
@@ -279,7 +279,7 @@ app.post('/submitUser', async (req, res) => {
     // Check if the entered email for signup already exists in the database:
 
     // Import the and call function to search through db and compare user email with the current ones
-    const {checkIfEmailExists} = include('scripts/LoginSignUpValidation/databaseEmailValidation');
+    const { checkIfEmailExists } = include('scripts/LoginSignUpValidation/databaseEmailValidation');
 
     try {
         await checkIfEmailExists(email, userCollection, key, iv);
@@ -292,7 +292,7 @@ app.post('/submitUser', async (req, res) => {
     }
 
     ///////////////
-    
+
     // try {
     //     // Get all of the users from the 'users' collection in db using .find with empty query '{}'
     //     const dbUserEmails = await userCollection.find({}).project({email: 1, _id: 1}).toArray();
@@ -313,7 +313,7 @@ app.post('/submitUser', async (req, res) => {
     //     res.redirect("/signupSubmit?problem=EmailExists");
     //     return;
     // }
-    
+
     var hashedPassword = await bcrypt.hash(password, saltRounds);
     var encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString();
     var _id = new ObjectId();
@@ -367,12 +367,12 @@ app.post('/loggingin', async (req, res) => {
     var incorrectFields = false;
 
     // Import schema to validate username, email, and password
-    const {loginSchema} = include('login-joi-schema');
+    const { loginSchema } = include('login-joi-schema');
 
     // Validate the username, email, password
     // (abortEarly: retrieve all validation errors, not just the first one)
-    const validationResult = loginSchema.validate({ email, password }, {abortEarly: false});
-    
+    const validationResult = loginSchema.validate({ email, password }, { abortEarly: false });
+
     // If the email and password are not valid:
     if (validationResult.error != null) { // If error occured
         validationError = true;
@@ -420,7 +420,7 @@ app.post('/loggingin', async (req, res) => {
 
 app.get("/loginSubmit", (req, res) => {
     //var loginErrorResults = {validationError: validationError, userDoesNotExist: userDoesNotExist, incorrectFields: incorrectFields}
-    res.render("loginSubmit", {username: req.session.username});
+    res.render("loginSubmit", { username: req.session.username });
 });
 
 app.post('/updateProfile', async (req, res) => {
@@ -483,7 +483,7 @@ app.post('/updatePassword', async (req, res) => {
         return res.status(400).send(`
            <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
             <div style="text-align: center; background: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-              <h1 style="color: #333; margin-bottom: 20px;">New password and confirm new password do not match<br></h1>
+              <h1 style="color: #333; margin-bottom: 20px;">Password error<br></h1>
               <a href="/edit-password" style="display: inline-block; padding: 10px 20px; background-color: #003249; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease;">Try Again</a>
             </div>
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -491,8 +491,9 @@ app.post('/updatePassword', async (req, res) => {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error!',
+                    text: "New password and confirm password do not match",
                     showConfirmButton: false,
-                    timer: 1000
+                    footer: '<a href="/edit-password" style="display: inline-block; padding: 10px 20px; background-color: #003249; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease;">Try Again</a>'
                 });
             </script>
         `);
@@ -532,21 +533,87 @@ app.post('/updatePassword', async (req, res) => {
 
         if (!passwordMatch) {
             return res.status(400).send(`
-            <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-            <div style="text-align: center; background: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-              <h1 style="color: #333; margin-bottom: 20px;">Current password in incorrect<br></h1>
-              <a href="/edit-password" style="display: inline-block; padding: 10px 20px; background-color: #003249; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease;">Try Again</a>
-            </div>
-          </div>
+            <!DOCTYPE html>
+                <html lang="en">
+
+                <head>
+                <meta charset="UTF-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>RoboRental</title>
+
+                <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+                <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+                <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+                <link rel="manifest" href="/site.webmanifest">
+                <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+                <meta name="msapplication-TileColor" content="#da532c">
+                <meta name="theme-color" content="#ffffff">
+
+                <link href="/img/favicon.ico" rel="icon" type="image/x-icon" />
+
+                <!-- Bootstrap Library-->
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+                integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+                
+                <!-- Icon Libraries -->
+                <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+                
+                <!-- CSS files -->
+                <link href= "/all-pages.css" rel="stylesheet">
+                <link href="/header.css" rel="stylesheet">
+                <link href="/footer.css" rel="stylesheet">
+                <link href="/confirmation.css" rel="stylesheet">
+                <link href="/form-inputs.css" rel="stylesheet">
+                <link href="/icons.css" rel="stylesheet">
+                <link href="/main.css" rel="stylesheet">
+                <link href="/index.css" rel="stylesheet">
+                <link href="/signup-login.css" rel="stylesheet">
+                <link href="/buttons.css" rel="stylesheet">
+                <link href="/search-bar.css" rel="stylesheet">
+                <link href="/setting.css" rel="stylesheet">
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+                crossorigin="anonymous"></script>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <style>
+                    .active {
+                    background-color: #003249 !important;
+                    color: white !important;
+                    }
+
+                    .active:hover {
+
+                    color: silver !important;
+                    }
+
+                    @media screen and (max-width: 767.5px) {
+                    
+                    .span-header {
+                        position: relative;
+                        top: 5px;
+                    }
+                    }
+            </style>
+            </head>
+            <body>
+                <div id="content-and-footer-flex-container">
+                    <!-- Start of flexbox container to make the main content container fill all of the space after header and before footer -->
+                    <div id="all-pages-content-container"> <!-- Start of main content -->
+                    <div>
+                </div>
                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                 <script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Error!',
+                        text: "Current password is incorrect",
                         showConfirmButton: false,
-                        timer: 1000
+                        footer: '<a href="/edit-password" style="display: inline-block; padding: 10px 20px; background-color: #003249; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease;">Try Again</a>'
                     });
                 </script>
+            </body>
+        </html>
             `);
         }
 
@@ -1114,7 +1181,7 @@ app.get('/businessConfirmation', sessionValidation, (req, res) => {
 app.get('/station', async (req, res) => {
 
 
-    res.render("station", {username: req.session.username});
+    res.render("station", { username: req.session.username });
 });
 
 
@@ -1192,7 +1259,7 @@ app.post('/bussinessOwnerSubmission', async (req, res) => {
     await sendEmail(email, htmlContent);
 
     await userCollection.updateOne({ username: req.session.username }, { $set: { businessOwnerRequestInProgress: true, name, lastname, phonenumber, address, businessName, businessAddress, description, dateOfBirth, gender } });
-    res.render('bussinessOwnerSignupConfirmation', {username: req.session.username});
+    res.render('bussinessOwnerSignupConfirmation', { username: req.session.username });
 });
 
 
@@ -1335,19 +1402,19 @@ app.get('/history', async (req, res) => {
     const historyUrl = [];
     const fetchUrls = async () => {
         for (const each of history) {
-            const result = await general.findOne({ name: each.service }, { projection: { background: 1, name:1} });
+            const result = await general.findOne({ name: each.service }, { projection: { background: 1, name: 1 } });
             historyUrl.push(result);
         }
     };
 
     await fetchUrls()
     // await general.find({name: each.service}).project({background:1}).toArray()
-    
+
     console.log(historyUrl);
     // console.log(username);
     // console.log(history);
     // console.log(req.session._id);
-    res.render("history", {username, history, historyUrl})
+    res.render("history", { username, history, historyUrl })
 })
 
 app.get('/adminService', adminAuthorization, async (req, res) => {
@@ -1409,7 +1476,7 @@ const upload = multer({ storage: storage, fileFilter: fileFilter })
 //     res.status(200).json({ message: 'Entry created successfully.' });
 // })
 
-app.post('/create', async(req, res) => {
+app.post('/create', async (req, res) => {
     upload.single('image')(req, res, (err) => {
         if (err) {
             return res.status(400).json({ code: 'EXTENSION_ERROR', message: err.message });
