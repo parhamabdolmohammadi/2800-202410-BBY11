@@ -1,7 +1,7 @@
 // Initialize and add the map
 let map;
-let user_lat;
-let User_lng;
+user_lat;
+ User_lng;
 let User_Position;
 var closest = 100;
 var closestID;
@@ -28,8 +28,8 @@ async function showPosition(position) {
 
   station.forEach(station => {
     let d = distance(station.lat, station.lng);
-    let id = "id-placeholder11" + station._id;
-    document.getElementById(id).value = d;
+    
+   
     if (d < closest && station.robots_in_stock > 0) {
       closest = d;
       closestID = station._id;
@@ -125,12 +125,17 @@ function toRad(degrees) {
   return degrees * (Math.PI / 180);
 }
 
-function distance(latHosp, lngHosp) {
+function distance(latstation
+  , lngstation) {
   let R = 6371; // Radius of the earth in km
-  let dLat = toRad(user_lat - latHosp);  // Javascript functions in radians
-  let dLon = toRad(User_lng - lngHosp);
+  let dLat = toRad(user_lat - latstation
+
+  );  // Javascript functions in radians
+  let dLon = toRad(User_lng - lngstation);
   let a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRad(user_lat)) * Math.cos(toRad(latHosp)) *
+      Math.cos(toRad(user_lat)) * Math.cos(toRad(latstation
+
+      )) *
       Math.sin(dLon / 2) * Math.sin(dLon / 2);
   let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   let d = R * c; // Distance in km
