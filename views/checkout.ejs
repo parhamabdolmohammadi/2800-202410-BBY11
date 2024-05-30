@@ -91,7 +91,7 @@
                 </div>
                 <div class="" style="width:100%">
                     <div class="d-flex flex-column">
-                        <span><small style="font-size:8pt">Station</small> <i class="fa fa-caret-down"></i></span>
+                        <span><small style="font-size:8pt">Station:</small> <i class="fa fa-caret-down"></i></span>
                     </div>
                     <div class="mt-1">
                         <input hidden name="stationID" id="stationID" value="">
@@ -134,12 +134,19 @@
                             </div>
                         </div>
                         <hr class="mt-0 line">
+
+                        <div class="d-flex justify-content-between p-3">
+                            <input required type="text" name="address" class="form-control" placeholder="Enter your address">
+                        </div>
+
+                        
                         <div class="p-3 d-flex justify-content-between">
                             <div class="d-flex flex-column">
                                 <span>Total</span>
                             </div>
                             <span id="total"></span>
                         </div>
+                        
                         <div style="margin:3%" class="form-check form-switch">
                             <input name="remember" class="form-check-input"
                                    type="checkbox" id="flexSwitchCheckDefault"

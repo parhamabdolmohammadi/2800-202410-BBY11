@@ -765,7 +765,7 @@ app.get('/checkout', sessionValidation, async (req, res) => {
 app.post('/submit-payment', sessionValidation, async (req, res) => {
     let stationId = req.body.stationID;
     let paymentType = req.body.paymentType;
-
+    let address = req.body.address;
 
     try {
         let userId = new ObjectId(req.session._id);
@@ -790,7 +790,7 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
             const encryptedCvv = CryptoJS.AES.encrypt(cvv, key, { iv: iv }).toString();
             await userCollection.findOneAndUpdate({ _id: userId },
                 { $set: { cardnumber: encryptedCardNumber, expirydate: encryptedExpirydate, cvv: encryptedCvv } });
-                removeRobotFromDatabase()
+                removeRobotFromDatabase(stationId)
 
         } else if (paymentType === "paypal") {
             let paypalEmail = req.body.paypalEmail;
@@ -800,8 +800,11 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
             }
             const encryptedPaypalEmail = CryptoJS.AES.encrypt(paypalEmail, key, { iv: iv }).toString();
             await userCollection.findOneAndUpdate({ _id: userId }, { $set: { paypalEmail: encryptedPaypalEmail } });
-            removeRobotFromDatabase()
+            removeRobotFromDatabase(stationId)
         }
+        let encryptedAddress = CryptoJS.AES.encrypt(address, key, { iv: iv }).toString();
+        await userCollection.findOneAndUpdate({ _id: userId }, { $set: { address: encryptedAddress } });
+
     } catch (e) {
         console.log(e);
     }
@@ -809,7 +812,7 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
     res.redirect('/confirmation?paymentType=' + paymentType);
 });
 
-async function removeRobotFromDatabase(){
+async function removeRobotFromDatabase(stationId){
     try {
         let station = await stationsCollection.findOne({ _id: new ObjectId(stationId) });
         current = station.robots_in_stock;
