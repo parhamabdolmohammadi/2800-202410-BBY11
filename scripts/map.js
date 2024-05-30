@@ -146,7 +146,7 @@ function scrollToSection(sectionId, station_ID) {
   // Calculate the scroll position to center the section
   const containerHeight = container.offsetHeight;
   const sectionHeight = section.offsetHeight;
-  const scrollPosition = section.offsetTop - (containerHeight / 2) + (sectionHeight / 2);
+  const scrollPosition = section.offsetTop - (containerHeight / 2)  - (containerHeight / 3) ;
 
   // Scroll to the target section
   container.scroll({

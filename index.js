@@ -157,7 +157,7 @@ function isAdmin(req) {
 function adminAuthorization(req, res, next) {
     if (!isAdmin(req)) {
         res.status(403);
-        res.render("errorMessage", { error: "Not Authorized" });
+        res.render("errorMessage", { error: "Not Authorized", username: req.session.username });
         return;
     }
     else {
@@ -230,7 +230,7 @@ app.get('/signup', async (req, res) => {
 
 
 app.get('/setting', (req, res) => {
-    res.render("setting")
+    res.render("setting", {username: req.session.username})
 });
 
 app.get('/edit-profile', async (req, res) => {
@@ -238,11 +238,11 @@ app.get('/edit-profile', async (req, res) => {
     let email = await req.session.email;
     console.log(email);
     let unencryptedEmail = CryptoJS.AES.decrypt(email, key, { iv: iv }).toString(CryptoJS.enc.Utf8);
-    res.render("edit-profile", { name: req.session.username, email: unencryptedEmail, userId: id });
+    res.render("edit-profile", { name: req.session.username, email: unencryptedEmail, userId: id, username: req.session.username });
 });
 
 app.get('/edit-password', (req, res) => {
-    res.render("edit-password")
+    res.render("edit-password", { username: req.session.username });
 });
 
 app.post('/submitUser', async (req, res) => {
@@ -337,7 +337,7 @@ app.post('/submitUser', async (req, res) => {
 });
 
 app.get("/signupSubmit", (req, res) => {
-    res.render("signupSubmit", { problem: req.query.problem });
+    res.render("signupSubmit", { problem: req.query.problem, username: req.session.username });
 });
 
 app.get('/login', async (req, res) => {
@@ -352,7 +352,7 @@ app.get('/login', async (req, res) => {
     }
     const services = await general.find({}).project({ _id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
     const stations = await stationsCollection.find({}).toArray();
-    
+
 
     res.render("login", { username: username, userEmail, services, stations });
 });
@@ -376,7 +376,7 @@ app.post('/loggingin', async (req, res) => {
     // If the email and password are not valid:
     if (validationResult.error != null) { // If error occured
         validationError = true;
-        res.render("loginSubmit", { validationError: validationError, userDoesNotExist: userDoesNotExist, incorrectFields: incorrectFields });
+        res.render("loginSubmit", { validationError: validationError, userDoesNotExist: userDoesNotExist, incorrectFields: incorrectFields, username: req.session.username });
         return;
     }
 
@@ -389,7 +389,7 @@ app.post('/loggingin', async (req, res) => {
     // If a user with the entered email and password combination was NOT found (result array length = 1)
     if (result.length != 1) {
         userDoesNotExist = true;
-        res.render("loginSubmit", { validationError: validationError, userDoesNotExist: userDoesNotExist, incorrectFields: incorrectFields });
+        res.render("loginSubmit", { validationError: validationError, userDoesNotExist: userDoesNotExist, incorrectFields: incorrectFields, username: req.session.username });
         return;
     }
 
@@ -413,14 +413,14 @@ app.post('/loggingin', async (req, res) => {
         return;
     } else {
         incorrectFields = true;
-        res.render("loginSubmit", { validationError: validationError, userDoesNotExist: userDoesNotExist, incorrectFields: incorrectFields });
+        res.render("loginSubmit", { validationError: validationError, userDoesNotExist: userDoesNotExist, incorrectFields: incorrectFields, username: req.session.username });
         return;
     }
 });
 
 app.get("/loginSubmit", (req, res) => {
     //var loginErrorResults = {validationError: validationError, userDoesNotExist: userDoesNotExist, incorrectFields: incorrectFields}
-    res.render("loginSubmit");
+    res.render("loginSubmit", {username: req.session.username});
 });
 
 app.post('/updateProfile', async (req, res) => {
@@ -783,9 +783,9 @@ app.get('/checkout', sessionValidation, async (req, res) => {
         } catch (error) {
             console.error("Cannot find cvv", error.message);
         }
-        res.render("checkout", { query: req.query, remember: true, paypalEmail: paypalEmail, cardnumber: cardnumber, expirydate: expirydate, cvv: cvv, address: address });
+        res.render("checkout", { query: req.query, remember: true, paypalEmail: paypalEmail, cardnumber: cardnumber, expirydate: expirydate, cvv: cvv, address: address, username: req.session.username });
     } else {
-        res.render("checkout", { query: req.query, remember: false });
+        res.render("checkout", { query: req.query, remember: false, username: req.session.username });
     }
 });
 
@@ -867,7 +867,7 @@ app.get('/confirmation', sessionValidation, (req, res) => {
     let orderNumber = generateuuid();
     let timestamp = new Date().toISOString();
 
-    res.render("confirmation", { orderNumber: orderNumber, total: total });
+    res.render("confirmation", { orderNumber: orderNumber, total: total, username: req.session.username });
     if (total != null) {
         let id = new ObjectId(orderNumber);
         ordersCollection.insertOne({
@@ -927,7 +927,7 @@ app.post('/search', async (req, res) => {
 })
 
 app.get('/forgot-password', async (req, res) => {
-    res.render("forgot-password");
+    res.render("forgot-password", { username: req.session.username });
 });
 
 app.post('/sendEmail', async (req, res) => {
@@ -940,7 +940,7 @@ app.post('/sendEmail', async (req, res) => {
             }
         });
         if (!req.body.email) {
-            res.render("forgot-password");
+            res.render("forgot-password", { username: req.session.username });
             return;
         }
         let email = req.body.email;
@@ -953,7 +953,7 @@ app.post('/sendEmail', async (req, res) => {
         };
         const info = await transporter.sendMail(mailOptions);
         console.log('Email sent:', info.messageId);
-        res.render("enterCode", { resetCode: resetCode, userEmail: email });
+        res.render("enterCode", { resetCode: resetCode, userEmail: email, username: req.session.username });
     } catch (error) {
         console.error('Error occurred:', error);
     }
@@ -967,7 +967,7 @@ app.post('/loginfromcode', async (req, res) => {
         if (code1 !== code2) {
             res.send("Invalid code. Please try again.");
         } else {
-            res.render("reset-password", { email: email });
+            res.render("reset-password", { email: email, username: req.session.username });
         }
     } catch (error) {
         console.error('Error occurred:', error);
@@ -1004,7 +1004,7 @@ app.get('/stations', async (req, res) => {
         const users = await userCollection.find({}).toArray();
         currentUserName = await userCollection.find({ username: req.session.username }).project({ username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1 }).toArray();
 
-        res.render("stations", { stations: stations, users: users, currentUserName: currentUserName });
+        res.render("stations", { stations: stations, users: users, currentUserName: currentUserName, username: req.session.username });
     } catch (error) {
         console.error("Error fetching stations:", error);
         res.status(500).send("Internal Server Error");
@@ -1038,7 +1038,7 @@ app.get('/saved', async (req, res) => {
         currentUserName = await userCollection.find({ username: req.session.username }).project({ username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1 }).toArray();
 
         // console.log("haha" + currentUserName);
-        res.render("saved", { stations: stations, users: users, currentUserName: currentUserName });
+        res.render("saved", { stations: stations, users: users, currentUserName: currentUserName, username: req.session.username });
     } catch (error) {
         console.error("Error fetching stations:", error);
         res.status(500).send("Internal Server Error");
@@ -1054,7 +1054,7 @@ app.post('/displayStation', async (req, res) => {
     const objectId = new ObjectId(cardId);
 
     const currentStation = await stationsCollection.findOne({ _id: objectId });
-    res.render('station', { station1: currentStation, distance: distance, cardId: cardId });
+    res.render('station', { station1: currentStation, distance: distance, cardId: cardId, username: req.session.username });
 });
 
 app.get('/businessCheckout', async (req, res) => {
@@ -1079,7 +1079,7 @@ app.get('/businessCheckout', async (req, res) => {
 
     const currentStation = await stationsCollection.findOne({ _id: objectId });
 
-    res.render('businessCheckout', { station1: currentStation, distance: distance, services, cardId, user_type: currentUser.user_type });
+    res.render('businessCheckout', { station1: currentStation, distance: distance, services, cardId, user_type: currentUser.user_type, username: req.session.username });
 });
 
 app.post('/addRobot', async (req, res) => {
@@ -1100,7 +1100,7 @@ app.get('/businessConfirmation', sessionValidation, (req, res) => {
     let orderNumber = generateuuid();
     let timestamp = new Date().toISOString();
 
-    res.render("businessConfirmation", { orderNumber: orderNumber });
+    res.render("businessConfirmation", { orderNumber: orderNumber, username: req.session.username });
     let id = new ObjectId(orderNumber);
     ordersCollection.insertOne({
         _id: id,
@@ -1114,7 +1114,7 @@ app.get('/businessConfirmation', sessionValidation, (req, res) => {
 app.get('/station', async (req, res) => {
 
 
-    res.render("station");
+    res.render("station", {username: req.session.username});
 });
 
 
@@ -1132,9 +1132,9 @@ app.get('/bussinessOwnerForm', async (req, res) => {
     );
     console.log(currentUser.user_type == "user");
     if (!currentUser.businessOwnerRequestInProgress) {
-        res.render("bussinessOwnerForm", { email: req.session.email, request: false, user_type: currentUser.user_type });
+        res.render("bussinessOwnerForm", { email: req.session.email, request: false, user_type: currentUser.user_type, username: req.session.username });
     } else {
-        res.render("bussinessOwnerForm", { email: req.session.email, request: true, user_type: currentUser.user_type });
+        res.render("bussinessOwnerForm", { email: req.session.email, request: true, user_type: currentUser.user_type, username: req.session.username });
     }
 
 })
@@ -1192,7 +1192,7 @@ app.post('/bussinessOwnerSubmission', async (req, res) => {
     await sendEmail(email, htmlContent);
 
     await userCollection.updateOne({ username: req.session.username }, { $set: { businessOwnerRequestInProgress: true, name, lastname, phonenumber, address, businessName, businessAddress, description, dateOfBirth, gender } });
-    res.render('bussinessOwnerSignupConfirmation', {});
+    res.render('bussinessOwnerSignupConfirmation', {username: req.session.username});
 });
 
 
@@ -1200,13 +1200,13 @@ app.post('/bussinessOwnerSubmission', async (req, res) => {
 app.get('/bussinessOwnerSignupConfirmation', async (req, res) => {
 
     console.log(req.session.email);
-    res.render("bussinessOwnerSignupConfirmation", { email: req.session.email });
+    res.render("bussinessOwnerSignupConfirmation", { email: req.session.email, username: req.session.username });
 })
 
 app.get('/admin', sessionValidation, adminAuthorization, async (req, res) => {
     const result = await userCollection.find().project({ username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1 }).toArray();
 
-    res.render("admin", { users: result });
+    res.render("admin", { users: result, username: req.session.username });
 });
 
 app.post('/PromoteToBusinessOwner', async (req, res) => {
@@ -1352,7 +1352,7 @@ app.get('/history', async (req, res) => {
 
 app.get('/adminService', adminAuthorization, async (req, res) => {
     const services = await general.find({}).project({}).toArray();
-    res.render('adminService', { services })
+    res.render('adminService', { services, username: req.session.username })
 })
 
 app.post('/update', async (req, res) => {
@@ -1423,7 +1423,7 @@ app.post('/delete', async (req, res) => {
 })
 app.get("*", (req, res) => {
     res.status(404);
-    res.render("404",);
+    res.render("404", { username: req.session.username });
 })
 
 app.listen(port, () => {
