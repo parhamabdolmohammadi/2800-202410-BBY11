@@ -46,7 +46,6 @@ station.forEach(station => {
 
    if (currentUser) {
       var bookmarks = currentUser[0].bookmarks;
-      console.log(bookmarks);
       if(bookmarks && bookmarks.includes(CardId)) {
          newcard.querySelector(".star-image").src = '/star2.png';
          isBookmarked = true;
