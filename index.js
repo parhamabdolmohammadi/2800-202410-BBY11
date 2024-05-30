@@ -601,74 +601,85 @@ app.post('/updatePassword', async (req, res) => {
             return res.status(400).send(`
             <!DOCTYPE html>
             <html lang="en">
+    
             <head>
-                <meta charset="UTF-8">
-                <meta http-equiv="X-UA-Compatible" content="IE=edge">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>RoboRental</title>
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>RoboRental</title>
+    
+            <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+            <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+            <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+            <link rel="manifest" href="/site.webmanifest">
+            <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+            <meta name="msapplication-TileColor" content="#da532c">
+            <meta name="theme-color" content="#ffffff">
+    
+            <link href="/img/favicon.ico" rel="icon" type="image/x-icon" />
+    
+            <!-- Bootstrap Library-->
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
             
-                <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-                <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-                <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-                <link rel="manifest" href="/site.webmanifest">
-                <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-                <meta name="msapplication-TileColor" content="#da532c">
-                <meta name="theme-color" content="#ffffff">
-                <link href="/img/favicon.ico" rel="icon" type="image/x-icon" />
+            <!-- Icon Libraries -->
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
             
-                <!-- Bootstrap Library-->
-                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-                integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+            <!-- CSS files -->
+            <link href= "/all-pages.css" rel="stylesheet">
+            <link href="/header.css" rel="stylesheet">
+            <link href="/footer.css" rel="stylesheet">
+            <link href="/confirmation.css" rel="stylesheet">
+            <link href="/form-inputs.css" rel="stylesheet">
+            <link href="/icons.css" rel="stylesheet">
+            <link href="/main.css" rel="stylesheet">
+            <link href="/index.css" rel="stylesheet">
+            <link href="/signup-login.css" rel="stylesheet">
+            <link href="/buttons.css" rel="stylesheet">
+            <link href="/search-bar.css" rel="stylesheet">
+            <link href="/setting.css" rel="stylesheet">
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <style>
+                .active {
+                background-color: #003249 !important;
+                color: white !important;
+                }
+    
+                .active:hover {
+    
+                color: silver !important;
+                }
+    
+                @media screen and (max-width: 767.5px) {
                 
-                <!-- Icon Libraries -->
-                <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-            
-                <style>
-                    body {
-                        font-family: Arial, sans-serif;
-                        font-size: 16px;
-                        color: red;
-                        display: flex;
-                        flex-wrap: wrap;
-                        align-content: flex-start;
-                        height: 100vh;
-                        margin: 0;
-                        overflow: hidden; /* Prevents scrolling */
-                    }
-                    .error {
-                        white-space: nowrap;
-                    }
-                    .swal2-container {
-                        position: fixed !important; /* Ensures the alert is fixed on the screen */
-                    }
-                </style>
-            </head>
-            <body>
-                <script>
-                    const errorText = 'Error '.repeat(10);  // Adjust the number to repeat as needed
-                    const lines = 100;  // Adjust the number of lines as needed
-                    for (let i = 0; i < lines; i++) {
-                        const div = document.createElement('div');
-                        div.className = 'error';
-                        div.innerText = errorText;
-                        document.body.appendChild(div);
-                    }
-                </script>
-            
-                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                <script>
-                    window.addEventListener('load', () => {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error!',
-                            text: "Current password is incorrect",
-                            showConfirmButton: false,
-                            footer: '<a href="/edit-password" style="display: inline-block; padding: 10px 20px; background-color: #003249; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease;">Try Again</a>'
-                        });
-                    });
-                </script>
-            </body>
-            </html>
+                .span-header {
+                    position: relative;
+                    top: 5px;
+                }
+                }
+        </style>
+        </head>
+        <body>
+            <div id="content-and-footer-flex-container">
+                <!-- Start of flexbox container to make the main content container fill all of the space after header and before footer -->
+                <div id="all-pages-content-container"> <!-- Start of main content -->
+                <div>
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: "Current password is incorrect",
+                    showConfirmButton: false,
+                    footer: '<a href="/edit-password" style="display: inline-block; padding: 10px 20px; background-color: #003249; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease;">Try Again</a>'
+                });
+            </script>
+        </body>
+    </html>
             
             `);
         }
