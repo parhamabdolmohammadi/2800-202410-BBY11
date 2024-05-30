@@ -215,7 +215,7 @@
     gap: 10px;
 }
 
-#created , #invalid{
+#created , #invalid, #deleted{
     position: fixed;
     top: 50%;
     left: 50%;
@@ -232,4 +232,22 @@
 
 #invalid {
     box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
+.deleteButtonForEntry {
+    background-color: red;      
+    color: white;               
+    padding: 5px 10px;          
+    border: none;             
+    border-radius: 3px;         
+    font-size: 12px;            
+    cursor: pointer;            
+    margin-top: 5px;   
+    display: inline-block;      
+    margin-bottom: 30px;   
+}
+
+#deleted {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+
 }
