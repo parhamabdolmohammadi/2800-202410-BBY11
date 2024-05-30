@@ -1116,10 +1116,11 @@ app.post('/resetPassword', async (req, res) => {
         console.log(password1, password2);
         if (password1 === password2) {
             let hashedPassword = await bcrypt.hash(password1, saltRounds);
+            let encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString();
             console.log("Email: " + email);
             console.log("Password: " + hashedPassword);
 
-            await userCollection.updateOne({ email: email }, { $set: { password: hashedPassword } });
+            await userCollection.updateOne({ email: encryptedEmail }, { $set: { password: hashedPassword } });
             res.redirect("/login");
         } else {
             res.send("Passwords do not match. Please try again.");
