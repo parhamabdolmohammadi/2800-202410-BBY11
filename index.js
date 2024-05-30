@@ -15,7 +15,7 @@ const CryptoJS = require('crypto-js')
 // const iv = CryptoJS.lib.WordArray.random(16);
 // const salt = CryptoJS.enc.Hex.parse('')
 var key = CryptoJS.enc.Utf8.parse('b75524255a7f54d2726a951bb39204df');
-var iv  = CryptoJS.enc.Utf8.parse('1583288699248111');
+var iv = CryptoJS.enc.Utf8.parse('1583288699248111');
 // const ObjectId = require('mongodb').ObjectId;
 var iv = CryptoJS.enc.Utf8.parse('1583288699248111');
 // const ObjectId = require('mongodb').ObjectId;
@@ -25,8 +25,6 @@ const bodyParser = require('body-parser');
 const { MongoClient, ObjectId } = require('mongodb');
 const uri = 'mongodb+srv://Seohyeon:Qkrtjgus8663!@atlascluster.u56alig.mongodb.net/AtlasCluster?retryWrites=true&w=majority';
 
-
-
 const passport = require('passport');
 require('./auth');
 
@@ -34,18 +32,19 @@ require('./auth');
 var { database } = include('databaseConnection');
 
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 const app = express();
 
 const Joi = require("joi");
+
 const { resourceLimits } = require("worker_threads");
 
 const navLinks = [
     { name: "Home", link: "/" },
     { name: "Admin", link: "/admin" },
     { name: "Bookmarks", link: "saved" },
-    {name: 'History', link: '/history'},
+    { name: 'History', link: '/history' },
     { name: "Setting", link: "/setting" }
 ]
 
@@ -87,7 +86,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 //Edit profile
-app.use(bodyParser.urlencoded({ extended: true })); 
+app.use(bodyParser.urlencoded({ extended: true }));
 
 var mongoStore = MongoStore.create({
     mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
@@ -107,7 +106,7 @@ app.use(express.static(__dirname + "/audio"));
 
 app.use(express.static(__dirname + "/scripts"));
 
-
+app.use(express.static(__dirname + "/public"));
 
 app.use("/js", express.static("./public/js")); // Need this middleware since js files are not accessible unless they are in a folder called "public"
 app.use("/img", express.static("./public/img"));
@@ -115,9 +114,10 @@ app.use("/img", express.static("./public/img"));
 // WILL NEED TO UNCOMMENT THESE TWO IF WE PUT CSS AND IMAGES FOLDER INTO PUBLIC FOLDER, see footer.ejs line 30 for how to link-------------------------------------------------
 // app.use("/css", express.static("./public/css"));
 // app.use("/img", express.static("./public/images"));
+
 function isLoggedIn(req, res, next) {
     req.user ? next() : res.sendStatus(401);
-  }
+}
 
 
 app.use(session({
@@ -167,28 +167,28 @@ function adminAuthorization(req, res, next) {
 app.get('/auth/google', (req, res, next) => {
     const signup = req.query.signup === 'true';
     passport.authenticate('google', {
-      scope: ['email', 'profile'],
-      state: signup ? 'signup' : 'login'
+        scope: ['email', 'profile'],
+        state: signup ? 'signup' : 'login'
     })(req, res, next);
-  });
-  
-  // Google callback route
-  app.get('/google/callback', (req, res, next) => {
+});
+
+// Google callback route
+app.get('/google/callback', (req, res, next) => {
     passport.authenticate('google', (err, user, info) => {
-      if (err) { return next(err); }
-      if (!user) { return res.redirect('/auth/google/failure'); }
-  
-      req.logIn(user, (err) => {
         if (err) { return next(err); }
-        const redirectUrl = req.query.state === 'signup' ? '/signup' : '/login';
-        return res.redirect(redirectUrl);
-      });
+        if (!user) { return res.redirect('/auth/google/failure'); }
+
+        req.logIn(user, (err) => {
+            if (err) { return next(err); }
+            const redirectUrl = req.query.state === 'signup' ? '/signup' : '/login';
+            return res.redirect(redirectUrl);
+        });
     })(req, res, next);
-  });
+});
 
 
 app.get('/auth/google/failure', (req, res) => {
-  res.send('Failed to authenticate..');
+    res.send('Failed to authenticate..');
 });
 
 app.get('/', (req, res) => {
@@ -208,19 +208,24 @@ app.get('/', (req, res) => {
 
 });
 
-app.get('/signup', (req, res) => {
+app.get('/signup', async (req, res) => {
     let username = ""
     let userEmail = ''
 
     if (req.user && req.user.displayName) {
-       
+
         userEmail = req.user.emails[0].value;
         username = req.user.displayName;
         console.log(userEmail);
         console.log(username);
-    } 
+    }
 
-    res.render("signup", {username, userEmail})
+    const services = await general.find({}).project({ _id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
+    const stations = await stationsCollection.find({}).toArray();
+    
+
+ 
+    res.render("signup", { username, userEmail , services, stations })
 });
 
 
@@ -258,44 +263,56 @@ app.post('/submitUser', async (req, res) => {
         return;
     }
 
-    const schema = Joi.object(
-        {
-            username: Joi.string()
-            .pattern(/^[a-zA-Z0-9 ]*$/)
-            .max(40)
-            .required(),
-            password: Joi.string().max(20).required(),
-            email: Joi.string().max(40).required()
-        });
+    // Import schema to validate username, email, and password
+    const {signupSchema} = include('signup-joi-schema');
 
-    const validationResult = schema.validate({ username, password, email });
-    if (validationResult.error != null) {
+    // Validate the username, email, password
+    // (abortEarly: retrieve all validation errors, not just the first one)
+    const validationResult = signupSchema.validate({ username, password, email}, {abortEarly: false});
+    
+    if (validationResult.error != null) { // If error occured
         console.log(validationResult.error);
         res.redirect("/signup");
         return;
     }
 
     // Check if the entered email for signup already exists in the database:
+
+    // Import the and call function to search through db and compare user email with the current ones
+    const {checkIfEmailExists} = include('scripts/LoginSignUpValidation/databaseEmailValidation');
+
     try {
-        // Get all of the users from the 'users' collection in db using .find with empty query '{}'
-        const dbUserEmails = await userCollection.find({}).project({email: 1, _id: 1}).toArray();
-
-        // Decrypt each email, comparing each with the user entered email in sign up page
-        dbUserEmails.forEach((dbEmail) => {
-
-            const decryptedDbEmail = CryptoJS.AES.decrypt(dbEmail.email, key, { iv: iv}).toString(CryptoJS.enc.Utf8);
-
-            // If the user entered email matches an email in the database
-            if (email == decryptedDbEmail) {
-                throw new Error("(USER ERROR) The email that the user entered already exists in the database");
-            }
-        });
+        await checkIfEmailExists(email, userCollection, key, iv);
 
     } catch (emailExistsError) { // If a user in the db with the same email was found
-        console.log(emailExistsError);
+        // console.log(emailExistsError);
+        console.log("(USER ERROR) The email that the user entered already exists in the database");
         res.redirect("/signupSubmit?problem=EmailExists");
         return;
     }
+
+    ///////////////
+    
+    // try {
+    //     // Get all of the users from the 'users' collection in db using .find with empty query '{}'
+    //     const dbUserEmails = await userCollection.find({}).project({email: 1, _id: 1}).toArray();
+
+    //     // Decrypt each email, comparing each with the user entered email in sign up page
+    //     dbUserEmails.forEach((dbEmail) => {
+
+    //         const decryptedDbEmail = CryptoJS.AES.decrypt(dbEmail.email, key, { iv: iv}).toString(CryptoJS.enc.Utf8);
+
+    //         // If the user entered email matches an email in the database
+    //         if (email == decryptedDbEmail) {
+    //             throw new Error("(USER ERROR) The email that the user entered already exists in the database");
+    //         }
+    //     });
+
+    // } catch (emailExistsError) { // If a user in the db with the same email was found
+    //     console.log(emailExistsError);
+    //     res.redirect("/signupSubmit?problem=EmailExists");
+    //     return;
+    // }
     
     var hashedPassword = await bcrypt.hash(password, saltRounds);
     var encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString();
@@ -323,19 +340,21 @@ app.get("/signupSubmit", (req, res) => {
     res.render("signupSubmit", { problem: req.query.problem });
 });
 
-app.get('/login', (req, res) => {
+app.get('/login', async (req, res) => {
     let username = ""
     let userEmail = ''
 
     if (req.user && req.user.displayName) {
-       
+
         userEmail = req.user.emails[0].value;
         username = req.user.displayName;
         console.log(userEmail);
-    } 
-
+    }
+    const services = await general.find({}).project({ _id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
+    const stations = await stationsCollection.find({}).toArray();
     
-    res.render("login",{username: username, userEmail});
+
+    res.render("login", { username: username, userEmail, services, stations });
 });
 
 
@@ -347,20 +366,15 @@ app.post('/loggingin', async (req, res) => {
     var userDoesNotExist = false;
     var incorrectFields = false;
 
-    // Validate the input (email and password) 
-    // using joi to prevent noSQL injection attacks
-    const schema = Joi.object(
-        {
-            email: Joi.string().max(40).required(),
-            password: Joi.string().max(20).required()
-        });
+    // Import schema to validate username, email, and password
+    const {loginSchema} = include('login-joi-schema');
 
-    // Validate the email entered by the user
-    const validationResult = schema.validate({ email, password });
-    // If the email and password are not valid,
-    // redirect back to signup page
-    if (validationResult.error != null) {
-        console.log(validationResult.error);
+    // Validate the username, email, password
+    // (abortEarly: retrieve all validation errors, not just the first one)
+    const validationResult = loginSchema.validate({ email, password }, {abortEarly: false});
+    
+    // If the email and password are not valid:
+    if (validationResult.error != null) { // If error occured
         validationError = true;
         res.render("loginSubmit", { validationError: validationError, userDoesNotExist: userDoesNotExist, incorrectFields: incorrectFields });
         return;
@@ -393,7 +407,7 @@ app.post('/loggingin', async (req, res) => {
         req.session.cookie.maxAge = expireTime;
         req.session.email = result[0].email;
         username1 = result[0].username;
-        
+
 
         res.redirect('/main');
         return;
@@ -467,16 +481,18 @@ app.post('/updatePassword', async (req, res) => {
 
     if (newPassword !== confirmNewPassword) {
         return res.status(400).send(`
-            <div style=" margin-top:50px; align-items: center;">
-                <h1 style="text-align: center;">New password and confirm new password do not match.<br><a href="/edit-password">Try Again</a></h1><br>
+           <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+            <div style="text-align: center; background: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+              <h1 style="color: #333; margin-bottom: 20px;">New password and confirm new password do not match<br></h1>
+              <a href="/edit-password" style="display: inline-block; padding: 10px 20px; background-color: #003249; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease;">Try Again</a>
             </div>
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             <script>
                 Swal.fire({
                     icon: 'error',
-                    title: 'New password and confirm new password do not match!',
+                    title: 'Error!',
                     showConfirmButton: false,
-                    timer: 2000
+                    timer: 1000
                 });
             </script>
         `);
@@ -494,16 +510,18 @@ app.post('/updatePassword', async (req, res) => {
 
         if (!user) {
             return res.status(404).send(`
-                <div style=" margin-top:50px; align-items: center;">
-                    <h1 style="text-align: center;">User not found.<br><a href="/edit-password"></a></h1><br>
-                </div>
+            <div style="margin-top: 50px; display: flex; justify-content: center; align-items: center;">
+            <div style="text-align: center; background: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+              <h1 style="color: #333; margin-bottom: 20px;">User not found.<br></h1>
+              <a href="/edit-password" style="display: inline-block; padding: 10px 20px; background-color: #003249; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease;">Try Again</a>
+            </div>
                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                 <script>
                     Swal.fire({
                         icon: 'error',
-                        title: 'User not found!',
-                        showConfirmButton: false,
-                        timer: 2000
+                    title: 'Error!',
+                    showConfirmButton: false,
+                    timer: 1000
                     });
                 </script>
             `);
@@ -514,16 +532,19 @@ app.post('/updatePassword', async (req, res) => {
 
         if (!passwordMatch) {
             return res.status(400).send(`
-                <div style=" margin-top:50px; align-items: center;">
-                    <h1 style="text-align: center;">Current password is incorrect.<br><a href="/edit-password">Try Again</a></h1><br>
-                </div>
+            <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+            <div style="text-align: center; background: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+              <h1 style="color: #333; margin-bottom: 20px;">Current password in incorrect<br></h1>
+              <a href="/edit-password" style="display: inline-block; padding: 10px 20px; background-color: #003249; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease;">Try Again</a>
+            </div>
+          </div>
                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                 <script>
                     Swal.fire({
                         icon: 'error',
-                        title: 'Current password is incorrect!',
+                        title: 'Error!',
                         showConfirmButton: false,
-                        timer: 2000
+                        timer: 1000
                     });
                 </script>
             `);
@@ -562,9 +583,11 @@ app.post('/updatePassword', async (req, res) => {
         } else {
             console.log('User not found.');
             return res.status(404).send(`
-                <div style=" margin-top:50px; align-items: center;">
-                    <h1 style="text-align: center;">User not found.<br><a href="/edit-password">Try Again</a></h1><br>
-                </div>
+            <div style="margin-top: 50px; display: flex; justify-content: center; align-items: center;">
+            <div style="text-align: center; background: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+              <h1 style="color: #333; margin-bottom: 20px;">User not found.<br></h1>
+              <a href="/edit-password" style="display: inline-block; padding: 10px 20px; background-color: #003249; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease;">Try Again</a>
+            </div>
                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                 <script>
                     Swal.fire({
@@ -579,9 +602,11 @@ app.post('/updatePassword', async (req, res) => {
     } catch (err) {
         console.error('An error occurred while updating the user password:', err);
         return res.status(500).send(`
-            <div style="align-items: center;">
-                <h1 style="text-align: center;">Internal Server Error.<br><a href="/edit-password">Try Again</a></h1><br>
-            </div>
+        <div style="margin-top: 50px; display: flex; justify-content: center; align-items: center;">
+        <div style="text-align: center; background: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+          <h1 style="color: #333; margin-bottom: 20px;">Internal Server Error<br></h1>
+          <a href="/edit-password" style="display: inline-block; padding: 10px 20px; background-color: #003249; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease;">Try Again</a>
+        </div>
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             <script>
                 Swal.fire({
@@ -612,7 +637,7 @@ app.get('/deleteAccount', (req, res) => {
         try {
             await client.connect();
             const database = client.db('AtlasCluster');
-            const collection = database.collection('users'); 
+            const collection = database.collection('users');
 
             const result = await collection.deleteOne({ _id: new ObjectId(userId) });
 
@@ -627,7 +652,7 @@ app.get('/deleteAccount', (req, res) => {
             await client.close();
         }
     }
-    
+
     let userId = new ObjectId(req.session._id);
     deleteUserAccount(userId);
 
@@ -680,7 +705,7 @@ app.get('/main', async (req, res) => {
 
 //     // If any applicable services were found in the list of services ('I'm sorry' is NOT contained in the response String)
 //     if (!(AIResponse.includes("I'm sorry"))) {
-    
+
 //     aiFoundServices = true;
 
 //     var listOfAIRecommendedServices = [];
@@ -728,18 +753,18 @@ app.get('/checkout', sessionValidation, async (req, res) => {
         let expirydate = "";
         let cvv = "";
         let address = ""
-        const user = await userCollection.findOne({ _id: userId }, { projection: { cardnumber: 1, expirydate: 1, cvv: 1, paypalEmail: 1, address: 1} });
+        const user = await userCollection.findOne({ _id: userId }, { projection: { cardnumber: 1, expirydate: 1, cvv: 1, paypalEmail: 1, address: 1 } });
         try {
             paypalEmail = CryptoJS.AES.decrypt(user.paypalEmail, key, { iv: iv }).toString(CryptoJS.enc.Utf8);
         } catch (error) {
             console.error("Cannot find paypalEmail", error.message);
         }
-        try{
+        try {
             address = CryptoJS.AES.decrypt(user.address, key, { iv: iv }).toString(CryptoJS.enc.Utf8);
         } catch (error) {
             console.error("Cannot find address", error.message);
         }
-        
+
 
         try {
             cardnumber = CryptoJS.AES.decrypt(user.cardnumber, key, { iv: iv }).toString(CryptoJS.enc.Utf8);
@@ -782,7 +807,7 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
             let expirydate = req.body.expirydate;
             let cvv = req.body.cvv;
 
-            if(!cardnumber || !expirydate || !cvv){
+            if (!cardnumber || !expirydate || !cvv) {
                 res.redirect('/checkout?type=credit&stationId=' + stationId + '&error=emptycc');
                 return;
             }
@@ -792,11 +817,11 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
             const encryptedCvv = CryptoJS.AES.encrypt(cvv, key, { iv: iv }).toString();
             await userCollection.findOneAndUpdate({ _id: userId },
                 { $set: { cardnumber: encryptedCardNumber, expirydate: encryptedExpirydate, cvv: encryptedCvv } });
-                removeRobotFromDatabase(stationId)
+            removeRobotFromDatabase(stationId)
 
         } else if (paymentType === "paypal") {
             let paypalEmail = req.body.paypalEmail;
-            if(!paypalEmail){
+            if (!paypalEmail) {
                 res.redirect('/checkout?type=paypal&stationId=' + stationId + '&error=emptypp');
                 return;
             }
@@ -814,7 +839,7 @@ app.post('/submit-payment', sessionValidation, async (req, res) => {
     res.redirect('/confirmation?paymentType=' + paymentType);
 });
 
-async function removeRobotFromDatabase(stationId){
+async function removeRobotFromDatabase(stationId) {
     try {
         let station = await stationsCollection.findOne({ _id: new ObjectId(stationId) });
         current = station.robots_in_stock;
@@ -1027,9 +1052,9 @@ app.post('/displayStation', async (req, res) => {
     console.log(cardId, distance)
 
     const objectId = new ObjectId(cardId);
-  
-    const currentStation = await stationsCollection.findOne({_id: objectId});
-    res.render('station', {station1: currentStation , distance: distance, cardId: cardId });
+
+    const currentStation = await stationsCollection.findOne({ _id: objectId });
+    res.render('station', { station1: currentStation, distance: distance, cardId: cardId });
 });
 
 app.get('/businessCheckout', async (req, res) => {
@@ -1037,33 +1062,33 @@ app.get('/businessCheckout', async (req, res) => {
     const currentUser = await userCollection.findOne(
         { username: req.session.username },
         {
-          projection: {
-            username: 1,
-            user_type: 1, 
-            businessOwnerRequestInProgress: 1,
-          },
+            projection: {
+                username: 1,
+                user_type: 1,
+                businessOwnerRequestInProgress: 1,
+            },
         }
-      );
-      console.log(currentUser.user_type == "user");
+    );
+    console.log(currentUser.user_type == "user");
     const cardId = req.query.cardId;
     const distance = req.query.distance;
     console.log(cardId, distance)
-    
-    const objectId = new ObjectId(cardId);
-    const services = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
 
-    const currentStation = await stationsCollection.findOne({_id: objectId});
-      
-    res.render('businessCheckout', {station1: currentStation , distance: distance , services, cardId, user_type: currentUser.user_type});
+    const objectId = new ObjectId(cardId);
+    const services = await general.find({}).project({ _id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
+
+    const currentStation = await stationsCollection.findOne({ _id: objectId });
+
+    res.render('businessCheckout', { station1: currentStation, distance: distance, services, cardId, user_type: currentUser.user_type });
 });
 
 app.post('/addRobot', async (req, res) => {
     const stationId = req.body.station;
-    const station = await stationsCollection.findOne({_id: new ObjectId(stationId)});
+    const station = await stationsCollection.findOne({ _id: new ObjectId(stationId) });
     const current = station.robots_total_stock;
     const added = req.body.number;
     const newStock = current + parseInt(added);
-    await stationsCollection.updateOne({_id: new ObjectId(stationId)}, {$set: {robots_total_stock: newStock}});
+    await stationsCollection.updateOne({ _id: new ObjectId(stationId) }, { $set: { robots_total_stock: newStock } });
     res.redirect('/businessConfirmation');
 });
 
@@ -1076,14 +1101,14 @@ app.get('/businessConfirmation', sessionValidation, (req, res) => {
     let timestamp = new Date().toISOString();
 
     res.render("businessConfirmation", { orderNumber: orderNumber });
-        let id = new ObjectId(orderNumber);
-        ordersCollection.insertOne({
-            _id: id,
-            business: true,
-            timestamp: timestamp,
-            customerId: req.session._id
-        });
-    
+    let id = new ObjectId(orderNumber);
+    ordersCollection.insertOne({
+        _id: id,
+        business: true,
+        timestamp: timestamp,
+        customerId: req.session._id
+    });
+
 });
 
 app.get('/station', async (req, res) => {
@@ -1298,22 +1323,34 @@ app.get("/" + sendEmails, (req, res) => {
 
 
 const orders = database.db('AtlasCluster').collection('orders');
-app.get('/history', async(req, res) => {
+app.get('/history', async (req, res) => {
     if (!req.session.authenticated) {
         res.redirect('/');
         return;
     }
     //timestamp:1, paymentType:1, customerId:1, total:1, service:1
     // change it to customerId: req.session._id '664fb094254567cab99f3cfa'
-    const history = await orders.find({customerId: req.session._id, business: { $ne: true }}).project({}).toArray()
+    const history = await orders.find({ customerId: req.session._id, business: { $ne: true } }).project({}).toArray()
     var username = req.session.username;
+    const historyUrl = [];
+    const fetchUrls = async () => {
+        for (const each of history) {
+            const result = await general.findOne({ name: each.service }, { projection: { background: 1, name:1} });
+            historyUrl.push(result);
+        }
+    };
+
+    await fetchUrls()
+    // await general.find({name: each.service}).project({background:1}).toArray()
+    
+    console.log(historyUrl);
     // console.log(username);
     // console.log(history);
     // console.log(req.session._id);
-    res.render("history", {username, history})
+    res.render("history", {username, history, historyUrl})
 })
 
-app.get ('/adminService', adminAuthorization, async(req, res) => {
+app.get('/adminService', adminAuthorization, async (req, res) => {
     const services = await general.find({}).project({}).toArray();
     res.render('adminService', { services })
 })
@@ -1325,9 +1362,13 @@ app.post('/update', async (req, res) => {
     console.log(updatedService);
     const service = await general.updateOne(
         { _id: new ObjectId(id) },
-        { $set: { name: updatedService.name,
-             description: updatedService.description,
-            price:updatedService.price } }
+        {
+            $set: {
+                name: updatedService.name,
+                description: updatedService.description,
+                price: updatedService.price
+            }
+        }
     );
 
 })
@@ -1339,13 +1380,13 @@ const storage = multer.diskStorage({
     },
     filename: (req, file, cb) => {
         console.log(file);
-        cb(null, file.originalname)      
+        cb(null, file.originalname)
     }
 })
-const upload = multer({storage:storage})
+const upload = multer({ storage: storage })
 
 app.post('/create', upload.single('image'), async (req, res) => {
-    
+
     const name = req.body.name;
     const description = req.body.description;
     const price = req.body.price;
@@ -1362,8 +1403,8 @@ app.post('/create', upload.single('image'), async (req, res) => {
 app.post('/delete', async (req, res) => {
     const name = req.body.cardName
     // console.log(name);
-    
-    const entry = await general.findOne({name: name})
+
+    const entry = await general.findOne({ name: name })
     const background = entry.background
     // console.log(background);
     const imgPath = './images/' + background;
@@ -1372,13 +1413,13 @@ app.post('/delete', async (req, res) => {
             console.error('Error deleting file:', err);
             return;
         }
-        
+
         console.log('File deleted successfully');
     })
-    await general.deleteOne({name:name})
+    await general.deleteOne({ name: name })
     // console.log(entry);
     res.status(200).json({ message: 'Entry deleted successfully.' });
-     
+
 })
 app.get("*", (req, res) => {
     res.status(404);

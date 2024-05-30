@@ -1,4 +1,4 @@
 .env 
 package-lock.json
 node_modules
-joi-client.js
+clientSideValidator-client.js
