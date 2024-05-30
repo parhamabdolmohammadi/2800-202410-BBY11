@@ -1223,6 +1223,33 @@ app.post('/update', async (req, res) => {
     );
 
 })
+
+const multer = require('multer');
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'images')
+    },
+    filename: (req, file, cb) => {
+        console.log(file);
+        cb(null, file.originalname)      
+    }
+})
+const upload = multer({storage:storage})
+
+app.post('/create', upload.single('image'), async (req, res) => {
+    
+    const name = req.body.name;
+    const description = req.body.description;
+    const price = req.body.price;
+    const image = req.file;
+    if (!name || !description || !price || !image) {
+        return res.status(400).json({ message: 'Input field can not be empty' });
+    }
+    // console.log(image);
+    var _id = new ObjectId();
+    // await general.insertOne({ _id, name, description, price, background: image.originalname });
+    res.status(200).json({ message: 'Entry created successfully.' });
+})
 app.get("*", (req, res) => {
     res.status(404);
     res.render("404",);

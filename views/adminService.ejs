@@ -1,45 +1,72 @@
 <%- include('templates/header') %>
-<div class="top-container">
-    <header style="text-align: center;
-    margin-bottom: 2rem;
+    <div class="top-container">
+        <header style="text-align: center;
+    
     margin-top: 1rem;
     color: #003249;">
-     <h1>Manage Services</h1>
-     <p>Admin can create, read, update, and delete services</p>
-     
-    </header>
-</div>
-<div class="content-container">
-    
-</div>
+            <h1>Manage Services</h1>
+            <p>Admin can create, read, update, and delete services</p>
+            <a href="/admin"><button style="background-color: #003249 !important; color: white;"
+                    class="btn py-2 mb-3">Manage Request</button></a>
+        </header>
+        <div class="cd-buttons">
+            <div class="create-service">+</div>
+            <div class="delete-service">-</div>
+        </div>
 
-<!-- modal -->
-<div id="modal" class="modal">
-    <div class="modal-content">
-        <span class="close-button">&times;</span>
-        <div class="modal-body">
-            <h2 id="modal-name" contenteditable="true"></h2>
-            <p id="modal-description" contenteditable="true"></p>
-            <p id="modal-price" contenteditable="true"></p>
-            <div class="modal-actions">
-                <button id="save-button">Save</button>
-                <button id="cancel-button">Cancel</button>
+    </div>
+    <div class="create-container">
+        <label for="name">Service name</label>
+        <input type="text" name="name" id="name">
+        <label for="description">Service description</label>
+        <textarea name="description" id="description" rows="4"></textarea>
+        <label for="price">Service price</label>
+        <input type="text" name="price" id="price">
+        <input type="file" name="image" id="image">
+        <div class="actions">
+            <button id="create-button">Create</button>
+            <button id="cancel-button-create">Cancel</button>
+        </div>
+
+    </div>
+    <div class="content-container">
+        
+    </div>
+
+    <!-- update modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div class="modal-body">
+                <h2 id="modal-name" contenteditable="true"></h2>
+                <p id="modal-description" contenteditable="true"></p>
+                <p id="modal-price" contenteditable="true"></p>
+                <div class="modal-actions">
+                    <button id="save-button">Save</button>
+                    <button id="cancel-button">Cancel</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var link = document.createElement("link");
-        link.rel = "stylesheet";
-        link.href = "/adminService.css";
-        document.head.appendChild(link);
-    });
-</script>
-<script>
-    const services = <%- JSON.stringify(services) %>;
-</script>
+    <div id="created">
+        Entry created successfully.
+      </div>
+      <div id="invalid">
+        Input field can't be empty
+      </div>
 
-<script src="adminService.js"></script>
-<%- include('templates/footer') %>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.href = "/adminService.css";
+            document.head.appendChild(link);
+        });
+    </script>
+    <script>
+        const services = <%- JSON.stringify(services) %>;
+    </script>
+
+    <script src="adminService.js"></script>
+    <%- include('templates/footer') %>
