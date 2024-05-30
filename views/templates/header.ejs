@@ -98,7 +98,7 @@
               <% for(var i=0; i < locals.navLinks.length; i++) { %>
                 <li class="nav-item">
                   <a href="<%= locals.navLinks[i].link %>" style="color: black;"
-                    class="nav-link <% if (locals.navLinks[i].link == currentURL)  { %> active <% }%>"
+                    class="nav-link <% if (locals.navLinks[i].link == currentURL || (currentURL == "/main" && locals.navLinks[i].name == "Home"))  { %> active <% }%>"
                     aria-current="page" onmouseover="this.style.color='silver'" onmouseout="this.style.color='black'">
                     <%= locals.navLinks[i].name %>
                   </a>

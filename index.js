@@ -45,13 +45,10 @@ const { resourceLimits } = require("worker_threads");
 
 const navLinks = [
     { name: "Home", link: "/" },
-    { name: "Main", link: "/main" },
-    { name: "Login", link: "/login" },
     { name: "Admin", link: "/admin" },
-
     { name: "Bookmarks", link: "saved" },
-    { name: "Setting", link: "/setting" },
-    {name: 'History', link: '/history'}
+    {name: 'History', link: '/history'},
+    { name: "Setting", link: "/setting" }
 ]
 
 // To determine if the user is at the index page
