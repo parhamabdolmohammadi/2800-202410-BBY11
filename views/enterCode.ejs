@@ -1,15 +1,22 @@
 <%-include('templates/header')%>
 
-<form action="/loginfromcode" method="post">
-    <div class="mb-3">
-      <label for="exampleInputEmail1" class="form-label">Enter Login code</label>
-      <input type="code" class="form-control" name="inputCode" id="exampleInputEmail1">
-      <input type="hidden" name="resetCode" value="<%=resetCode %>">
-      <input type="hidden" name="email" value="<%=userEmail %>">
 
-      <div id="emailHelp" class="form-text">Email sent to <%=userEmail %>.</div>
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
+
+  <div class="signup-login-page-container">
+    <main style="max-width: 504px;" class="form-signin py-3 px-3 w-100 m-auto signup-login-form-container">
+      <form action="/loginfromcode" method="post">
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">Enter Login code</label>
+          <input type="code" class="form-control" name="inputCode" id="exampleInputEmail1">
+          <input type="hidden" name="resetCode" value="<%=resetCode %>">
+          <input type="hidden" name="email" value="<%=userEmail %>">
+    
+          <div id="emailHelp" class="form-text">Email sent to <%=userEmail %>.</div>
+        </div>
+        <button type="submit" style="background-color: #003249 !important; color: white;"
+        class="btn w-100 py-2">Submit</button>
+      </form>
+    </main>
+  </div>
 
 <%-include('templates/footer')%>
