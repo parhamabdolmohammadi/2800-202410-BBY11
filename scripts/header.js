@@ -1,5 +1,6 @@
 // document.querySelector('.navbar-toggler').addEventListener('click', () => {
 // removeExtraFade()
+
 // })
 // function removeExtraFade() {
 //     let fade = document.getElementsByClassName('offcanvas-backdrop fade show')

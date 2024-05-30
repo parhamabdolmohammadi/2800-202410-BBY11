@@ -1383,22 +1383,56 @@ const storage = multer.diskStorage({
         cb(null, file.originalname)
     }
 })
-const upload = multer({ storage: storage })
 
-app.post('/create', upload.single('image'), async (req, res) => {
-
-    const name = req.body.name;
-    const description = req.body.description;
-    const price = req.body.price;
-    const image = req.file;
-    if (!name || !description || !price || !image) {
-        return res.status(400).json({ message: 'Input field can not be empty' });
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype === 'image/png') {
+        cb(null, true);
+    } else {
+        cb(new Error('Only .png files are allowed'), false);
     }
-    // console.log(image);
-    var _id = new ObjectId();
-    await general.insertOne({ _id, name, description, price, background: image.originalname });
-    res.status(200).json({ message: 'Entry created successfully.' });
-})
+};
+
+const upload = multer({ storage: storage, fileFilter: fileFilter })
+
+// app.post('/create', upload.single('image'), async (req, res) => {
+
+//     const name = req.body.name;
+//     const description = req.body.description;
+//     const price = req.body.price;
+//     const image = req.file;
+//     if (!name || !description || !price || !image) {
+//         return res.status(400).json({ message: 'Input field can not be empty' });
+//     }
+//     console.log(image);
+//     var _id = new ObjectId();
+//     await general.insertOne({ _id, name, description, price, background: image.originalname });
+//     res.status(200).json({ message: 'Entry created successfully.' });
+// })
+
+app.post('/create', async(req, res) => {
+    upload.single('image')(req, res, (err) => {
+        if (err) {
+            return res.status(400).json({ code: 'EXTENSION_ERROR', message: err.message });
+        }
+
+        const { name, description, price } = req.body;
+        const image = req.file;
+
+        if (!name || !description || !price || !image) {
+            return res.status(400).json({ message: 'Input field can not be empty' });
+        }
+
+        console.log(image);
+        var _id = new ObjectId();
+        general.insertOne({ _id, name, description, price, background: image.originalname })
+            .then(() => {
+                res.status(200).json({ message: 'Entry created successfully.' });
+            })
+            .catch((error) => {
+                res.status(500).json({ message: 'Error occurred while inserting data.', error: error });
+            });
+    });
+});
 
 app.post('/delete', async (req, res) => {
     const name = req.body.cardName
