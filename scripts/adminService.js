@@ -1,11 +1,23 @@
 const content_container = document.querySelector('.content-container');
 const modal = document.getElementById('modal');
 const closeButton = document.querySelector('.close-button');
+
 const modalName = document.getElementById('modal-name');
 const modalDescription = document.getElementById('modal-description');
 const modalPrice = document.getElementById('modal-price');
 const saveButton = document.getElementById('save-button');
 const cancelButton = document.getElementById('cancel-button');
+
+const createService = document.querySelector('.create-service')
+const deleteService = document.querySelector('.delete-service')
+
+const createContainer = document.querySelector('.create-container')
+const cancelButtonForCreate = document.getElementById('cancel-button-create')
+const createButton = document.getElementById('create-button')
+
+const createdPopUp = document.querySelector('#created')
+const deleteButton = document.querySelector('.delete-service')
+const invalid = document.querySelector('#invalid')
 let modalId;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -65,6 +77,8 @@ function closeModal() {
     modal.style.display = 'none';
 }
 
+
+
 closeButton.addEventListener('click', closeModal);
 cancelButton.addEventListener('click', closeModal);
 
@@ -106,3 +120,101 @@ function updateServiceCard(index, updatedService) {
     card.querySelector('.serviceDes').textContent = updatedService.description;
     card.querySelector('.servicePrice').textContent = updatedService.price;
 }
+
+createService.addEventListener('mouseenter', function() {
+    this.textContent = 'Create';
+    this.classList.add('expand')
+});
+
+createService.addEventListener('mouseleave', function() {
+    this.textContent = '+';
+    this.classList.remove('expand')
+});
+
+deleteService.addEventListener('mouseenter', function() {
+    this.textContent = 'Delete';
+    this.classList.add('expand')
+});
+
+deleteService.addEventListener('mouseleave', function() {
+    this.textContent = '-';
+    this.classList.remove('expand')
+});
+
+
+function openCreateForm() {
+    createContainer.style.display = 'block'
+}
+
+function closeCreateForm() {
+    createContainer.style.display = 'none'
+}
+
+createService.addEventListener('click', () => {
+    openCreateForm()
+})
+
+cancelButtonForCreate.addEventListener('click', () => {
+    closeCreateForm()
+})
+
+createButton.addEventListener('click', () => {
+    const name = document.getElementById('name').value
+    const description = document.getElementById('description').value
+    const price = document.getElementById('price').value
+    const imageFile = document.getElementById('image')
+ 
+    const image = imageFile.files[0]
+
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('description', description);
+    formData.append('price', price);
+    formData.append('image', image); // Append the file object itself
+    
+    fetch('/create', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => {
+        if (response.status === 400) {
+            invalid.style.display = 'block';
+            setTimeout(() => {
+                invalid.style.display = 'none';
+            }, 1500);
+            return response.json().then(data => {
+                throw new Error(data.message);
+            });
+        } else if (response.status === 200) {
+            return response.json();
+        } else {
+            
+            throw new Error('Unexpected response from server');
+        }
+    })
+    .then(data => {
+        // console.log(data.message);
+        if (data.message === 'Entry created successfully.') {
+            // Handle success
+            closeCreateForm();
+            createdPopUp.style.display = 'block';
+            setTimeout(() => {
+                createdPopUp.style.display = 'none';
+            }, 1500);
+        } else {
+            // Handle other messages
+            // Example: display an error message to the user
+            console.error('Unexpected message from server:', data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // Handle network errors or other unexpected errors
+    });
+    
+
+})
+
+deleteButton.addEventListener('click', () => {
+    closeCreateForm()
+})
