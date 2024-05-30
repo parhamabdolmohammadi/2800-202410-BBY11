@@ -82,6 +82,7 @@ station.forEach(station => {
       if(bookmarks && bookmarks.includes(CardId)) {
          newcard.querySelector(".star-image").src = '/star2.png';
          isBookmarked = true;
+         document.getElementById("not-available").innerHTML= "";
          document.getElementById("stations-placeholder").appendChild(newcard);
       } 
    }
@@ -106,26 +107,6 @@ function openPhoneCall(phoneNumber) {
      alert('Your browser does not support phone call functionality.');
    }
  } 
-
-// function telephone(telephone) {
-//    Swal.fire({
-//       title: telephone,
-//       showClass: {
-//         popup: `
-//           animate__animated
-//           animate__fadeInUp
-//           animate__faster
-//         `
-//       },
-//       hideClass: {
-//         popup: `
-//           animate__animated
-//           animate__fadeOutDown
-//           animate__faster
-//         `
-//       }
-//     });
-// }
 
 
 

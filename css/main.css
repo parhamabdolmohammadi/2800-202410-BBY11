@@ -233,7 +233,6 @@ q .card-subtitle {
     justify-self: start;
     margin: 0 2rem;
   }
-
 }
 
 .grid {
@@ -473,13 +472,13 @@ border: 1px solid white;
   font-weight: bold;
 }
 
-.link-arrow::after {
+.button-arrow::after {
   content: "-->";
   margin-left: 5px;
   transition: margin 0.15s;
 }
 
-.link-arrow:hover::after {
+.button-arrow:hover::after {
   margin-left: 10px;
 }
 
@@ -762,4 +761,13 @@ border: 1px solid white;
 
 .robocircle {
   animation: rotate 2s linear infinite;
+}
+
+header.fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000; /* Ensures it stays above other content */
+  background: #444; /* Optional: Change background color when fixed */
 }
