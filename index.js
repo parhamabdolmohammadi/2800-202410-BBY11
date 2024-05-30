@@ -25,8 +25,6 @@ const bodyParser = require('body-parser');
 const { MongoClient, ObjectId } = require('mongodb');
 const uri = 'mongodb+srv://Seohyeon:Qkrtjgus8663!@atlascluster.u56alig.mongodb.net/AtlasCluster?retryWrites=true&w=majority';
 
-
-
 const passport = require('passport');
 require('./auth');
 
@@ -36,11 +34,12 @@ var { database } = include('databaseConnection');
 // // Groqcloud API connection and AI functionality
 // var { makeAiReqAndRes, getGroqChatCompletion } = include('groqAIAPI');
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 const app = express();
 
 const Joi = require("joi");
+
 const { resourceLimits } = require("worker_threads");
 
 const navLinks = [
@@ -109,7 +108,7 @@ app.use(express.static(__dirname + "/audio"));
 
 app.use(express.static(__dirname + "/scripts"));
 
-
+app.use(express.static(__dirname + "/public"));
 
 app.use("/js", express.static("./public/js")); // Need this middleware since js files are not accessible unless they are in a folder called "public"
 app.use("/img", express.static("./public/img"));
@@ -117,6 +116,7 @@ app.use("/img", express.static("./public/img"));
 // WILL NEED TO UNCOMMENT THESE TWO IF WE PUT CSS AND IMAGES FOLDER INTO PUBLIC FOLDER, see footer.ejs line 30 for how to link-------------------------------------------------
 // app.use("/css", express.static("./public/css"));
 // app.use("/img", express.static("./public/images"));
+
 function isLoggedIn(req, res, next) {
     req.user ? next() : res.sendStatus(401);
   }
@@ -260,44 +260,56 @@ app.post('/submitUser', async (req, res) => {
         return;
     }
 
-    const schema = Joi.object(
-        {
-            username: Joi.string()
-            .pattern(/^[a-zA-Z0-9 ]*$/)
-            .max(40)
-            .required(),
-            password: Joi.string().max(20).required(),
-            email: Joi.string().max(40).required()
-        });
+    // Import schema to validate username, email, and password
+    const {signupSchema} = include('signup-joi-schema');
 
-    const validationResult = schema.validate({ username, password, email });
-    if (validationResult.error != null) {
+    // Validate the username, email, password
+    // (abortEarly: retrieve all validation errors, not just the first one)
+    const validationResult = signupSchema.validate({ username, password, email}, {abortEarly: false});
+    
+    if (validationResult.error != null) { // If error occured
         console.log(validationResult.error);
         res.redirect("/signup");
         return;
     }
 
     // Check if the entered email for signup already exists in the database:
+
+    // Import the and call function to search through db and compare user email with the current ones
+    const {checkIfEmailExists} = include('scripts/LoginSignUpValidation/databaseEmailValidation');
+
     try {
-        // Get all of the users from the 'users' collection in db using .find with empty query '{}'
-        const dbUserEmails = await userCollection.find({}).project({email: 1, _id: 1}).toArray();
-
-        // Decrypt each email, comparing each with the user entered email in sign up page
-        dbUserEmails.forEach((dbEmail) => {
-
-            const decryptedDbEmail = CryptoJS.AES.decrypt(dbEmail.email, key, { iv: iv}).toString(CryptoJS.enc.Utf8);
-
-            // If the user entered email matches an email in the database
-            if (email == decryptedDbEmail) {
-                throw new Error("(USER ERROR) The email that the user entered already exists in the database");
-            }
-        });
+        await checkIfEmailExists(email, userCollection, key, iv);
 
     } catch (emailExistsError) { // If a user in the db with the same email was found
-        console.log(emailExistsError);
+        // console.log(emailExistsError);
+        console.log("(USER ERROR) The email that the user entered already exists in the database");
         res.redirect("/signupSubmit?problem=EmailExists");
         return;
     }
+
+    ///////////////
+    
+    // try {
+    //     // Get all of the users from the 'users' collection in db using .find with empty query '{}'
+    //     const dbUserEmails = await userCollection.find({}).project({email: 1, _id: 1}).toArray();
+
+    //     // Decrypt each email, comparing each with the user entered email in sign up page
+    //     dbUserEmails.forEach((dbEmail) => {
+
+    //         const decryptedDbEmail = CryptoJS.AES.decrypt(dbEmail.email, key, { iv: iv}).toString(CryptoJS.enc.Utf8);
+
+    //         // If the user entered email matches an email in the database
+    //         if (email == decryptedDbEmail) {
+    //             throw new Error("(USER ERROR) The email that the user entered already exists in the database");
+    //         }
+    //     });
+
+    // } catch (emailExistsError) { // If a user in the db with the same email was found
+    //     console.log(emailExistsError);
+    //     res.redirect("/signupSubmit?problem=EmailExists");
+    //     return;
+    // }
     
     var hashedPassword = await bcrypt.hash(password, saltRounds);
     var encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString();
@@ -349,20 +361,15 @@ app.post('/loggingin', async (req, res) => {
     var userDoesNotExist = false;
     var incorrectFields = false;
 
-    // Validate the input (email and password) 
-    // using joi to prevent noSQL injection attacks
-    const schema = Joi.object(
-        {
-            email: Joi.string().max(40).required(),
-            password: Joi.string().max(20).required()
-        });
+    // Import schema to validate username, email, and password
+    const {loginSchema} = include('login-joi-schema');
 
-    // Validate the email entered by the user
-    const validationResult = schema.validate({ email, password });
-    // If the email and password are not valid,
-    // redirect back to signup page
-    if (validationResult.error != null) {
-        console.log(validationResult.error);
+    // Validate the username, email, password
+    // (abortEarly: retrieve all validation errors, not just the first one)
+    const validationResult = loginSchema.validate({ email, password }, {abortEarly: false});
+    
+    // If the email and password are not valid:
+    if (validationResult.error != null) { // If error occured
         validationError = true;
         res.render("loginSubmit", { validationError: validationError, userDoesNotExist: userDoesNotExist, incorrectFields: incorrectFields });
         return;
