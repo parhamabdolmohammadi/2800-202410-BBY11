@@ -732,12 +732,19 @@ app.get('/checkout', sessionValidation, async (req, res) => {
         let cardnumber = "";
         let expirydate = "";
         let cvv = "";
-        const user = await userCollection.findOne({ _id: userId }, { projection: { cardnumber: 1, expirydate: 1, cvv: 1, paypalEmail: 1 } });
+        let address = ""
+        const user = await userCollection.findOne({ _id: userId }, { projection: { cardnumber: 1, expirydate: 1, cvv: 1, paypalEmail: 1, address: 1} });
         try {
             paypalEmail = CryptoJS.AES.decrypt(user.paypalEmail, key, { iv: iv }).toString(CryptoJS.enc.Utf8);
         } catch (error) {
             console.error("Cannot find paypalEmail", error.message);
         }
+        try{
+            address = CryptoJS.AES.decrypt(user.address, key, { iv: iv }).toString(CryptoJS.enc.Utf8);
+        } catch (error) {
+            console.error("Cannot find address", error.message);
+        }
+        
 
         try {
             cardnumber = CryptoJS.AES.decrypt(user.cardnumber, key, { iv: iv }).toString(CryptoJS.enc.Utf8);
@@ -756,7 +763,7 @@ app.get('/checkout', sessionValidation, async (req, res) => {
         } catch (error) {
             console.error("Cannot find cvv", error.message);
         }
-        res.render("checkout", { query: req.query, remember: true, paypalEmail: paypalEmail, cardnumber: cardnumber, expirydate: expirydate, cvv: cvv });
+        res.render("checkout", { query: req.query, remember: true, paypalEmail: paypalEmail, cardnumber: cardnumber, expirydate: expirydate, cvv: cvv, address: address });
     } else {
         res.render("checkout", { query: req.query, remember: false });
     }
