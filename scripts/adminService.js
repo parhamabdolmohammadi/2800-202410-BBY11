@@ -18,6 +18,8 @@ const createButton = document.getElementById('create-button')
 const createdPopUp = document.querySelector('#created')
 const deleteButton = document.querySelector('.delete-service')
 const invalid = document.querySelector('#invalid')
+
+const deletedPopUp = document.querySelector('#deleted')
 let modalId;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -64,13 +66,13 @@ let currentServiceIndex = null;
 
 function openModal(service, index) {
     modal.style.display = 'block';
-    modalName.textContent = document.querySelectorAll('.serviceName')[index].textContent  
-    modalDescription.textContent = document.querySelectorAll('.serviceDes')[index].textContent  
-    modalPrice.textContent = document.querySelectorAll('.servicePrice')[index].textContent  
+    modalName.textContent = document.querySelectorAll('.serviceName')[index].textContent
+    modalDescription.textContent = document.querySelectorAll('.serviceDes')[index].textContent
+    modalPrice.textContent = document.querySelectorAll('.servicePrice')[index].textContent
     currentServiceIndex = index;
     modalId = service._id
     // console.log(modalId);
-        // console.log(currentServiceIndex);
+    // console.log(currentServiceIndex);
 }
 
 function closeModal() {
@@ -121,22 +123,22 @@ function updateServiceCard(index, updatedService) {
     card.querySelector('.servicePrice').textContent = updatedService.price;
 }
 
-createService.addEventListener('mouseenter', function() {
+createService.addEventListener('mouseenter', function () {
     this.textContent = 'Create';
     this.classList.add('expand')
 });
 
-createService.addEventListener('mouseleave', function() {
+createService.addEventListener('mouseleave', function () {
     this.textContent = '+';
     this.classList.remove('expand')
 });
 
-deleteService.addEventListener('mouseenter', function() {
+deleteService.addEventListener('mouseenter', function () {
     this.textContent = 'Delete';
     this.classList.add('expand')
 });
 
-deleteService.addEventListener('mouseleave', function() {
+deleteService.addEventListener('mouseleave', function () {
     this.textContent = '-';
     this.classList.remove('expand')
 });
@@ -163,7 +165,7 @@ createButton.addEventListener('click', () => {
     const description = document.getElementById('description').value
     const price = document.getElementById('price').value
     const imageFile = document.getElementById('image')
- 
+
     const image = imageFile.files[0]
 
     const formData = new FormData();
@@ -171,54 +173,100 @@ createButton.addEventListener('click', () => {
     formData.append('description', description);
     formData.append('price', price);
     formData.append('image', image); // Append the file object itself
-    
+
     fetch('/create', {
         method: 'POST',
         body: formData,
     })
-    .then(response => {
-        if (response.status === 400) {
-            invalid.style.display = 'block';
-            setTimeout(() => {
-                invalid.style.display = 'none';
-            }, 1500);
-            return response.json().then(data => {
-                throw new Error(data.message);
-            });
-        } else if (response.status === 200) {
-            return response.json();
-        } else {
-            
-            throw new Error('Unexpected response from server');
-        }
-    })
-    .then(data => {
-        // console.log(data.message);
-        if (data.message === 'Entry created successfully.') {
-            // Handle success
-            closeCreateForm();
-            createdPopUp.style.display = 'block';
-            setTimeout(() => {
-                createdPopUp.style.display = 'none';
-            }, 1500);
-            setTimeout(() => {
-                location.reload()
-            }, 1000);
-            
-        } else {
-            // Handle other messages
-            // Example: display an error message to the user
-            console.error('Unexpected message from server:', data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        // Handle network errors or other unexpected errors
-    });
-    
+        .then(response => {
+            if (response.status === 400) {
+                invalid.style.display = 'block';
+                setTimeout(() => {
+                    invalid.style.display = 'none';
+                }, 1500);
+                return response.json().then(data => {
+                    throw new Error(data.message);
+                });
+            } else if (response.status === 200) {
+                return response.json();
+            } else {
+
+                throw new Error('Unexpected response from server');
+            }
+        })
+        .then(data => {
+            // console.log(data.message);
+            if (data.message === 'Entry created successfully.') {
+                // Handle success
+                closeCreateForm();
+                createdPopUp.style.display = 'block';
+                setTimeout(() => {
+                    createdPopUp.style.display = 'none';
+                }, 1500);
+                setTimeout(() => {
+                    location.reload()
+                }, 1000);
+
+            } else {
+                // Handle other messages
+                // Example: display an error message to the user
+                console.error('Unexpected message from server:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Handle network errors or other unexpected errors
+        });
+
 
 })
 
 deleteButton.addEventListener('click', () => {
     closeCreateForm()
+})
+
+let deleteButtonClicked = false;
+
+deleteService.addEventListener('click', () => {
+    if (!deleteButtonClicked) {
+        const cards = document.querySelectorAll('.serviceCard');
+        cards.forEach((card) => {
+            const deleteButtonForEntry = document.createElement('div');
+            deleteButtonForEntry.classList.add('deleteButtonForEntry')
+            deleteButtonForEntry.textContent = 'Delete'
+            deleteButtonForEntry.addEventListener('click', () => {
+                // console.log('clicked');
+                const previousCard = deleteButtonForEntry.previousElementSibling;
+                // console.log(previousCard);
+                // console.log(previousCard.querySelector('.serviceName').textContent);
+                const cardName = previousCard.querySelector('.serviceName').textContent
+                fetch('/delete', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ cardName }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data.message);
+                        deletedPopUp.style.display = 'block';
+                        setTimeout(() => {
+                            deletedPopUp.style.display = 'none';
+                        }, 1500);
+                        setTimeout(() => {
+                            location.reload()
+                        }, 1000);
+                    })
+            })
+            card.insertAdjacentElement('afterend', deleteButtonForEntry);
+            deleteButtonClicked = true;
+        });
+    } else {
+        document.querySelectorAll('.deleteButtonForEntry').forEach(button => {
+            button.remove()
+        })
+        deleteButtonClicked = false;
+    }
+
 })
