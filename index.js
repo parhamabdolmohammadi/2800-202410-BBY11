@@ -33,8 +33,6 @@ require('./auth');
 // MongoDB database connection
 var { database } = include('databaseConnection');
 
-// // Groqcloud API connection and AI functionality
-// var { makeAiReqAndRes, getGroqChatCompletion } = include('groqAIAPI');
 
 const port = process.env.PORT || 3000;
 
