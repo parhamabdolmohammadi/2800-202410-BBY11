@@ -5,7 +5,8 @@ const past_orders = document.querySelector('#past-orders')
 const orders_btn = document.querySelectorAll('.orders-btn');
 const active_orders_number = document.querySelector('#active-orders-number')
 const past_orders_number = document.querySelector('#past-orders-number')
-const nothing = document.querySelector('.nothing')
+// const nothing = document.querySelector('.nothing')
+const notAvailable = document.querySelector('#not-available')
 const activeOrders = []
 const pastOrders = []
 
@@ -18,21 +19,25 @@ function setActive(element) {
 
 active_orders.addEventListener('click', () => {
     setActive(active_orders)
-    generateCards(activeOrders)
+    generateCards(activeOrders, historyUrl)
 
 })
 
 past_orders.addEventListener('click', () => {
     setActive(past_orders)
-    generateCards(pastOrders)
+    generateCards(pastOrders, historyUrl)
 })
 
 //{data.name.trim().replace(/\s+/g, '')}.png
 
-function generateCards(orders) {
+function generateCards(orders, historyUrl) {
     content.innerHTML = ''
     if (orders.length == 0) {
-        content.appendChild(nothing)
+        // content.appendChild(nothing)
+        notAvailable.style.display = 'block'
+    } else {
+        notAvailable.style.display = 'none'
+
     }
 
     orders.forEach((each) => {
@@ -41,7 +46,13 @@ function generateCards(orders) {
         card.classList.add('card')
 
         // this image will be placed at the left side of the card
-        let backUrl = each.service.trim().replace(/\s+/g, '') + '.png'
+        let backUrl
+        historyUrl.forEach(url => {
+            if (each.service == url.name) {
+                backUrl = url.background
+            }
+        })
+        //  backUrl = each.service.trim().replace(/\s+/g, '') + '.png'
         const img = document.createElement('img')
         img.src = backUrl
 
@@ -98,12 +109,13 @@ function fillDetail(each, detail) {
     // return detail
 
 }
-
+console.log(historyUrl);
 
 document.addEventListener('DOMContentLoaded', () => {
     active_orders.click()
     sortHistory(history) // active orders and past orders are filled 
-    generateCards(activeOrders)
+    // console.log(history);
+    generateCards(activeOrders, historyUrl)
 
 })
 

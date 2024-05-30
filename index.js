@@ -25,8 +25,6 @@ const bodyParser = require('body-parser');
 const { MongoClient, ObjectId } = require('mongodb');
 const uri = 'mongodb+srv://Seohyeon:Qkrtjgus8663!@atlascluster.u56alig.mongodb.net/AtlasCluster?retryWrites=true&w=majority';
 
-
-
 const passport = require('passport');
 require('./auth');
 
@@ -34,11 +32,12 @@ require('./auth');
 var { database } = include('databaseConnection');
 
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 const app = express();
 
 const Joi = require("joi");
+
 const { resourceLimits } = require("worker_threads");
 
 const navLinks = [
@@ -107,7 +106,7 @@ app.use(express.static(__dirname + "/audio"));
 
 app.use(express.static(__dirname + "/scripts"));
 
-
+app.use(express.static(__dirname + "/public"));
 
 app.use("/js", express.static("./public/js")); // Need this middleware since js files are not accessible unless they are in a folder called "public"
 app.use("/img", express.static("./public/img"));
@@ -115,6 +114,7 @@ app.use("/img", express.static("./public/img"));
 // WILL NEED TO UNCOMMENT THESE TWO IF WE PUT CSS AND IMAGES FOLDER INTO PUBLIC FOLDER, see footer.ejs line 30 for how to link-------------------------------------------------
 // app.use("/css", express.static("./public/css"));
 // app.use("/img", express.static("./public/images"));
+
 function isLoggedIn(req, res, next) {
     req.user ? next() : res.sendStatus(401);
 }
@@ -157,7 +157,7 @@ function isAdmin(req) {
 function adminAuthorization(req, res, next) {
     if (!isAdmin(req)) {
         res.status(403);
-        res.render("errorMessage", { error: "Not Authorized" });
+        res.render("errorMessage", { error: "Not Authorized", username: req.session.username });
         return;
     }
     else {
@@ -208,7 +208,7 @@ app.get('/', (req, res) => {
 
 });
 
-app.get('/signup', (req, res) => {
+app.get('/signup', async (req, res) => {
     let username = ""
     let userEmail = ''
 
@@ -220,12 +220,17 @@ app.get('/signup', (req, res) => {
         console.log(username);
     }
 
-    res.render("signup", { username, userEmail })
+    const services = await general.find({}).project({ _id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
+    const stations = await stationsCollection.find({}).toArray();
+
+
+
+    res.render("signup", { username, userEmail, services, stations })
 });
 
 
 app.get('/setting', (req, res) => {
-    res.render("setting")
+    res.render("setting", { username: req.session.username })
 });
 
 app.get('/edit-profile', async (req, res) => {
@@ -233,11 +238,11 @@ app.get('/edit-profile', async (req, res) => {
     let email = await req.session.email;
     console.log(email);
     let unencryptedEmail = CryptoJS.AES.decrypt(email, key, { iv: iv }).toString(CryptoJS.enc.Utf8);
-    res.render("edit-profile", { name: req.session.username, email: unencryptedEmail, userId: id });
+    res.render("edit-profile", { name: req.session.username, email: unencryptedEmail, userId: id, username: req.session.username });
 });
 
 app.get('/edit-password', (req, res) => {
-    res.render("edit-password")
+    res.render("edit-password", { username: req.session.username });
 });
 
 app.post('/submitUser', async (req, res) => {
@@ -258,44 +263,56 @@ app.post('/submitUser', async (req, res) => {
         return;
     }
 
-    const schema = Joi.object(
-        {
-            username: Joi.string()
-                .pattern(/^[a-zA-Z0-9 ]*$/)
-                .max(40)
-                .required(),
-            password: Joi.string().max(20).required(),
-            email: Joi.string().max(40).required()
-        });
+    // Import schema to validate username, email, and password
+    const { signupSchema } = include('signup-joi-schema');
 
-    const validationResult = schema.validate({ username, password, email });
-    if (validationResult.error != null) {
+    // Validate the username, email, password
+    // (abortEarly: retrieve all validation errors, not just the first one)
+    const validationResult = signupSchema.validate({ username, password, email }, { abortEarly: false });
+
+    if (validationResult.error != null) { // If error occured
         console.log(validationResult.error);
         res.redirect("/signup");
         return;
     }
 
     // Check if the entered email for signup already exists in the database:
+
+    // Import the and call function to search through db and compare user email with the current ones
+    const { checkIfEmailExists } = include('scripts/LoginSignUpValidation/databaseEmailValidation');
+
     try {
-        // Get all of the users from the 'users' collection in db using .find with empty query '{}'
-        const dbUserEmails = await userCollection.find({}).project({ email: 1, _id: 1 }).toArray();
-
-        // Decrypt each email, comparing each with the user entered email in sign up page
-        dbUserEmails.forEach((dbEmail) => {
-
-            const decryptedDbEmail = CryptoJS.AES.decrypt(dbEmail.email, key, { iv: iv }).toString(CryptoJS.enc.Utf8);
-
-            // If the user entered email matches an email in the database
-            if (email == decryptedDbEmail) {
-                throw new Error("(USER ERROR) The email that the user entered already exists in the database");
-            }
-        });
+        await checkIfEmailExists(email, userCollection, key, iv);
 
     } catch (emailExistsError) { // If a user in the db with the same email was found
-        console.log(emailExistsError);
+        // console.log(emailExistsError);
+        console.log("(USER ERROR) The email that the user entered already exists in the database");
         res.redirect("/signupSubmit?problem=EmailExists");
         return;
     }
+
+    ///////////////
+
+    // try {
+    //     // Get all of the users from the 'users' collection in db using .find with empty query '{}'
+    //     const dbUserEmails = await userCollection.find({}).project({email: 1, _id: 1}).toArray();
+
+    //     // Decrypt each email, comparing each with the user entered email in sign up page
+    //     dbUserEmails.forEach((dbEmail) => {
+
+    //         const decryptedDbEmail = CryptoJS.AES.decrypt(dbEmail.email, key, { iv: iv}).toString(CryptoJS.enc.Utf8);
+
+    //         // If the user entered email matches an email in the database
+    //         if (email == decryptedDbEmail) {
+    //             throw new Error("(USER ERROR) The email that the user entered already exists in the database");
+    //         }
+    //     });
+
+    // } catch (emailExistsError) { // If a user in the db with the same email was found
+    //     console.log(emailExistsError);
+    //     res.redirect("/signupSubmit?problem=EmailExists");
+    //     return;
+    // }
 
     var hashedPassword = await bcrypt.hash(password, saltRounds);
     var encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString();
@@ -320,10 +337,10 @@ app.post('/submitUser', async (req, res) => {
 });
 
 app.get("/signupSubmit", (req, res) => {
-    res.render("signupSubmit", { problem: req.query.problem });
+    res.render("signupSubmit", { problem: req.query.problem, username: req.session.username });
 });
 
-app.get('/login', (req, res) => {
+app.get('/login', async (req, res) => {
     let username = ""
     let userEmail = ''
 
@@ -333,9 +350,11 @@ app.get('/login', (req, res) => {
         username = req.user.displayName;
         console.log(userEmail);
     }
+    const services = await general.find({}).project({ _id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
+    const stations = await stationsCollection.find({}).toArray();
 
 
-    res.render("login", { username: username, userEmail });
+    res.render("login", { username: username, userEmail, services, stations });
 });
 
 
@@ -347,22 +366,17 @@ app.post('/loggingin', async (req, res) => {
     var userDoesNotExist = false;
     var incorrectFields = false;
 
-    // Validate the input (email and password) 
-    // using joi to prevent noSQL injection attacks
-    const schema = Joi.object(
-        {
-            email: Joi.string().max(40).required(),
-            password: Joi.string().max(20).required()
-        });
+    // Import schema to validate username, email, and password
+    const { loginSchema } = include('login-joi-schema');
 
-    // Validate the email entered by the user
-    const validationResult = schema.validate({ email, password });
-    // If the email and password are not valid,
-    // redirect back to signup page
-    if (validationResult.error != null) {
-        console.log(validationResult.error);
+    // Validate the username, email, password
+    // (abortEarly: retrieve all validation errors, not just the first one)
+    const validationResult = loginSchema.validate({ email, password }, { abortEarly: false });
+
+    // If the email and password are not valid:
+    if (validationResult.error != null) { // If error occured
         validationError = true;
-        res.render("loginSubmit", { validationError: validationError, userDoesNotExist: userDoesNotExist, incorrectFields: incorrectFields });
+        res.render("loginSubmit", { validationError: validationError, userDoesNotExist: userDoesNotExist, incorrectFields: incorrectFields, username: req.session.username });
         return;
     }
 
@@ -375,7 +389,7 @@ app.post('/loggingin', async (req, res) => {
     // If a user with the entered email and password combination was NOT found (result array length = 1)
     if (result.length != 1) {
         userDoesNotExist = true;
-        res.render("loginSubmit", { validationError: validationError, userDoesNotExist: userDoesNotExist, incorrectFields: incorrectFields });
+        res.render("loginSubmit", { validationError: validationError, userDoesNotExist: userDoesNotExist, incorrectFields: incorrectFields, username: req.session.username });
         return;
     }
 
@@ -399,14 +413,14 @@ app.post('/loggingin', async (req, res) => {
         return;
     } else {
         incorrectFields = true;
-        res.render("loginSubmit", { validationError: validationError, userDoesNotExist: userDoesNotExist, incorrectFields: incorrectFields });
+        res.render("loginSubmit", { validationError: validationError, userDoesNotExist: userDoesNotExist, incorrectFields: incorrectFields, username: req.session.username });
         return;
     }
 });
 
 app.get("/loginSubmit", (req, res) => {
     //var loginErrorResults = {validationError: validationError, userDoesNotExist: userDoesNotExist, incorrectFields: incorrectFields}
-    res.render("loginSubmit");
+    res.render("loginSubmit", { username: req.session.username });
 });
 
 app.post('/updateProfile', async (req, res) => {
@@ -467,20 +481,87 @@ app.post('/updatePassword', async (req, res) => {
 
     if (newPassword !== confirmNewPassword) {
         return res.status(400).send(`
-           <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-            <div style="text-align: center; background: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-              <h1 style="color: #333; margin-bottom: 20px;">New password and confirm new password do not match<br></h1>
-              <a href="/edit-password" style="display: inline-block; padding: 10px 20px; background-color: #003249; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease;">Try Again</a>
-            </div>
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-            <script>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    showConfirmButton: false,
-                    timer: 1000
-                });
-            </script>
+        <!DOCTYPE html>
+        <html lang="en">
+
+        <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>RoboRental</title>
+
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="/site.webmanifest">
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="theme-color" content="#ffffff">
+
+        <link href="/img/favicon.ico" rel="icon" type="image/x-icon" />
+
+        <!-- Bootstrap Library-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        
+        <!-- Icon Libraries -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+        
+        <!-- CSS files -->
+        <link href= "/all-pages.css" rel="stylesheet">
+        <link href="/header.css" rel="stylesheet">
+        <link href="/footer.css" rel="stylesheet">
+        <link href="/confirmation.css" rel="stylesheet">
+        <link href="/form-inputs.css" rel="stylesheet">
+        <link href="/icons.css" rel="stylesheet">
+        <link href="/main.css" rel="stylesheet">
+        <link href="/index.css" rel="stylesheet">
+        <link href="/signup-login.css" rel="stylesheet">
+        <link href="/buttons.css" rel="stylesheet">
+        <link href="/search-bar.css" rel="stylesheet">
+        <link href="/setting.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <style>
+            .active {
+            background-color: #003249 !important;
+            color: white !important;
+            }
+
+            .active:hover {
+
+            color: silver !important;
+            }
+
+            @media screen and (max-width: 767.5px) {
+            
+            .span-header {
+                position: relative;
+                top: 5px;
+            }
+            }
+    </style>
+    </head>
+    <body>
+        <div id="content-and-footer-flex-container">
+            <!-- Start of flexbox container to make the main content container fill all of the space after header and before footer -->
+            <div id="all-pages-content-container"> <!-- Start of main content -->
+            <div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: "New password and confirm new password do not match",
+                showConfirmButton: false,
+                footer: '<a href="/edit-password" style="display: inline-block; padding: 10px 20px; background-color: #003249; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease;">Try Again</a>'
+            });
+        </script>
+    </body>
+</html>
         `);
     }
 
@@ -518,21 +599,88 @@ app.post('/updatePassword', async (req, res) => {
 
         if (!passwordMatch) {
             return res.status(400).send(`
-            <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-            <div style="text-align: center; background: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-              <h1 style="color: #333; margin-bottom: 20px;">Current password in incorrect<br></h1>
-              <a href="/edit-password" style="display: inline-block; padding: 10px 20px; background-color: #003249; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease;">Try Again</a>
+            <!DOCTYPE html>
+            <html lang="en">
+    
+            <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>RoboRental</title>
+    
+            <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+            <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+            <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+            <link rel="manifest" href="/site.webmanifest">
+            <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+            <meta name="msapplication-TileColor" content="#da532c">
+            <meta name="theme-color" content="#ffffff">
+    
+            <link href="/img/favicon.ico" rel="icon" type="image/x-icon" />
+    
+            <!-- Bootstrap Library-->
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+            
+            <!-- Icon Libraries -->
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+            
+            <!-- CSS files -->
+            <link href= "/all-pages.css" rel="stylesheet">
+            <link href="/header.css" rel="stylesheet">
+            <link href="/footer.css" rel="stylesheet">
+            <link href="/confirmation.css" rel="stylesheet">
+            <link href="/form-inputs.css" rel="stylesheet">
+            <link href="/icons.css" rel="stylesheet">
+            <link href="/main.css" rel="stylesheet">
+            <link href="/index.css" rel="stylesheet">
+            <link href="/signup-login.css" rel="stylesheet">
+            <link href="/buttons.css" rel="stylesheet">
+            <link href="/search-bar.css" rel="stylesheet">
+            <link href="/setting.css" rel="stylesheet">
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <style>
+                .active {
+                background-color: #003249 !important;
+                color: white !important;
+                }
+    
+                .active:hover {
+    
+                color: silver !important;
+                }
+    
+                @media screen and (max-width: 767.5px) {
+                
+                .span-header {
+                    position: relative;
+                    top: 5px;
+                }
+                }
+        </style>
+        </head>
+        <body>
+            <div id="content-and-footer-flex-container">
+                <!-- Start of flexbox container to make the main content container fill all of the space after header and before footer -->
+                <div id="all-pages-content-container"> <!-- Start of main content -->
+                <div>
             </div>
-          </div>
-                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                <script>
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        showConfirmButton: false,
-                        timer: 1000
-                    });
-                </script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: "Current password is incorrect",
+                    showConfirmButton: false,
+                    footer: '<a href="/edit-password" style="display: inline-block; padding: 10px 20px; background-color: #003249; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease;">Try Again</a>'
+                });
+            </script>
+        </body>
+    </html>
+            
             `);
         }
 
@@ -549,7 +697,6 @@ app.post('/updatePassword', async (req, res) => {
             console.log('Successfully updated user password.');
             return res.status(400).send(`
             <div style=" margin-top:50px; align-items: center;">
-                <h1 style="text-align: center;">You've changed your password succesfully.<br><a href="/edit-password">Go To Edit Password</a></h1><br>
             </div>
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             <script>
@@ -562,7 +709,7 @@ app.post('/updatePassword', async (req, res) => {
             });
             
             setTimeout(function() {
-                window.location.href = '/edit-password';
+                window.location.href = 'setting';
             }, 1200);
             </script>
         `);
@@ -769,9 +916,9 @@ app.get('/checkout', sessionValidation, async (req, res) => {
         } catch (error) {
             console.error("Cannot find cvv", error.message);
         }
-        res.render("checkout", { query: req.query, remember: true, paypalEmail: paypalEmail, cardnumber: cardnumber, expirydate: expirydate, cvv: cvv, address: address });
+        res.render("checkout", { query: req.query, remember: true, paypalEmail: paypalEmail, cardnumber: cardnumber, expirydate: expirydate, cvv: cvv, address: address, username: req.session.username });
     } else {
-        res.render("checkout", { query: req.query, remember: false });
+        res.render("checkout", { query: req.query, remember: false, username: req.session.username });
     }
 });
 
@@ -853,7 +1000,7 @@ app.get('/confirmation', sessionValidation, (req, res) => {
     let orderNumber = generateuuid();
     let timestamp = new Date().toISOString();
 
-    res.render("confirmation", { orderNumber: orderNumber, total: total });
+    res.render("confirmation", { orderNumber: orderNumber, total: total, username: req.session.username });
     if (total != null) {
         let id = new ObjectId(orderNumber);
         ordersCollection.insertOne({
@@ -913,7 +1060,7 @@ app.post('/search', async (req, res) => {
 })
 
 app.get('/forgot-password', async (req, res) => {
-    res.render("forgot-password");
+    res.render("forgot-password", { username: req.session.username });
 });
 
 app.post('/sendEmail', async (req, res) => {
@@ -926,7 +1073,7 @@ app.post('/sendEmail', async (req, res) => {
             }
         });
         if (!req.body.email) {
-            res.render("forgot-password");
+            res.render("forgot-password", { username: req.session.username });
             return;
         }
         let email = req.body.email;
@@ -939,7 +1086,7 @@ app.post('/sendEmail', async (req, res) => {
         };
         const info = await transporter.sendMail(mailOptions);
         console.log('Email sent:', info.messageId);
-        res.render("enterCode", { resetCode: resetCode, userEmail: email });
+        res.render("enterCode", { resetCode: resetCode, userEmail: email, username: req.session.username });
     } catch (error) {
         console.error('Error occurred:', error);
     }
@@ -953,7 +1100,7 @@ app.post('/loginfromcode', async (req, res) => {
         if (code1 !== code2) {
             res.send("Invalid code. Please try again.");
         } else {
-            res.render("reset-password", { email: email });
+            res.render("reset-password", { email: email, username: req.session.username });
         }
     } catch (error) {
         console.error('Error occurred:', error);
@@ -990,7 +1137,7 @@ app.get('/stations', async (req, res) => {
         const users = await userCollection.find({}).toArray();
         currentUserName = await userCollection.find({ username: req.session.username }).project({ username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1 }).toArray();
 
-        res.render("stations", { stations: stations, users: users, currentUserName: currentUserName });
+        res.render("stations", { stations: stations, users: users, currentUserName: currentUserName, username: req.session.username });
     } catch (error) {
         console.error("Error fetching stations:", error);
         res.status(500).send("Internal Server Error");
@@ -1024,7 +1171,7 @@ app.get('/saved', async (req, res) => {
         currentUserName = await userCollection.find({ username: req.session.username }).project({ username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1 }).toArray();
 
         // console.log("haha" + currentUserName);
-        res.render("saved", { stations: stations, users: users, currentUserName: currentUserName });
+        res.render("saved", { stations: stations, users: users, currentUserName: currentUserName, username: req.session.username });
     } catch (error) {
         console.error("Error fetching stations:", error);
         res.status(500).send("Internal Server Error");
@@ -1035,12 +1182,12 @@ app.get('/saved', async (req, res) => {
 app.post('/displayStation', async (req, res) => {
     const cardId = req.body.data;
     const distance = req.body.data2;
-    console.log(cardId, distance)
+    console.log("card id and distance: "+cardId, distance)
 
     const objectId = new ObjectId(cardId);
 
     const currentStation = await stationsCollection.findOne({ _id: objectId });
-    res.render('station', { station1: currentStation, distance: distance, cardId: cardId });
+    res.render('station', { station1: currentStation, distance: distance, cardId: cardId, username: req.session.username });
 });
 
 app.get('/businessCheckout', async (req, res) => {
@@ -1065,7 +1212,7 @@ app.get('/businessCheckout', async (req, res) => {
 
     const currentStation = await stationsCollection.findOne({ _id: objectId });
 
-    res.render('businessCheckout', { station1: currentStation, distance: distance, services, cardId, user_type: currentUser.user_type });
+    res.render('businessCheckout', { station1: currentStation, distance: distance, services, cardId, user_type: currentUser.user_type, username: req.session.username });
 });
 
 app.post('/addRobot', async (req, res) => {
@@ -1086,7 +1233,7 @@ app.get('/businessConfirmation', sessionValidation, (req, res) => {
     let orderNumber = generateuuid();
     let timestamp = new Date().toISOString();
 
-    res.render("businessConfirmation", { orderNumber: orderNumber });
+    res.render("businessConfirmation", { orderNumber: orderNumber, username: req.session.username });
     let id = new ObjectId(orderNumber);
     ordersCollection.insertOne({
         _id: id,
@@ -1100,7 +1247,7 @@ app.get('/businessConfirmation', sessionValidation, (req, res) => {
 app.get('/station', async (req, res) => {
 
 
-    res.render("station");
+    res.render("station", { username: req.session.username });
 });
 
 
@@ -1118,9 +1265,9 @@ app.get('/bussinessOwnerForm', async (req, res) => {
     );
     console.log(currentUser.user_type == "user");
     if (!currentUser.businessOwnerRequestInProgress) {
-        res.render("bussinessOwnerForm", { email: req.session.email, request: false, user_type: currentUser.user_type });
+        res.render("bussinessOwnerForm", { email: req.session.email, request: false, user_type: currentUser.user_type, username: req.session.username });
     } else {
-        res.render("bussinessOwnerForm", { email: req.session.email, request: true, user_type: currentUser.user_type });
+        res.render("bussinessOwnerForm", { email: req.session.email, request: true, user_type: currentUser.user_type, username: req.session.username });
     }
 
 })
@@ -1178,7 +1325,7 @@ app.post('/bussinessOwnerSubmission', async (req, res) => {
     await sendEmail(email, htmlContent);
 
     await userCollection.updateOne({ username: req.session.username }, { $set: { businessOwnerRequestInProgress: true, name, lastname, phonenumber, address, businessName, businessAddress, description, dateOfBirth, gender } });
-    res.render('bussinessOwnerSignupConfirmation', {});
+    res.render('bussinessOwnerSignupConfirmation', { username: req.session.username });
 });
 
 
@@ -1186,13 +1333,13 @@ app.post('/bussinessOwnerSubmission', async (req, res) => {
 app.get('/bussinessOwnerSignupConfirmation', async (req, res) => {
 
     console.log(req.session.email);
-    res.render("bussinessOwnerSignupConfirmation", { email: req.session.email });
+    res.render("bussinessOwnerSignupConfirmation", { email: req.session.email, username: req.session.username });
 })
 
 app.get('/admin', sessionValidation, adminAuthorization, async (req, res) => {
     const result = await userCollection.find().project({ username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1 }).toArray();
 
-    res.render("admin", { users: result });
+    res.render("admin", { users: result, username: req.session.username });
 });
 
 app.post('/PromoteToBusinessOwner', async (req, res) => {
@@ -1318,15 +1465,27 @@ app.get('/history', async (req, res) => {
     // change it to customerId: req.session._id '664fb094254567cab99f3cfa'
     const history = await orders.find({ customerId: req.session._id, business: { $ne: true } }).project({}).toArray()
     var username = req.session.username;
+    const historyUrl = [];
+    const fetchUrls = async () => {
+        for (const each of history) {
+            const result = await general.findOne({ name: each.service }, { projection: { background: 1, name: 1 } });
+            historyUrl.push(result);
+        }
+    };
+
+    await fetchUrls()
+    // await general.find({name: each.service}).project({background:1}).toArray()
+
+    console.log(historyUrl);
     // console.log(username);
     // console.log(history);
     // console.log(req.session._id);
-    res.render("history", { username, history })
+    res.render("history", { username, history, historyUrl })
 })
 
 app.get('/adminService', adminAuthorization, async (req, res) => {
     const services = await general.find({}).project({}).toArray();
-    res.render('adminService', { services })
+    res.render('adminService', { services, username: req.session.username })
 })
 
 app.post('/update', async (req, res) => {
@@ -1357,22 +1516,56 @@ const storage = multer.diskStorage({
         cb(null, file.originalname)
     }
 })
-const upload = multer({ storage: storage })
 
-app.post('/create', upload.single('image'), async (req, res) => {
-
-    const name = req.body.name;
-    const description = req.body.description;
-    const price = req.body.price;
-    const image = req.file;
-    if (!name || !description || !price || !image) {
-        return res.status(400).json({ message: 'Input field can not be empty' });
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype === 'image/png') {
+        cb(null, true);
+    } else {
+        cb(new Error('Only .png files are allowed'), false);
     }
-    // console.log(image);
-    var _id = new ObjectId();
-    await general.insertOne({ _id, name, description, price, background: image.originalname });
-    res.status(200).json({ message: 'Entry created successfully.' });
-})
+};
+
+const upload = multer({ storage: storage, fileFilter: fileFilter })
+
+// app.post('/create', upload.single('image'), async (req, res) => {
+
+//     const name = req.body.name;
+//     const description = req.body.description;
+//     const price = req.body.price;
+//     const image = req.file;
+//     if (!name || !description || !price || !image) {
+//         return res.status(400).json({ message: 'Input field can not be empty' });
+//     }
+//     console.log(image);
+//     var _id = new ObjectId();
+//     await general.insertOne({ _id, name, description, price, background: image.originalname });
+//     res.status(200).json({ message: 'Entry created successfully.' });
+// })
+
+app.post('/create', async (req, res) => {
+    upload.single('image')(req, res, (err) => {
+        if (err) {
+            return res.status(400).json({ code: 'EXTENSION_ERROR', message: err.message });
+        }
+
+        const { name, description, price } = req.body;
+        const image = req.file;
+
+        if (!name || !description || !price || !image) {
+            return res.status(400).json({ message: 'Input field can not be empty' });
+        }
+
+        console.log(image);
+        var _id = new ObjectId();
+        general.insertOne({ _id, name, description, price, background: image.originalname })
+            .then(() => {
+                res.status(200).json({ message: 'Entry created successfully.' });
+            })
+            .catch((error) => {
+                res.status(500).json({ message: 'Error occurred while inserting data.', error: error });
+            });
+    });
+});
 
 app.post('/delete', async (req, res) => {
     const name = req.body.cardName
@@ -1397,7 +1590,7 @@ app.post('/delete', async (req, res) => {
 })
 app.get("*", (req, res) => {
     res.status(404);
-    res.render("404",);
+    res.render("404", { username: req.session.username });
 })
 
 app.listen(port, () => {
