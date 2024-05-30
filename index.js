@@ -1309,8 +1309,8 @@ app.get('/history', async(req, res) => {
         return;
     }
     //timestamp:1, paymentType:1, customerId:1, total:1, service:1
-    // change it to customerId: req.session._id 
-    const history = await orders.find({customerId: '664fb094254567cab99f3cfa', business: { $ne: true }}).project({}).toArray()
+    // change it to customerId: req.session._id '664fb094254567cab99f3cfa'
+    const history = await orders.find({customerId: req.session._id, business: { $ne: true }}).project({}).toArray()
     var username = req.session.username;
     // console.log(username);
     // console.log(history);
@@ -1360,7 +1360,7 @@ app.post('/create', upload.single('image'), async (req, res) => {
     }
     // console.log(image);
     var _id = new ObjectId();
-    // await general.insertOne({ _id, name, description, price, background: image.originalname });
+    await general.insertOne({ _id, name, description, price, background: image.originalname });
     res.status(200).json({ message: 'Entry created successfully.' });
 })
 app.get("*", (req, res) => {
