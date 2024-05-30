@@ -137,20 +137,31 @@ function distance(latHosp, lngHosp) {
   return d;
 }
 
-function scrollToSection(sectionId, station_ID) {
-  // Scroll to the target section
-  document.getElementById(sectionId).scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
-  });
-  let card = document.getElementById("card-style" + station_ID);
-  card.classList.add('highlight');
 
-  // Remove the class after 2 seconds to reset the state
-  setTimeout(() => {
-    card.classList.remove('highlight');
-  }, 2000);
+
+function scrollToSection(sectionId, station_ID) {
+  const container = document.getElementById("stations-placeholder");
+  const section = document.getElementById("card-style" + station_ID);
   
+  // Calculate the scroll position to center the section
+  const containerHeight = container.offsetHeight;
+  const sectionHeight = section.offsetHeight;
+  const scrollPosition = section.offsetTop - (containerHeight / 2) + (sectionHeight / 2);
+
+  // Scroll to the target section
+  container.scroll({
+    top: scrollPosition,
+    behavior: "smooth",
+  });
+
+  // Highlight the section temporarily
+  section.classList.add('highlight');
+
+  // Remove the highlight class after 2 seconds
+  setTimeout(() => {
+    section.classList.remove('highlight');
+  }, 2000);
 }
+
 
 
