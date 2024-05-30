@@ -139,6 +139,7 @@
     padding: 1.5em;
     transition: transform 0.5s ease, opacity 0.5s ease;
     /* padding-bottom: 0; */
+ 
 
 }
 
@@ -157,8 +158,10 @@
 }
 
 .expandInfo {
+    /* box-sizing: border-box; */
     margin-top: 2em;
     /* white-space: nowrap; */
+    /* padding-right: 50px; */
 }
 
 .nothing {
@@ -168,4 +171,14 @@
     margin-top: 2em;
     /* border: 1px solid black; */
     text-align: center;
+}
+
+@media (max-width: 403px) {
+    .expand {
+        font-size:0.9em;
+    }
+}
+
+#not-available {
+    display: none;
 }
