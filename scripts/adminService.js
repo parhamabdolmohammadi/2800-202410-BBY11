@@ -201,6 +201,7 @@ createButton.addEventListener('click', () => {
             setTimeout(() => {
                 createdPopUp.style.display = 'none';
             }, 1500);
+            location.reload()
         } else {
             // Handle other messages
             // Example: display an error message to the user
