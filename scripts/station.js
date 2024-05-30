@@ -31,15 +31,9 @@ document.getElementById('checkoutButton').innerHTML=`<a class="link-style" href=
    document.getElementById('card-availability').style.color = "red";   
 }
 
-if(station.robots_total_stock < 20) {
-   document.getElementById('addButton').innerHTML=`<a class="link-style" href="/businessCheckout"
-   ><span class="icon-container">
-     <p style="margin-bottom: 0">Add</p>
-   </span></a
- >`
-   } else {
-      document.getElementById('addButton').innerHTML=``
-      document.getElementById('card-availability').style.color = "red";   
+if(station.robots_total_stock == 20) {
+   document.getElementById('addButton').innerHTML=``
+   document.getElementById('card-availability').style.color = "red";  
    }
 
 

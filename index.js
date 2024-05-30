@@ -1048,7 +1048,7 @@ app.get('/saved', async (req, res) => {
 app.post('/displayStation', async (req, res) => {
     const cardId = req.body.data;
     const distance = req.body.data2;
-    console.log(cardId, distance)
+    console.log("card id and distance: "+cardId, distance)
 
     const objectId = new ObjectId(cardId);
 
