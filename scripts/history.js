@@ -5,7 +5,8 @@ const past_orders = document.querySelector('#past-orders')
 const orders_btn = document.querySelectorAll('.orders-btn');
 const active_orders_number = document.querySelector('#active-orders-number')
 const past_orders_number = document.querySelector('#past-orders-number')
-const nothing = document.querySelector('.nothing')
+// const nothing = document.querySelector('.nothing')
+const notAvailable = document.querySelector('#not-available')
 const activeOrders = []
 const pastOrders = []
 
@@ -32,7 +33,11 @@ past_orders.addEventListener('click', () => {
 function generateCards(orders, historyUrl) {
     content.innerHTML = ''
     if (orders.length == 0) {
-        content.appendChild(nothing)
+        // content.appendChild(nothing)
+        notAvailable.style.display = 'block'
+    } else {
+        notAvailable.style.display = 'none'
+
     }
 
     orders.forEach((each) => {
