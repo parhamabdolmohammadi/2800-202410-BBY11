@@ -250,7 +250,6 @@ app.get('/setting', (req, res) => {
 app.get('/edit-profile', async (req, res) => {
     let id = await req.session._id;
     let email = await req.session.email;
-    console.log(email);
     let unencryptedEmail = CryptoJS.AES.decrypt(email, key, { iv: iv }).toString(CryptoJS.enc.Utf8);
     res.render("edit-profile", { name: req.session.username, email: unencryptedEmail, userId: id, username: req.session.username });
 });
@@ -1126,7 +1125,6 @@ app.post('/sendEmail', async (req, res) => {
             text: 'This is your one time login code to reset your password: ' + resetCode + '\n\nPrivacy Policy: https://two800-202410-bby11-1-dogh.onrender.com/privacy',
         };
         const info = await transporter.sendMail(mailOptions);
-        console.log('Email sent:', info.messageId);
         res.render("enterCode", { resetCode: resetCode, userEmail: email, username: req.session.username });
     } catch (error) {
         console.error('Error occurred:', error);
@@ -1155,12 +1153,9 @@ app.post('/resetPassword', async (req, res) => {
         let password2 = req.body.password2;
         let email = req.body.email;
 
-        console.log(password1, password2);
         if (password1 === password2 && password1.length > 0 && password2.length > 0) {
             let hashedPassword = await bcrypt.hash(password1, saltRounds);
             let encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString();
-            console.log("Email: " + email);
-            console.log("Password: " + hashedPassword);
 
             await userCollection.updateOne({ email: encryptedEmail }, { $set: { password: hashedPassword } });
             res.redirect("/login");
@@ -1245,10 +1240,8 @@ app.get('/businessCheckout', async (req, res) => {
             },
         }
     );
-    console.log(currentUser.user_type == "user");
     const cardId = req.query.cardId;
     const distance = req.query.distance;
-    console.log(cardId, distance)
 
     const objectId = new ObjectId(cardId);
     const services = await general.find({}).project({ _id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
