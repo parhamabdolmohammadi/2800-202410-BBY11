@@ -1,8 +1,4 @@
 <%- include("templates/header") %>
-<!-- <div style="margin: 5vh 5vw">
-  <h1 style="color: red">Error!</h1>
-  <div><%= error %></div>
-</div> -->
 <style>
   body {
       display: flex;
@@ -34,11 +30,11 @@
 </style>
 </head>
 <body>
-  <br>
-<div class="container">
-  <div class="error-code">401</div>
-  <div class="error-message"><%= error %></div>
-  <div class="smaller-text">Sorry, you are not authorized.</div>
-</div>
-</body>
+  <div class="container">
+    <div class="error-code">401</div>
+    <div class="error-message"><%= error %></div>
+    <div class="smaller-text">Sorry, you are not authorized.</div>
+  </div>
 <%- include("templates/footer") %>
+</body>
+</html>
