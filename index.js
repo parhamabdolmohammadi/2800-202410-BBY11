@@ -214,6 +214,7 @@ app.get('/', (req, res) => {
 
 });
 
+//adapted from a previous webdev project, approved by Ashkan
 app.get('/signup', async (req, res) => {
     let username = ""
     let userEmail = ''
@@ -249,6 +250,7 @@ app.get('/edit-profile', async (req, res) => {
 app.get('/edit-password', (req, res) => {
     res.render("edit-password", { username: req.session.username });
 });
+//adapted from a previous webdev project, approved by Ashkan
 
 app.post('/submitUser', async (req, res) => {
     var username = req.body.username;
@@ -316,6 +318,7 @@ app.post('/submitUser', async (req, res) => {
 app.get("/signupSubmit", (req, res) => {
     res.render("signupSubmit", { problem: req.query.problem, username: req.session.username });
 });
+//adapted from a previous webdev project, approved by Ashkan
 
 app.get('/login', async (req, res) => {
     let username = ""
@@ -333,6 +336,7 @@ app.get('/login', async (req, res) => {
     res.render("login", { username: username, userEmail, services, stations });
 });
 
+//adapted from a previous webdev project, approved by Ashkan
 
 app.post('/loggingin', async (req, res) => {
     var email = req.body.email;
