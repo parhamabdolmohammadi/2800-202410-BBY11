@@ -18,7 +18,7 @@ var closest = 100;
 var closestID;
 let cardTemplate = document.getElementById("StationCardTemplate");
 
-console.log("closetId " + closestID);
+
 
 getLocation();
 
@@ -89,7 +89,6 @@ station.forEach(station => {
 
    if (currentUser) {
       var bookmarks = currentUser[0].bookmarks;
-      console.log(bookmarks);
       if(bookmarks && bookmarks.includes(CardId)) {
          newcard.querySelector(".star-image").src = '/star2.png';
          isBookmarked = true;
@@ -124,7 +123,7 @@ function openPhoneCall(phoneNumber) {
 function updateBookmark1(id, isBookmarked) {
    document.getElementById('id-placeholder' + id).value = id;
   
-  console.log( document.getElementById("save-" + id).src);
+
 
   if (isBookmarked) {
    Swal.fire({

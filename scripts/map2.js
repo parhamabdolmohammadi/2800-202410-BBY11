@@ -8,7 +8,7 @@
 
   
 
-  console.log("closetId " + closestID);
+
 
   getLocation();
 
