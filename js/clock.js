@@ -1,3 +1,6 @@
+// I found this code from a github repository
+// @author Pawel Zuchowski
+// @source https://github.com/nipanimaju/coming-soon 
 var yourDate = "2024-05-30" 
 ! function (e) {
     var t = {};

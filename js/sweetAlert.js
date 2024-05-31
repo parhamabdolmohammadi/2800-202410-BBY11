@@ -1,3 +1,5 @@
+// All the sweet alerts that you see in this page are from the website: https://sweetalert2.github.io/
+
 document.addEventListener('DOMContentLoaded', function() {
 
   var logoutSettingLink = document.getElementById('logout-setting');

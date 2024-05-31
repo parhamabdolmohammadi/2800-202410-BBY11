@@ -432,6 +432,8 @@ app.get("/loginSubmit", (req, res) => {
     res.render("loginSubmit", { username: req.session.username });
 });
 
+//This code snippet has been generated with the help of ChatGPT
+//Source: https://chatgpt.com/
 app.post('/updateProfile', async (req, res) => {
     const { username, email } = req.body;
     var encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString();
@@ -482,6 +484,8 @@ app.post('/updateProfile', async (req, res) => {
     }
 });
 
+//This code snippet has been generated with the help of ChatGPT
+//Source: https://chatgpt.com/
 app.post('/updatePassword', async (req, res) => {
     const { currentPassword, newPassword, confirmNewPassword } = req.body;
     const userId = new ObjectId(req.session._id); // Replace with actual user ID (e.g., from session)
@@ -770,7 +774,8 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
-
+//This code snippet has been generated with the help of ChatGPT
+//Source: https://chatgpt.com/
 app.get('/deleteAccount', (req, res) => {
     async function deleteUserAccount(userId) {
         const uri = 'mongodb+srv://Seohyeon:Qkrtjgus8663!@atlascluster.u56alig.mongodb.net/AtlasCluster?retryWrites=true&w=majority';
