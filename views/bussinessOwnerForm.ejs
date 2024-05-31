@@ -177,7 +177,8 @@
 </div>
 <br />
 <script>
-  // Additional client-side scripts can go here
+  userEmail = <%- JSON.stringify(email) %>;
+  document.getElementById("email").value = userEmail;
 </script>
 <script src="/b"></script>
 
