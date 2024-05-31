@@ -1,16 +1,32 @@
 <%- include("templates/header") %>
 
-<% if (problem == "EmailExists") { %>
-  <p>The email you entered already exists</p>
-<% } else { %>
-  <p><%= problem %> is required</p>
-<% } %>
+<div class="prompt-message-container">
+  <div class="prompt-message">
+    <% if (problem == "EmailExists") { %>
+      <p>The email you entered already exists</p>
+    <% } else { %>
+      <p><%= problem %> is required</p>
+    <% } %>
+    <a href='/signup' class="btn" style="background-color: #003249 !important; color: white;">Try again</a>
+  </div>
+
+</div>
+
 
 <!-- <form action="/signup" method="get">
   <button class="btn btn-secondary rounded-pill px-3" type="submit">
     Try Again
   </button>
 </form> -->
-<a href='/signup' class="btn" style="background-color: #003249 !important; color: white;">Try again</a>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      var link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "/signupSubmit.css";
+      document.head.appendChild(link);
+  });
+</script>
 
 <%- include("templates/footer") %>
