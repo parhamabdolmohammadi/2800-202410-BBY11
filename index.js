@@ -213,7 +213,6 @@ app.get('/', (req, res) => {
 
 });
 
-//adapted from a previous webdev project, approved by Ashkan
 app.get('/signup', async (req, res) => {
     let username = ""
     let userEmail = ''
@@ -251,7 +250,6 @@ app.get('/edit-profile', async (req, res) => {
 app.get('/edit-password', (req, res) => {
     res.render("edit-password", { username: req.session.username });
 });
-//adapted from a previous webdev project, approved by Ashkan
 
 
 // Post method for submmiting a new user
@@ -321,7 +319,6 @@ app.post('/submitUser', async (req, res) => {
 app.get("/signupSubmit", (req, res) => {
     res.render("signupSubmit", { problem: req.query.problem, username: req.session.username });
 });
-//adapted from a previous webdev project, approved by Ashkan
 
 app.get('/login', async (req, res) => {
     let username = ""
@@ -339,7 +336,6 @@ app.get('/login', async (req, res) => {
     res.render("login", { username: username, userEmail, services, stations });
 });
 
-//adapted from a previous webdev project, approved by Ashkan
 
 app.post('/loggingin', async (req, res) => {
     var email = req.body.email;
@@ -1084,7 +1080,7 @@ app.post('/resetPassword', async (req, res) => {
 });
 
 
-
+//Displaying all the stations and maps based on users geolocation 
 app.get('/stations', async (req, res) => {
     try {
         const stations = await stationsCollection.find({}).toArray();
@@ -1098,6 +1094,7 @@ app.get('/stations', async (req, res) => {
     }
 });
 
+//In the stations.ejs They can bookmark any station they want it would be transferred to bookmarked stations in saved.ejs
 app.post('/editBookmark', async (req, res) => {
     const cardId = req.body.data;
     const currentUserName = await userCollection.findOne({ username: req.session.username });
@@ -1117,7 +1114,7 @@ app.post('/editBookmark', async (req, res) => {
     res.redirect('/stations');
 });
 
-
+// Bookmarked stations which is bookmarked in stations.ejs
 app.get('/saved', async (req, res) => {
     try {
         const stations = await stationsCollection.find({}).toArray();
@@ -1131,7 +1128,7 @@ app.get('/saved', async (req, res) => {
     }
 });
 
-
+//transfer data from stations.ejs to station.js after selecting a location including user distance to location and station information
 app.post('/displayStation', async (req, res) => {
     const cardId = req.body.data;
     const distance = req.body.data2;
@@ -1205,7 +1202,7 @@ app.get('/station', async (req, res) => {
 });
 
 
-
+//bussiness owner submission form to become a business owner only user is authorized
 app.get('/bussinessOwnerForm', async (req, res) => {
     const currentUser = await userCollection.findOne(
         { username: req.session.username },
@@ -1231,7 +1228,8 @@ app.get('/bussinessOwnerForm', async (req, res) => {
 
 
 
-
+//submit business owners data after submission sends them a confirmation email and redirect them to saved.js
+//their request will be stored in a card in admin page
 app.post('/bussinessOwnerSubmission', async (req, res) => {
     let name = req.body.first_name;
     let lastname = req.body.last_name;
@@ -1284,18 +1282,18 @@ app.post('/bussinessOwnerSubmission', async (req, res) => {
 });
 
 
-
+//confirmation page after user signs up to become a business owner
 app.get('/bussinessOwnerSignupConfirmation', async (req, res) => {
 
     res.render("bussinessOwnerSignupConfirmation", { email: req.session.email, username: req.session.username });
 })
-
+// admin page to get all the buiness owner requests and a link to page to manage services
 app.get('/admin', sessionValidation, adminAuthorization, async (req, res) => {
     const result = await userCollection.find().project({ username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1, applied_email: 1 }).toArray();
 
     res.render("admin", { users: result, username: req.session.username });
 });
-
+// if in admin a request is approved this will happen
 app.post('/PromoteToBusinessOwner', async (req, res) => {
     let user_id = req.body.data;
 
@@ -1304,7 +1302,7 @@ app.post('/PromoteToBusinessOwner', async (req, res) => {
     const result = await userCollection.find().project({ username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1 }).toArray();
     res.redirect("/admin");
 });
-
+// if in admin a request is not approved this will happen
 app.post('/DemoteToUser', async (req, res) => {
     let user_id = req.body.data;
 
