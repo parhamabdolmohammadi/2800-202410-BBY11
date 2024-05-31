@@ -1338,7 +1338,7 @@ app.post('/bussinessOwnerSubmission', async (req, res) => {
     <h1>Hello ${name} ${lastname},</h1>
     <p>Thank you for your request we will process your request and reach out to you soon.</p>
     <p><strong>Best regards,</strong></p>
-    <p>Robo Rental App</p>
+    <p>Robo Rental App</p>\n\nPrivacy Policy: https://two800-202410-bby11-1-dogh.onrender.com/privacy
   `;
 
     console.log(htmlContent);
@@ -1424,7 +1424,7 @@ app.post('/submitEmailBL', async (req, res) => {
 
             Best regards,
 
-            The Robo Rental Team`,
+            The Robo Rental Team \n\nPrivacy Policy: https://two800-202410-bby11-1-dogh.onrender.com/privacy`,
         };
         let info = await transporter.sendMail(mailOptions);
         console.log('Email sent:', info.messageId);
@@ -1469,7 +1469,7 @@ Stay tuned for more updates and features coming soon!
 
 Best regards,
 
-The Robo Rental Team`
+The Robo Rental Team \n\nPrivacy Policy: https://two800-202410-bby11-1-dogh.onrender.com/privacy`
             };
 
             // Send email
