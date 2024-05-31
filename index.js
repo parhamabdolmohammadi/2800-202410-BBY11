@@ -1091,7 +1091,7 @@ app.post('/sendEmail', async (req, res) => {
             from: 'roborental.bcit@gmail.com',
             to: email,
             subject: 'Password Reset Request',
-            text: 'This is your one time login code to reset your password: ' + resetCode,
+            text: 'This is your one time login code to reset your password: ' + resetCode + '\n\nPrivacy Policy: https://two800-202410-bby11-1-dogh.onrender.com/privacy',
         };
         const info = await transporter.sendMail(mailOptions);
         console.log('Email sent:', info.messageId);
@@ -1106,8 +1106,9 @@ app.post('/loginfromcode', async (req, res) => {
         let code1 = req.body.resetCode;
         let code2 = req.body.inputCode;
         let email = req.body.email;
-        if (code1 !== code2) {
-            res.send("Invalid code. Please try again.");
+        console.log("code1: "+code1 + "code2: " +  code2)
+        if (code1 !== code2 || code1 == null || code2 == null) {
+            res.render("enterCode", { resetCode: code1, userEmail: email, username: req.session.username });
         } else {
             res.render("reset-password", { email: email, username: req.session.username });
         }
@@ -1123,7 +1124,7 @@ app.post('/resetPassword', async (req, res) => {
         let email = req.body.email;
 
         console.log(password1, password2);
-        if (password1 === password2) {
+        if (password1 === password2 && password1.length > 0 && password2.length > 0) {
             let hashedPassword = await bcrypt.hash(password1, saltRounds);
             let encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString();
             console.log("Email: " + email);
@@ -1132,7 +1133,7 @@ app.post('/resetPassword', async (req, res) => {
             await userCollection.updateOne({ email: encryptedEmail }, { $set: { password: hashedPassword } });
             res.redirect("/login");
         } else {
-            res.send("Passwords do not match. Please try again.");
+            res.render("reset-password", { email: email, username: req.session.username });
         }
     } catch (error) {
         console.error('Error occurred:', error);
