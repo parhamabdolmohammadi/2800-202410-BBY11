@@ -3,7 +3,7 @@ const Joi = require("joi");
 /* Joi schema for signup page
  * This joi schema for login page block of code was adapted from code found here:
  * source: https://github.com/greencodecomments/COMP2537_Demo_Code_5/commit/05be996aa7bb50622db9d5e23e8dfa426fc9fc87
- * from COMP2537 week 5 example code with variable names changed
+ * (from COMP2537 week 5 example code with variable names changed).
  */
 const signupSchema = Joi.object({
     username: Joi.string()

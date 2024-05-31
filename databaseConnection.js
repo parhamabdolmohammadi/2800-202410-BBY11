@@ -1,7 +1,7 @@
 /* Database connection to MongoDB for Nodejs server
  * This client side validation block of code was adapted from code found here:
  * source: https://github.com/greencodecomments/COMP2537_Demo_Code_1/commit/f43c54b9aec50ffad0ddf56e4927be6f328a71cb
- * from COMP2537 week 1 example code with variable names changed
+ * (from COMP2537 week 1 example code with variable names changed).
  */
 
 require('dotenv').config();
