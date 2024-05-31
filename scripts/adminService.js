@@ -173,7 +173,9 @@ createButton.addEventListener('click', () => {
     const description = document.getElementById('description').value
     const price = document.getElementById('price').value
     // console.log(typeof price);
-    if (typeof price !== 'number') {
+    // console.log();
+    if (isNaN(parseFloat(price))) {
+        // console.log('this is nto number');
         priceInvalid.style.display = 'block';
         setTimeout(() => {
             priceInvalid.style.display = 'none';
