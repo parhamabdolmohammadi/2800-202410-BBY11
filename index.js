@@ -880,6 +880,7 @@ app.get('/main', async (req, res) => {
 // });
 
 app.get('/checkout', sessionValidation, async (req, res) => {
+    req.session.order = null;
     let stationId = req.query.stationId;
     let userId = new ObjectId(req.session._id);
     let result = await userCollection.findOne({ _id: userId }, { projection: { remember: 1 } });
@@ -998,29 +999,50 @@ async function removeRobotFromDatabase(stationId) {
 }
 
 
-app.get('/confirmation', sessionValidation, (req, res) => {
+app.get('/confirmation', sessionValidation, async (req, res) => {
     function generateuuid() {
         const uuid = uuidv4().replace(/-/g, '');
         return uuid.slice(0, 24);
     }
+
     let total = req.query.total;
     let paymentType = req.query.paymentType;
     let service = req.query.service;
     let orderNumber = generateuuid();
     let timestamp = new Date().toISOString();
 
-    res.render("confirmation", { orderNumber: orderNumber, total: total, username: req.session.username });
-    if (total != null) {
-        let id = new ObjectId(orderNumber);
-        ordersCollection.insertOne({
-            _id: id,
-            timestamp: timestamp,
-            paymentType: paymentType,
-            customerId: req.session._id,
+    if (!req.session.order && req.query.total != null) {
+
+
+        // Store the order details in the session
+        req.session.order = {
+            orderNumber: orderNumber,
             total: total,
-            service: service
-        });
+            paymentType: paymentType,
+            service: service,
+            timestamp: timestamp
+        };
+
+        if (total != null) {
+            let id = new ObjectId(orderNumber);
+            await ordersCollection.insertOne({
+                _id: id,
+                timestamp: timestamp,
+                paymentType: paymentType,
+                customerId: req.session._id,
+                total: total,
+                service: service
+            });
+        }
     }
+
+    // Retrieve the order details from the session
+    const order = req.session.order;
+    if (order){
+        orderNumber = order.orderNumber;
+        total = order.total;
+    }
+    res.render("confirmation", { orderNumber: orderNumber, total: total, username: req.session.username });
 });
 
 const general = database.db('Services').collection('General')
@@ -1106,7 +1128,7 @@ app.post('/loginfromcode', async (req, res) => {
         let code1 = req.body.resetCode;
         let code2 = req.body.inputCode;
         let email = req.body.email;
-        console.log("code1: "+code1 + "code2: " +  code2)
+        console.log("code1: " + code1 + "code2: " + code2)
         if (code1 !== code2 || code1 == null || code2 == null) {
             res.render("enterCode", { resetCode: code1, userEmail: email, username: req.session.username });
         } else {
@@ -1193,7 +1215,7 @@ app.get('/saved', async (req, res) => {
 app.post('/displayStation', async (req, res) => {
     const cardId = req.body.data;
     const distance = req.body.data2;
-    console.log("card id and distance: "+cardId, distance)
+    console.log("card id and distance: " + cardId, distance)
 
     const objectId = new ObjectId(cardId);
 
@@ -1278,9 +1300,9 @@ app.get('/bussinessOwnerForm', async (req, res) => {
 
     let unencryptedEmail = CryptoJS.AES.decrypt(currentUser.email, key, { iv: iv }).toString(CryptoJS.enc.Utf8);
 
-console.log(currentUser.email);
+    console.log(currentUser.email);
     if (!currentUser.businessOwnerRequestInProgress) {
-        res.render("bussinessOwnerForm", { email: unencryptedEmail, request: false, user_type: currentUser.user_type, username: req.session.username,  });
+        res.render("bussinessOwnerForm", { email: unencryptedEmail, request: false, user_type: currentUser.user_type, username: req.session.username, });
     } else {
         res.render("bussinessOwnerForm", { email: unencryptedEmail, request: true, user_type: currentUser.user_type, username: req.session.username });
     }
@@ -1339,7 +1361,7 @@ app.post('/bussinessOwnerSubmission', async (req, res) => {
 
     await sendEmail(email, htmlContent);
 
-    await userCollection.updateOne({ username: req.session.username }, { $set: { businessOwnerRequestInProgress: true,applied_email: email, name, lastname, phonenumber, address, businessName, businessAddress, description, dateOfBirth, gender } });
+    await userCollection.updateOne({ username: req.session.username }, { $set: { businessOwnerRequestInProgress: true, applied_email: email, name, lastname, phonenumber, address, businessName, businessAddress, description, dateOfBirth, gender } });
     res.render('bussinessOwnerSignupConfirmation', { username: req.session.username });
 });
 
@@ -1352,7 +1374,7 @@ app.get('/bussinessOwnerSignupConfirmation', async (req, res) => {
 })
 
 app.get('/admin', sessionValidation, adminAuthorization, async (req, res) => {
-    const result = await userCollection.find().project({ username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1  , applied_email: 1}).toArray();
+    const result = await userCollection.find().project({ username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1, applied_email: 1 }).toArray();
 
     res.render("admin", { users: result, username: req.session.username });
 });
@@ -1362,7 +1384,7 @@ app.post('/PromoteToBusinessOwner', async (req, res) => {
     console.log(user_id);
     const objectId = new ObjectId(user_id);
     await userCollection.updateOne({ _id: objectId }, { $set: { businessOwnerRequestInProgress: false, user_type: "businessOwner" } });
-    const result = await userCollection.find().project({ username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1}).toArray();
+    const result = await userCollection.find().project({ username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1 }).toArray();
     res.redirect("/admin");
 });
 
