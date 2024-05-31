@@ -1,8 +1,7 @@
-  /* Function that changes the the password input type attribute to text when clicked on, and reveals the text entered
-  *  This show tables block of code was adapted from code found here:
-  *  Code adapted from:
-  *  https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_toggle_password
-  */
+// Function that changes the the password input type 
+  // attribute to text when clicked on, and reveals the text entered
+  // Code adapted from:
+  // https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_toggle_password
   function togglePasswordVisability(passwordInputElementId, visabilityButtonElementId) {
 
     // Get either signup or login page element Ids
