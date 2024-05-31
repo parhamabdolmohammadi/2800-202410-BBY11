@@ -1,39 +1,43 @@
 const Joi = require("joi");
 
-const signupSchema = Joi.object(
-    {
-        username: Joi.string()
+const signupSchema = Joi.object({
+    username: Joi.string()
         .pattern(/^[a-zA-Z0-9 ]*$/)
+        .min(5)
         .max(40)
         .required()
         .messages({
-            'string.base': 'Username cannot contain non-text characters',
+            'string.base': 'Username must be a string',
             'string.pattern.base': 'Username can only contain letters, numbers, and spaces',
+            'string.min': 'Username must be at least 5 characters long',
             'string.max': 'Username cannot be longer than 40 characters',
-            'string.empty': "Username is required"
+            'string.empty': 'Username is required'
         }),
 
-        email: Joi.string()
-        .email({tlds: {allow: false}})
+    email: Joi.string()
+        .email({ tlds: { allow: false } })
         .max(40)
         .required()
         .messages({
             'string.base': 'Email must be a string',
             'string.max': 'Email cannot be longer than 40 characters',
-            'string.email': "Email must be a valid email",
-            'string.domain': "Email must be a valid email",
-            'string.empty': "Email is required",
+            'string.email': 'Email must be a valid email',
+            'string.domain': 'Email must be a valid email',
+            'string.empty': 'Email is required',
         }),
 
-        password: Joi.string()
+    password: Joi.string()
+        .min(5)
         .max(20)
+        .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{5,}$'))
         .required()
         .messages({
             'string.base': 'Password must be a string',
-            'string.max': 'Password cannot be longer than 40 characters',
-            'string.empty': "Password is required"
+            'string.min': 'Password must be at least 5 characters long',
+            'string.max': 'Password cannot be longer than 20 characters',
+            'string.pattern.base': 'Password must contain at least one number, one uppercase letter, one lowercase letter, and one special character',
+            'string.empty': 'Password is required'
         }),
-    }
-);
+});
 
 exports.signupSchema = signupSchema;
