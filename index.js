@@ -39,6 +39,7 @@ const Joi = require("joi");
 
 const { resourceLimits } = require("worker_threads");
 
+// Add if you want to how it in the nav bar section
 const navLinks = [
     { name: "Home", link: "/" },
     { name: "Admin", link: "/admin" },
@@ -233,11 +234,13 @@ app.get('/signup', async (req, res) => {
     res.render("signup", { username, userEmail, services, stations })
 });
 
-
+//Route to the setting page
 app.get('/setting', (req, res) => {
     res.render("setting", { username: req.session.username })
 });
 
+
+//Route to the edit profile page
 app.get('/edit-profile', async (req, res) => {
     let id = await req.session._id;
     let email = await req.session.email;
@@ -245,10 +248,14 @@ app.get('/edit-profile', async (req, res) => {
     res.render("edit-profile", { name: req.session.username, email: unencryptedEmail, userId: id, username: req.session.username });
 });
 
+
+//Route to edit password
 app.get('/edit-password', (req, res) => {
     res.render("edit-password", { username: req.session.username });
 });
 
+
+// Post method for submmiting a new user
 app.post('/submitUser', async (req, res) => {
     var username = req.body.username;
     var password = req.body.password;
@@ -732,6 +739,8 @@ app.post('/updatePassword', async (req, res) => {
     }
 });
 
+
+//Logging out and killing the session
 app.get('/logout', (req, res) => {
     req.session.destroy();
 
@@ -740,6 +749,7 @@ app.get('/logout', (req, res) => {
 
 //This code snippet has been generated with the help of ChatGPT
 //Source: https://chatgpt.com/
+//Removing the user account from the database
 app.get('/deleteAccount', (req, res) => {
     async function deleteUserAccount(userId) {
         const uri = 'mongodb+srv://Seohyeon:Qkrtjgus8663!@atlascluster.u56alig.mongodb.net/AtlasCluster?retryWrites=true&w=majority';
