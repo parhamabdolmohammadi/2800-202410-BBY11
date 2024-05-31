@@ -321,7 +321,7 @@ app.post('/submitUser', async (req, res) => {
     console.log("Inserted user");
     // console.log(CryptoJS.AES.decrypt(encryptedEmail, key, { iv: iv}).toString(CryptoJS.enc.Utf8));
 
-    var html = "successfully created user";
+    var html = "successfully created usgiter";
     console.log(html);
 
     req.session._id = _id;
@@ -1260,15 +1260,19 @@ app.get('/bussinessOwnerForm', async (req, res) => {
             projection: {
                 username: 1,
                 user_type: 1,
+                email: 1,
                 businessOwnerRequestInProgress: 1,
             },
         }
     );
-    console.log(currentUser.user_type == "user");
+
+    let unencryptedEmail = CryptoJS.AES.decrypt(currentUser.email, key, { iv: iv }).toString(CryptoJS.enc.Utf8);
+
+console.log(currentUser.email);
     if (!currentUser.businessOwnerRequestInProgress) {
-        res.render("bussinessOwnerForm", { email: req.session.email, request: false, user_type: currentUser.user_type, username: req.session.username });
+        res.render("bussinessOwnerForm", { email: unencryptedEmail, request: false, user_type: currentUser.user_type, username: req.session.username,  });
     } else {
-        res.render("bussinessOwnerForm", { email: req.session.email, request: true, user_type: currentUser.user_type, username: req.session.username });
+        res.render("bussinessOwnerForm", { email: unencryptedEmail, request: true, user_type: currentUser.user_type, username: req.session.username });
     }
 
 })
@@ -1325,7 +1329,7 @@ app.post('/bussinessOwnerSubmission', async (req, res) => {
 
     await sendEmail(email, htmlContent);
 
-    await userCollection.updateOne({ username: req.session.username }, { $set: { businessOwnerRequestInProgress: true, name, lastname, phonenumber, address, businessName, businessAddress, description, dateOfBirth, gender } });
+    await userCollection.updateOne({ username: req.session.username }, { $set: { businessOwnerRequestInProgress: true,applied_email: email, name, lastname, phonenumber, address, businessName, businessAddress, description, dateOfBirth, gender } });
     res.render('bussinessOwnerSignupConfirmation', { username: req.session.username });
 });
 
@@ -1338,7 +1342,7 @@ app.get('/bussinessOwnerSignupConfirmation', async (req, res) => {
 })
 
 app.get('/admin', sessionValidation, adminAuthorization, async (req, res) => {
-    const result = await userCollection.find().project({ username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1 }).toArray();
+    const result = await userCollection.find().project({ username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1  , applied_email: 1}).toArray();
 
     res.render("admin", { users: result, username: req.session.username });
 });
@@ -1348,7 +1352,7 @@ app.post('/PromoteToBusinessOwner', async (req, res) => {
     console.log(user_id);
     const objectId = new ObjectId(user_id);
     await userCollection.updateOne({ _id: objectId }, { $set: { businessOwnerRequestInProgress: false, user_type: "businessOwner" } });
-    const result = await userCollection.find().project({ username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1 }).toArray();
+    const result = await userCollection.find().project({ username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1}).toArray();
     res.redirect("/admin");
 });
 
