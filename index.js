@@ -61,7 +61,7 @@ app.use("/", (req, res, next) => {
 })
 
 
-const expireTime = 24 * 60 * 60 * 1000; //expires after 1 day  (hours * minutes * seconds * millis)
+const expireTime = 60 * 60 * 1000; //expires after 1 day  (hours * minutes * seconds * millis)
 
 /* secret information section */
 const mongodb_host = process.env.MONGODB_HOST;
@@ -564,7 +564,7 @@ app.post('/updatePassword', async (req, res) => {
             Swal.fire({
                 icon: 'error',
                 title: 'Error!',
-                text: "New password and confirm new password do not match",
+                text: "New password and confirm new password do not match or cannot be empty",
                 showConfirmButton: false,
                 footer: '<a href="/edit-password" style="display: inline-block; padding: 10px 20px; background-color: #003249; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease;">Try Again</a>'
             });
