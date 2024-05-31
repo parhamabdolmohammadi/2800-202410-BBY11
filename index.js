@@ -770,26 +770,23 @@ app.get('/deleteAccount', (req, res) => {
     res.redirect('/logout')
 });
 
-
+// Route for main page.
 app.get('/main', async (req, res) => {
+    // If user is not authenticated, direct the user back to login page
     if (!req.session.authenticated) {
         res.redirect('/');
         return;
     }
-    // console.log('finding...');
+
+    // Fetch services and stations data from database
     const services = await general.find({}).project({ _id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
     const stations = await stationsCollection.find({}).toArray();
     currentUserName = await userCollection.find({ username: req.session.username }).project({ username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1 }).toArray();
-    // console.log('this is ' + services);
-    // services.forEach(service => {
-    //     console.log(service.name);
-    // })
+  
     var username = req.session.username;
-    // console.log('username is ' +  username);
+
+    // Render to main.ejs with services, stations, and user name data.
     res.render("main", { services, username, stations });
-
-
-
 });
 
 app.get('/checkout', sessionValidation, async (req, res) => {
@@ -958,22 +955,19 @@ app.get('/confirmation', sessionValidation, async (req, res) => {
     res.render("confirmation", { orderNumber: orderNumber, total: total, username: req.session.username });
 });
 
+// This code was for deleting and updating services in database. 
+// This is not used because  
 const general = database.db('Services').collection('General')
 const fs = require('fs');
-const { time } = require("console");
 let isNewDataInserted = false; // This should be false when all data in service.json is stored in mongo db
 if (isNewDataInserted) {
     const jsonData = fs.readFileSync('service.json', 'utf8');
     const dataArray = JSON.parse(jsonData);
-    // console.log('this is data array');
-    // console.log(dataArray);
     dataArray.forEach(async (data) => {
-        // console.log('this is data' + data.name);
         const existingData = await general.findOne({ name: data.name });
         if (!existingData) {
             data.background = `${data.name.trim().replace(/\s+/g, '')}.png`;
             await general.insertOne(data);
-            // console.log('Inserted new data:', data);
         } else {
             if (existingData.description !== data.description) {
                 await general.updateOne({ name: data.name }, { $set: { description: data.description } })
@@ -981,25 +975,22 @@ if (isNewDataInserted) {
         }
     });
 }
-// to delete all data in general database
+// Used this code to clear database.
 // general.deleteMany({})
 
 
-// background
-// "/plumbing.png"
-
+// User search services in main page. The query will be captured in this method.
 app.post('/search', async (req, res) => {
     const query = req.body.query;
-    // console.log('this is my query ' + query);
-    const regex = new RegExp(query, 'i'); // 'i' flag for case-insensitive matching
 
+    // i tag for case-insensitive matching.
+    const regex = new RegExp(query, 'i'); 
+
+    // Find service with query that user provided.
+    // Store id, name, description, background, and price data.
     const result = await general.find({ name: { $regex: regex } }).project({ _id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
 
-    // Iterate through the result array and display the name of each object
-    result.forEach(item => {
-        // console.log("found it: " + item.name);
-    });
-
+    // Respond to client with result.
     res.json({ result });
 })
 
@@ -1410,11 +1401,13 @@ app.get('/history', async (req, res) => {
         res.redirect('/');
         return;
     }
-    //timestamp:1, paymentType:1, customerId:1, total:1, service:1
-    // change it to customerId: req.session._id '664fb094254567cab99f3cfa'
+    
+    // Compare user id which is stored in session to customer id in database. Additionally, it ensure that business owner record is not fetched.
     const history = await orders.find({ customerId: req.session._id, business: { $ne: true } }).project({}).toArray()
     var username = req.session.username;
     const historyUrl = [];
+
+    // Fetch background url from database.
     const fetchUrls = async () => {
         for (const each of history) {
             const result = await general.findOne({ name: each.service }, { projection: { background: 1, name: 1 } });
@@ -1423,25 +1416,29 @@ app.get('/history', async (req, res) => {
     };
 
     await fetchUrls()
-    // await general.find({name: each.service}).project({background:1}).toArray()
 
-    console.log(historyUrl);
-    // console.log(username);
-    // console.log(history);
-    // console.log(req.session._id);
+    // Render to history.ejs with username, history, and history url data.
     res.render("history", { username, history, historyUrl })
 })
 
+// Before accessing to admin page, the user will be evaluated whether they are administrator or not.
 app.get('/adminService', adminAuthorization, async (req, res) => {
+    
+    //Fetch services from database.
     const services = await general.find({}).project({}).toArray();
+
+    // Render adminService.ejs with services, and user name data.
     res.render('adminService', { services, username: req.session.username })
 })
 
+// Update service information.
 app.post('/update', async (req, res) => {
+
+    // Receive values from user.
     const id = req.body.modalId;
     const updatedService = req.body.updatedService;
-    // console.log(id);
-    console.log(updatedService);
+
+    // Update the service with provided data.
     const service = await general.updateOne(
         { _id: new ObjectId(id) },
         {
@@ -1455,7 +1452,7 @@ app.post('/update', async (req, res) => {
 
 })
 
-// Using multer module to store image file in vs code
+// Using multer module to store image file in VS code.
 // Generated by chat gpt 3.5
 // @author https://chat.openai.com/
 const multer = require('multer');
@@ -1469,6 +1466,7 @@ const storage = multer.diskStorage({
     }
 })
 
+// Filter file. Only accept .png file extension.
 const fileFilter = (req, file, cb) => {
     if (file.mimetype === 'image/png') {
         cb(null, true);
@@ -1479,22 +1477,9 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ storage: storage, fileFilter: fileFilter })
 
-// app.post('/create', upload.single('image'), async (req, res) => {
-
-//     const name = req.body.name;
-//     const description = req.body.description;
-//     const price = req.body.price;
-//     const image = req.file;
-//     if (!name || !description || !price || !image) {
-//         return res.status(400).json({ message: 'Input field can not be empty' });
-//     }
-//     console.log(image);
-//     var _id = new ObjectId();
-//     await general.insertOne({ _id, name, description, price, background: image.originalname });
-//     res.status(200).json({ message: 'Entry created successfully.' });
-// })
-
 app.post('/create', async (req, res) => {
+
+    // Check if the image is valid.
     upload.single('image')(req, res, (err) => {
         if (err) {
             return res.status(400).json({ code: 'EXTENSION_ERROR', message: err.message });
@@ -1503,12 +1488,14 @@ app.post('/create', async (req, res) => {
         const { name, description, price } = req.body;
         const image = req.file;
 
+        // If one of entries is missing, issue an error.
         if (!name || !description || !price || !image) {
             return res.status(400).json({ message: 'Input field can not be empty' });
         }
 
-        console.log(image);
         var _id = new ObjectId();
+
+        // Insert data into database.
         general.insertOne({ _id, name, description, price, background: image.originalname })
             .then(() => {
                 res.status(200).json({ message: 'Entry created successfully.' });
@@ -1519,17 +1506,18 @@ app.post('/create', async (req, res) => {
     });
 });
 
-// Delete image file from vs code
+// Delete image file from VS code.
 // Generated by chat gpt 3.5
 // @author https://chat.openai.com/
 app.post('/delete', async (req, res) => {
     const name = req.body.cardName
-    // console.log(name);
 
+    // Find background url of service in database with provided name data.
     const entry = await general.findOne({ name: name })
     const background = entry.background
-    // console.log(background);
     const imgPath = './images/' + background;
+
+    // Attemp to delete file.
     fs.unlink(imgPath, (err) => {
         if (err) {
             console.error('Error deleting file:', err);
@@ -1538,8 +1526,9 @@ app.post('/delete', async (req, res) => {
 
         console.log('File deleted successfully');
     })
+
+    // Delete entry from database.
     await general.deleteOne({ name: name })
-    // console.log(entry);
     res.status(200).json({ message: 'Entry deleted successfully.' });
 
 })
