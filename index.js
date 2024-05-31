@@ -164,6 +164,15 @@ function adminAuthorization(req, res, next) {
         next();
     }
 }
+app.get('/privacy', (req, res) => {
+    res.render('privacy', { username: req.session.username });
+});
+
+app.get('/terms-and-conditions', (req, res) => {
+    res.render('terms-and-conditions', { username: req.session.username });
+});
+
+
 app.get('/auth/google', (req, res, next) => {
     const signup = req.query.signup === 'true';
     passport.authenticate('google', {
