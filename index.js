@@ -1047,7 +1047,7 @@ app.post('/loginfromcode', async (req, res) => {
         let code1 = req.body.resetCode;
         let code2 = req.body.inputCode;
         let email = req.body.email;
-        console.log("code1: " + code1 + "code2: " + code2)
+
         if (code1 !== code2 || code1 == null || code2 == null) {
             res.render("enterCode", { resetCode: code1, userEmail: email, username: req.session.username });
         } else {
@@ -1120,7 +1120,6 @@ app.get('/saved', async (req, res) => {
         const users = await userCollection.find({}).toArray();
         currentUserName = await userCollection.find({ username: req.session.username }).project({ username: 1, password: 1, _id: 1, user_type: 1, bookmarks: 1 }).toArray();
 
-        // console.log("haha" + currentUserName);
         res.render("saved", { stations: stations, users: users, currentUserName: currentUserName, username: req.session.username });
     } catch (error) {
         console.error("Error fetching stations:", error);
@@ -1218,7 +1217,6 @@ app.get('/bussinessOwnerForm', async (req, res) => {
 
     let unencryptedEmail = CryptoJS.AES.decrypt(currentUser.email, key, { iv: iv }).toString(CryptoJS.enc.Utf8);
 
-    console.log(currentUser.email);
     if (!currentUser.businessOwnerRequestInProgress) {
         res.render("bussinessOwnerForm", { email: unencryptedEmail, request: false, user_type: currentUser.user_type, username: req.session.username, });
     } else {
@@ -1259,8 +1257,6 @@ app.post('/bussinessOwnerSubmission', async (req, res) => {
     <p>Robo Rental App</p>\n\nPrivacy Policy: https://two800-202410-bby11-1-dogh.onrender.com/privacy
   `;
 
-    console.log(htmlContent);
-
     // Function to send an email
     async function sendEmail(email, htmlContent) {
         try {
@@ -1287,7 +1283,6 @@ app.post('/bussinessOwnerSubmission', async (req, res) => {
 
 app.get('/bussinessOwnerSignupConfirmation', async (req, res) => {
 
-    console.log(req.session.email);
     res.render("bussinessOwnerSignupConfirmation", { email: req.session.email, username: req.session.username });
 })
 
@@ -1299,7 +1294,7 @@ app.get('/admin', sessionValidation, adminAuthorization, async (req, res) => {
 
 app.post('/PromoteToBusinessOwner', async (req, res) => {
     let user_id = req.body.data;
-    console.log(user_id);
+
     const objectId = new ObjectId(user_id);
     await userCollection.updateOne({ _id: objectId }, { $set: { businessOwnerRequestInProgress: false, user_type: "businessOwner" } });
     const result = await userCollection.find().project({ username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1 }).toArray();
@@ -1308,7 +1303,7 @@ app.post('/PromoteToBusinessOwner', async (req, res) => {
 
 app.post('/DemoteToUser', async (req, res) => {
     let user_id = req.body.data;
-    console.log(user_id);
+
     const objectId = new ObjectId(user_id);
     await userCollection.updateOne({ _id: objectId }, { $set: { businessOwnerRequestInProgress: false } });
     const result = await userCollection.find().project({ username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1 }).toArray();
