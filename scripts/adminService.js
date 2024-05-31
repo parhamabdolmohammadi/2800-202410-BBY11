@@ -161,6 +161,7 @@ cancelButtonForCreate.addEventListener('click', () => {
 })
 
 createButton.addEventListener('click', () => {
+    closeCreateForm()
     const name = document.getElementById('name').value
     const description = document.getElementById('description').value
     const price = document.getElementById('price').value
