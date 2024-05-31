@@ -18,14 +18,6 @@
       "https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap";
     document.head.appendChild(link3);
   });
-
-  document.addEventListener("DOMContentLoaded", function () {
-      
-      var link = document.createElement("link");
-      link.rel = "stylesheet";
-      link.href = "/main.css";
-      document.head.appendChild(link);
-    });
 </script>
 <div
   id="main-welcome-container"
@@ -37,7 +29,7 @@
     position: relative;
     bottom: 1.5px;
 
-    height: 400px;
+    height: 450px;
   "
 >
   <form id="main-search-form" class="d-flex mx-auto" role="search">
@@ -50,9 +42,9 @@
       aria-expanded="false"
       data-bs-auto-close="outside"
     >
-      <!-- <span class="material-symbols-outlined">filter_list</span> -->
+   
     </button>
-    <!-- Search bar text input -->
+
     <input
       id="search-text"
       class="form-control"
@@ -61,7 +53,7 @@
       aria-label="Search"
       aria-describedby="search-addon"
     />
-    <!-- Search button -->
+
     <button id="search-button" class="btn btn-light" type="submit">
       <span class="material-symbols-outlined">search</span>
     </button>
@@ -102,7 +94,7 @@ margin-bottom: ;
 margin-top: 5rem;
 color: #003249;">
  <h1>Select Your Desired Service.</h1>
- <p>You can either pick from Map or the closest station would be automatically picked for you.</p>
+ <p>Select a station from the Map, or the have closest automatically picked for you.</p>
  
 </header>
 <div id="main-service-list-container">
@@ -129,6 +121,7 @@ color: #003249;">
             <input style="display: none;" class="stationInput" type="text" name="data"  >
             <input style="display: none;" class="DistanceInput" type="text" name="data2" >
             </form>
+    
           <div>
             <form class="stations-button" action="/stations" method="GET" style="position: relative; left: 55px; bottom: 70px;">
               <button
@@ -138,7 +131,7 @@ color: #003249;">
               >
                 <img
                   class=".hover-img fluid-image"
-                  style="height: 30px"
+                  style="height: 40px"
                   src="/location.png"
                   alt=""
                 />
@@ -214,10 +207,9 @@ One of the best things about RoboRental is its affordable pricing. It makes cutt
   console.log(services);
 </script>
 
-<script src="/filteringservices.js">
- 
-  //loginc for filtering services lies down here algorithm for generating cards dynamically 
-  //was learnt in comp1800 but thats not just a copy paste its much more improved than that.
+<script src="MainPageSearchingAlgorithm.js
+">
+  
 </script>
 
 <script>
@@ -237,6 +229,15 @@ One of the best things about RoboRental is its affordable pricing. It makes cutt
 <script src="/main.js"></script>
 
 <%- include("templates/footer") %>
+
+<!-- 
+finish the main page
+	- create welcome container with search bar - with an appropriate colours that we chose from coolors
+	- create container for the available robot services to be dynamically displayed in
+	- create a file for template cards to be cloned from in the main page
+	- create a placeholder for the AI assistance button, which we shayan and I will implement next week
+ -->
+
 
 <!-- 
 finish the main page

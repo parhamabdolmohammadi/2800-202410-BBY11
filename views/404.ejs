@@ -1,6 +1,6 @@
 <%- include("templates/header") %>
 <style>
-    body {
+    .forError {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -29,12 +29,11 @@
     }
 </style>
 </head>
-<body>
-    <br>
-<div class="container">
-    <div class="error-code">404</div>
-    <div class="error-message">Page Not Found</div>
-    <div class="smaller-text">Sorry, the page you are looking for does not exist.</div>
+<div class="forError">
+    <div class="container">
+        <div class="error-code" style="color:red;">404</div>
+        <div class="error-message">Page Not Found</div>
+        <div class="smaller-text">Sorry, the page you are looking for does not exist.</div>
+    </div>
 </div>
-</body>
 <%- include("templates/footer") %>

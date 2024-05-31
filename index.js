@@ -61,7 +61,7 @@ app.use("/", (req, res, next) => {
 })
 
 
-const expireTime = 24 * 60 * 60 * 1000; //expires after 1 day  (hours * minutes * seconds * millis)
+const expireTime = 60 * 60 * 1000; //expires after 1 day  (hours * minutes * seconds * millis)
 
 /* secret information section */
 const mongodb_host = process.env.MONGODB_HOST;
@@ -164,6 +164,15 @@ function adminAuthorization(req, res, next) {
         next();
     }
 }
+app.get('/privacy', (req, res) => {
+    res.render('privacy', { username: req.session.username });
+});
+
+app.get('/terms-and-conditions', (req, res) => {
+    res.render('terms-and-conditions', { username: req.session.username });
+});
+
+
 app.get('/auth/google', (req, res, next) => {
     const signup = req.query.signup === 'true';
     passport.authenticate('google', {
@@ -479,7 +488,7 @@ app.post('/updatePassword', async (req, res) => {
     const MONGODB_URI = 'mongodb+srv://Seohyeon:Qkrtjgus8663!@atlascluster.u56alig.mongodb.net/AtlasCluster?retryWrites=true&w=majority';
     const client = new MongoClient(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
-    if (newPassword !== confirmNewPassword) {
+    if (newPassword !== confirmNewPassword || newPassword === "" || confirmNewPassword === "") {
         return res.status(400).send(`
         <!DOCTYPE html>
         <html lang="en">
@@ -555,7 +564,7 @@ app.post('/updatePassword', async (req, res) => {
             Swal.fire({
                 icon: 'error',
                 title: 'Error!',
-                text: "New password and confirm new password do not match",
+                text: "New password and confirm new password do not match or cannot be empty",
                 showConfirmButton: false,
                 footer: '<a href="/edit-password" style="display: inline-block; padding: 10px 20px; background-color: #003249; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease;">Try Again</a>'
             });
@@ -871,6 +880,7 @@ app.get('/main', async (req, res) => {
 // });
 
 app.get('/checkout', sessionValidation, async (req, res) => {
+    req.session.order = null;
     let stationId = req.query.stationId;
     let userId = new ObjectId(req.session._id);
     let result = await userCollection.findOne({ _id: userId }, { projection: { remember: 1 } });
@@ -989,29 +999,50 @@ async function removeRobotFromDatabase(stationId) {
 }
 
 
-app.get('/confirmation', sessionValidation, (req, res) => {
+app.get('/confirmation', sessionValidation, async (req, res) => {
     function generateuuid() {
         const uuid = uuidv4().replace(/-/g, '');
         return uuid.slice(0, 24);
     }
+
     let total = req.query.total;
     let paymentType = req.query.paymentType;
     let service = req.query.service;
     let orderNumber = generateuuid();
     let timestamp = new Date().toISOString();
 
-    res.render("confirmation", { orderNumber: orderNumber, total: total, username: req.session.username });
-    if (total != null) {
-        let id = new ObjectId(orderNumber);
-        ordersCollection.insertOne({
-            _id: id,
-            timestamp: timestamp,
-            paymentType: paymentType,
-            customerId: req.session._id,
+    if (!req.session.order && req.query.total != null) {
+
+
+        // Store the order details in the session
+        req.session.order = {
+            orderNumber: orderNumber,
             total: total,
-            service: service
-        });
+            paymentType: paymentType,
+            service: service,
+            timestamp: timestamp
+        };
+
+        if (total != null) {
+            let id = new ObjectId(orderNumber);
+            await ordersCollection.insertOne({
+                _id: id,
+                timestamp: timestamp,
+                paymentType: paymentType,
+                customerId: req.session._id,
+                total: total,
+                service: service
+            });
+        }
     }
+
+    // Retrieve the order details from the session
+    const order = req.session.order;
+    if (order){
+        orderNumber = order.orderNumber;
+        total = order.total;
+    }
+    res.render("confirmation", { orderNumber: orderNumber, total: total, username: req.session.username });
 });
 
 const general = database.db('Services').collection('General')
@@ -1082,7 +1113,7 @@ app.post('/sendEmail', async (req, res) => {
             from: 'roborental.bcit@gmail.com',
             to: email,
             subject: 'Password Reset Request',
-            text: 'This is your one time login code to reset your password: ' + resetCode,
+            text: 'This is your one time login code to reset your password: ' + resetCode + '\n\nPrivacy Policy: https://two800-202410-bby11-1-dogh.onrender.com/privacy',
         };
         const info = await transporter.sendMail(mailOptions);
         console.log('Email sent:', info.messageId);
@@ -1097,8 +1128,9 @@ app.post('/loginfromcode', async (req, res) => {
         let code1 = req.body.resetCode;
         let code2 = req.body.inputCode;
         let email = req.body.email;
-        if (code1 !== code2) {
-            res.send("Invalid code. Please try again.");
+        console.log("code1: " + code1 + "code2: " + code2)
+        if (code1 !== code2 || code1 == null || code2 == null) {
+            res.render("enterCode", { resetCode: code1, userEmail: email, username: req.session.username });
         } else {
             res.render("reset-password", { email: email, username: req.session.username });
         }
@@ -1114,7 +1146,7 @@ app.post('/resetPassword', async (req, res) => {
         let email = req.body.email;
 
         console.log(password1, password2);
-        if (password1 === password2) {
+        if (password1 === password2 && password1.length > 0 && password2.length > 0) {
             let hashedPassword = await bcrypt.hash(password1, saltRounds);
             let encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString();
             console.log("Email: " + email);
@@ -1123,7 +1155,7 @@ app.post('/resetPassword', async (req, res) => {
             await userCollection.updateOne({ email: encryptedEmail }, { $set: { password: hashedPassword } });
             res.redirect("/login");
         } else {
-            res.send("Passwords do not match. Please try again.");
+            res.render("reset-password", { email: email, username: req.session.username });
         }
     } catch (error) {
         console.error('Error occurred:', error);
@@ -1183,7 +1215,7 @@ app.get('/saved', async (req, res) => {
 app.post('/displayStation', async (req, res) => {
     const cardId = req.body.data;
     const distance = req.body.data2;
-    console.log("card id and distance: "+cardId, distance)
+    console.log("card id and distance: " + cardId, distance)
 
     const objectId = new ObjectId(cardId);
 
@@ -1268,9 +1300,9 @@ app.get('/bussinessOwnerForm', async (req, res) => {
 
     let unencryptedEmail = CryptoJS.AES.decrypt(currentUser.email, key, { iv: iv }).toString(CryptoJS.enc.Utf8);
 
-console.log(currentUser.email);
+    console.log(currentUser.email);
     if (!currentUser.businessOwnerRequestInProgress) {
-        res.render("bussinessOwnerForm", { email: unencryptedEmail, request: false, user_type: currentUser.user_type, username: req.session.username,  });
+        res.render("bussinessOwnerForm", { email: unencryptedEmail, request: false, user_type: currentUser.user_type, username: req.session.username, });
     } else {
         res.render("bussinessOwnerForm", { email: unencryptedEmail, request: true, user_type: currentUser.user_type, username: req.session.username });
     }
@@ -1306,7 +1338,7 @@ app.post('/bussinessOwnerSubmission', async (req, res) => {
     <h1>Hello ${name} ${lastname},</h1>
     <p>Thank you for your request we will process your request and reach out to you soon.</p>
     <p><strong>Best regards,</strong></p>
-    <p>Robo Rental App</p>
+    <p>Robo Rental App</p>\n\nPrivacy Policy: https://two800-202410-bby11-1-dogh.onrender.com/privacy
   `;
 
     console.log(htmlContent);
@@ -1329,7 +1361,7 @@ app.post('/bussinessOwnerSubmission', async (req, res) => {
 
     await sendEmail(email, htmlContent);
 
-    await userCollection.updateOne({ username: req.session.username }, { $set: { businessOwnerRequestInProgress: true,applied_email: email, name, lastname, phonenumber, address, businessName, businessAddress, description, dateOfBirth, gender } });
+    await userCollection.updateOne({ username: req.session.username }, { $set: { businessOwnerRequestInProgress: true, applied_email: email, name, lastname, phonenumber, address, businessName, businessAddress, description, dateOfBirth, gender } });
     res.render('bussinessOwnerSignupConfirmation', { username: req.session.username });
 });
 
@@ -1342,7 +1374,7 @@ app.get('/bussinessOwnerSignupConfirmation', async (req, res) => {
 })
 
 app.get('/admin', sessionValidation, adminAuthorization, async (req, res) => {
-    const result = await userCollection.find().project({ username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1  , applied_email: 1}).toArray();
+    const result = await userCollection.find().project({ username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1, applied_email: 1 }).toArray();
 
     res.render("admin", { users: result, username: req.session.username });
 });
@@ -1352,7 +1384,7 @@ app.post('/PromoteToBusinessOwner', async (req, res) => {
     console.log(user_id);
     const objectId = new ObjectId(user_id);
     await userCollection.updateOne({ _id: objectId }, { $set: { businessOwnerRequestInProgress: false, user_type: "businessOwner" } });
-    const result = await userCollection.find().project({ username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1}).toArray();
+    const result = await userCollection.find().project({ username: 1, _id: 1, phonenumber: 1, businessOwnerRequestInProgress: 1, address: 1, businessAddress: 1, businessName: 1, dateOfBirth: 1, gender: 1, name: 1, lastname: 1, email: 1, description: 1 }).toArray();
     res.redirect("/admin");
 });
 
@@ -1392,7 +1424,7 @@ app.post('/submitEmailBL', async (req, res) => {
 
             Best regards,
 
-            The Robo Rental Team`,
+            The Robo Rental Team \n\nPrivacy Policy: https://two800-202410-bby11-1-dogh.onrender.com/privacy`,
         };
         let info = await transporter.sendMail(mailOptions);
         console.log('Email sent:', info.messageId);
@@ -1427,7 +1459,7 @@ async function sendAllEmails() {
                 from: 'roborental.team@gmail.com',
                 to: email,
                 subject: 'Robo Rental Launched',
-                text: `We are thrilled to announce that Robo Rental, the app that makes it easy to rent robots for various services, has officially launched!
+                text: `We are thrilled to announce that Robo Rental, the app that makes it easy to rent robots for various services, has officially launched!\nhttps://two800-202410-bby11-1-dogh.onrender.com\n
 
 With Robo Rental, you can seamlessly rent robots to assist with a variety of tasks, providing you with innovative solutions for your needs. Our app is designed to offer you convenience and efficiency at your fingertips.
 
@@ -1437,7 +1469,7 @@ Stay tuned for more updates and features coming soon!
 
 Best regards,
 
-The Robo Rental Team`
+The Robo Rental Team \n\nPrivacy Policy: https://two800-202410-bby11-1-dogh.onrender.com/privacy`
             };
 
             // Send email
