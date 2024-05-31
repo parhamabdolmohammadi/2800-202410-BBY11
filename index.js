@@ -39,6 +39,7 @@ const Joi = require("joi");
 
 const { resourceLimits } = require("worker_threads");
 
+// Add if you want to how it in the nav bar section
 const navLinks = [
     { name: "Home", link: "/" },
     { name: "Admin", link: "/admin" },
@@ -95,7 +96,7 @@ var mongoStore = MongoStore.create({
     }
 })
 
-// NEED TO REMOVE THESE TWO IF WE PUT CSS AND IMAGES FOLDER INTO PUBLIC FOLDER
+
 app.use(express.static(__dirname + "/css"));
 app.use(express.static(__dirname + "/images"));
 app.use(express.static(__dirname + "/js"));
@@ -110,9 +111,7 @@ app.use(express.static(__dirname + "/public"));
 app.use("/js", express.static("./public/js")); // Need this middleware since js files are not accessible unless they are in a folder called "public"
 app.use("/img", express.static("./public/img"));
 
-// NEED TO UNCOMMENT THESE TWO IF WE PUT CSS AND IMAGES FOLDER INTO PUBLIC FOLDER
-// app.use("/css", express.static("./public/css"));
-// app.use("/img", express.static("./public/images"));
+
 
 function isLoggedIn(req, res, next) {
     req.user ? next() : res.sendStatus(401);
@@ -234,7 +233,7 @@ app.get('/signup', async (req, res) => {
     res.render("signup", { username, userEmail, services, stations })
 });
 
-
+//Route to the setting page
 app.get('/setting', (req, res) => {
     res.render("setting", { username: req.session.username })
 });
@@ -247,11 +246,15 @@ app.get('/edit-profile', async (req, res) => {
     res.render("edit-profile", { name: req.session.username, email: unencryptedEmail, userId: id, username: req.session.username });
 });
 
+
+//Route to edit password
 app.get('/edit-password', (req, res) => {
     res.render("edit-password", { username: req.session.username });
 });
 //adapted from a previous webdev project, approved by Ashkan
 
+
+// Post method for submmiting a new user
 app.post('/submitUser', async (req, res) => {
     var username = req.body.username;
     var password = req.body.password;
@@ -737,6 +740,8 @@ app.post('/updatePassword', async (req, res) => {
     }
 });
 
+
+//Logging out and killing the session
 app.get('/logout', (req, res) => {
     req.session.destroy();
 
@@ -745,6 +750,7 @@ app.get('/logout', (req, res) => {
 
 //This code snippet has been generated with the help of ChatGPT
 //Source: https://chatgpt.com/
+//Removing the user account from the database
 app.get('/deleteAccount', (req, res) => {
     async function deleteUserAccount(userId) {
         const uri = 'mongodb+srv://Seohyeon:Qkrtjgus8663!@atlascluster.u56alig.mongodb.net/AtlasCluster?retryWrites=true&w=majority';
