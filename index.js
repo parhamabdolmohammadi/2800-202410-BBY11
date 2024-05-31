@@ -488,7 +488,7 @@ app.post('/updatePassword', async (req, res) => {
     const MONGODB_URI = 'mongodb+srv://Seohyeon:Qkrtjgus8663!@atlascluster.u56alig.mongodb.net/AtlasCluster?retryWrites=true&w=majority';
     const client = new MongoClient(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
-    if (newPassword !== confirmNewPassword) {
+    if (newPassword !== confirmNewPassword || newPassword === "" || confirmNewPassword === "") {
         return res.status(400).send(`
         <!DOCTYPE html>
         <html lang="en">
