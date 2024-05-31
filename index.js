@@ -95,7 +95,7 @@ var mongoStore = MongoStore.create({
     }
 })
 
-// NEED TO REMOVE THESE TWO IF WE PUT CSS AND IMAGES FOLDER INTO PUBLIC FOLDER
+
 app.use(express.static(__dirname + "/css"));
 app.use(express.static(__dirname + "/images"));
 app.use(express.static(__dirname + "/js"));
@@ -110,9 +110,7 @@ app.use(express.static(__dirname + "/public"));
 app.use("/js", express.static("./public/js")); // Need this middleware since js files are not accessible unless they are in a folder called "public"
 app.use("/img", express.static("./public/img"));
 
-// NEED TO UNCOMMENT THESE TWO IF WE PUT CSS AND IMAGES FOLDER INTO PUBLIC FOLDER
-// app.use("/css", express.static("./public/css"));
-// app.use("/img", express.static("./public/images"));
+
 
 function isLoggedIn(req, res, next) {
     req.user ? next() : res.sendStatus(401);
