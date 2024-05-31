@@ -1,4 +1,4 @@
-  // Initialize and add the map
+
   let map;
   let user_lat;
   let User_lng;
@@ -8,7 +8,7 @@
 
   
 
-  console.log("closetId " + closestID);
+
 
   getLocation();
 

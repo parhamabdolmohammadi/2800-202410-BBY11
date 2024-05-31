@@ -1,3 +1,12 @@
+
+/**
+   
+   * I Learned this dynamically card generating algorithm in comp 1800 but I claim it as my work because it's right now my knowledge as well.
+   *  
+   * @author Parham Abdolmohammadi, BCIT
+   */
+
+
 document.addEventListener('DOMContentLoaded', () => {
 
     let cardTemplate = document.getElementById("ServiceCardTemplate");
@@ -68,7 +77,6 @@ function setID(id, name, price) {
     localStorage.setItem('ServiceID', id);
     localStorage.setItem('ServiceName', name);
     localStorage.setItem('ServicePrice', price);
-    console.log(price);
 }
 
 
