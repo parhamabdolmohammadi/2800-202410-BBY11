@@ -88,11 +88,14 @@ function renderStations() {
       
           newcard.querySelector(".telephone-icon").onclick = () => openPhoneCall(telephone1);
          if (currentUser) {
-           const bookmarks = currentUser[0].bookmarks;
-           if (bookmarks && bookmarks.includes(CardId)) {
-             newcard.querySelector(".star-image").src = '/star2.png';
-             isBookmarked = true;
+           if (currentUser[0].bookmarks) {
+            const bookmarks = currentUser[0].bookmarks;
+            if (bookmarks && bookmarks.includes(CardId)) {
+              newcard.querySelector(".star-image").src = '/star2.png';
+              isBookmarked = true;
+            }
            }
+           
          }
 
          stationsPlaceholder.appendChild(newcard);
