@@ -317,7 +317,7 @@ app.post('/submitUser', async (req, res) => {
     var hashedPassword = await bcrypt.hash(password, saltRounds);
     var encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString();
     var _id = new ObjectId();
-    await userCollection.insertOne({ _id: _id, username: username, password: hashedPassword, email: encryptedEmail, user_type: "user" });
+    await userCollection.insertOne({ _id: _id, username: username, password: hashedPassword, email: encryptedEmail, user_type: "user", bookmarks: [""] });
     console.log("Inserted user");
     // console.log(CryptoJS.AES.decrypt(encryptedEmail, key, { iv: iv}).toString(CryptoJS.enc.Utf8));
 
