@@ -488,7 +488,7 @@ app.post('/updatePassword', async (req, res) => {
     const MONGODB_URI = 'mongodb+srv://Seohyeon:Qkrtjgus8663!@atlascluster.u56alig.mongodb.net/AtlasCluster?retryWrites=true&w=majority';
     const client = new MongoClient(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
-    if (newPassword !== confirmNewPassword) {
+    if (newPassword !== confirmNewPassword || newPassword === "" || confirmNewPassword === "") {
         return res.status(400).send(`
         <!DOCTYPE html>
         <html lang="en">
@@ -564,7 +564,7 @@ app.post('/updatePassword', async (req, res) => {
             Swal.fire({
                 icon: 'error',
                 title: 'Error!',
-                text: "New password and confirm new password do not match",
+                text: "New password and confirm new password do not match or cannot be empty",
                 showConfirmButton: false,
                 footer: '<a href="/edit-password" style="display: inline-block; padding: 10px 20px; background-color: #003249; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease;">Try Again</a>'
             });
