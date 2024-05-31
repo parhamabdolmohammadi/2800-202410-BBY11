@@ -1,4 +1,15 @@
+
+
 // Initialize and add the map
+/**
+   
+   * I found this code on google Cloud Console.
+   *
+   * @author  "Google Cloud console"
+   * @see "https://console.cloud.google.com/google/maps-apis/overview;onboard=true?project=bby11-423421"
+   */
+
+
 let map;
 let user_lat;
 let User_lng;

@@ -1,3 +1,12 @@
+
+/**
+   
+   * I Learned this dynamically card generating algorithm in comp 1800 but I claim it as my work because it's right now my knowledge as well.
+   *  
+   * @author Parham Abdolmohammadi, BCIT
+   */
+
+
 document.addEventListener('DOMContentLoaded', () => {
 
     let cardTemplate = document.getElementById("ServiceCardTemplate");

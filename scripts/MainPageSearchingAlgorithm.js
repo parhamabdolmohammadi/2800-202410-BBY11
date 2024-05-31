@@ -69,94 +69,11 @@ document.addEventListener("DOMContentLoaded", function () {
           });
       });
 
-      // * AI Assistance text input functionality
-
-      // const searchBox = document.querySelector(".search-box");
-      // const submitButton = document.querySelector(".btn-submit");
-
-      // searchBox.addEventListener("click", function () {
-      //   submitButton.style.display = "block";
-      // });
-
-      // document.addEventListener("click", function (event) {
-      //   if (
-      //     !searchBox.contains(event.target) &&
-      //     !submitButton.contains(event.target)
-      //   ) {
-      //     submitButton.style.display = "none";
-      //   }
-      // });
-
-      // // When submit button is pressed in AI input section
-      // const aiAssistanceSubmitBtn = document.getElementById("aiAssistanceSubmitBtn");
-
-      // aiAssistanceSubmitBtn.addEventListener("click", function (event) {
-      //   event.preventDefault();
-
-      //   const aiAssistanceInput = document.getElementById("aiAssistanceInput");
-
-      //   aiAssistanceInputValue = aiAssistanceInput.value;
-
-      //   // Send post request to server (route /main/ai-assistance)
-      //   fetch("/main/ai-assistance", {
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify({ aiAssistanceInput: aiAssistanceInputValue }),
-      //   })
-      //   .then((AIResponse) => AIResponse.json())
-      //   .then((data) => {
-
-      //     // If an AI response message <p> element has already been created
-      //     aiResponseMessageElement = document.getElementById("aiResponseMessage");
-      //     if (aiResponseMessageElement != null) {
-            
-      //       // Remove the existing element
-      //       aiResponseMessageElement.remove();
-      //     }
-
-      //     // Text response to user
-      //     var aiResponseText = document.createElement("p");
-      //     aiResponseText.id = "aiResponseMessage";
-      //     aiResponseText.innerHTML = String(data.aiResponseHTML);
-      //     aiResponseText.style.display = "inline-block";
-      //     aiResponseText.style.backgroundColor = "white";
-      //     aiResponseText.style.color = "black";
-      //     aiResponseText.style.fontFamily = "sans-serif";
-      //     aiResponseText.style.marginTop = "1em";
-      //     aiResponseText.style.padding = "2em";
-      //     aiResponseText.style.borderRadius = "15px";
-
-      //     document.getElementById("aiAssistanceSection").appendChild(aiResponseText);
-
-      //     if (data.aiFoundServices == true) {
-      //       // Show the services found
-      //       renderServices(data.filteredServices);
-      //     }
-      //   })
-
-      //   .catch((error) => {
-      //       console.error("Error sending search request:", error);
-      //   });
-      // });
+      
 
     });
 
     function renderServices(filteredServices) {
-      // const servicesContainer = document.getElementById(
-      //   "main-service-list-container"
-      // );
-      // servicesContainer.innerHTML = "";
-
-      // filteredServices.forEach((service) => {
-      //   const name = document.createElement("div");
-      //   name.innerHTML = "Service name: " + service.name;
-      //   servicesContainer.appendChild(name);
-
-      //   const des = document.createElement("div");
-      //   des.innerHTML = service.description;
-      //   servicesContainer.appendChild(des);
 
       const servicesContainer = document.getElementById(
       "main-service-list-container-2"
@@ -291,4 +208,3 @@ function undoDescription(serviceID) {
     document.getElementById("cardi3" + serviceID).classList.toggle("cardi33");
 }
   }
-  
