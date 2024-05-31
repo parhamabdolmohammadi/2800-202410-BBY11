@@ -7,21 +7,78 @@
 </form> -->
 
 <% if (validationError == true) { %>
-  <h4></h4><br>
-  <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-    <div style="text-align: center; background: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-      <h4 style="color: #333; margin-bottom: 20px;">Invalid email/password combination.</h4>
-      <a href='/login' style="display: inline-block; padding: 10px 20px; background-color: #003249; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease;">Try again</a>
-    </div>
+<h4></h4>
+<br />
+<div
+  style="
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  "
+>
+  <div
+    style="
+      text-align: center;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    "
+  >
+    <h4 style="color: #333; margin-bottom: 20px">
+      Invalid email/password combination.
+    </h4>
+    <a
+      href="/login"
+      style="
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #003249;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+      "
+      >Try again</a
+    >
   </div>
-  
-<% } else if ((userDoesNotExist == true) || (incorrectFields = true)) { %>
-  <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-    <div style="text-align: center; background: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-      <h4 style="color: #333; margin-bottom: 20px;">A user with the entered email and password combination was not found.</h4>
-      <a href='/login' style="display: inline-block; padding: 10px 20px; background-color: #003249; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease;">Try again</a>
-    </div>
-  </div>
-<% } %>
+</div>
 
-<%- include("templates/footer") %>
+<% } else if ((userDoesNotExist == true) || (incorrectFields = true)) { %>
+<div
+  style="
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  "
+>
+  <div
+    style="
+      text-align: center;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    "
+  >
+    <h4 style="color: #333; margin-bottom: 20px">
+      A user with the entered email and password combination was not found.
+    </h4>
+    <a
+      href="/login"
+      style="
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #003249;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+      "
+      >Try again</a
+    >
+  </div>
+</div>
+<% } %> <%- include("templates/footer") %>

@@ -77,7 +77,6 @@ function setID(id, name, price) {
     localStorage.setItem('ServiceID', id);
     localStorage.setItem('ServiceName', name);
     localStorage.setItem('ServicePrice', price);
-    console.log(price);
 }
 
 
