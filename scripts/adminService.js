@@ -20,6 +20,7 @@ const deleteButton = document.querySelector('.delete-service')
 const invalid = document.querySelector('#invalid')
 
 const deletedPopUp = document.querySelector('#deleted')
+const priceInvalid = document.querySelector('#priceInvalid')
 let modalId;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -153,7 +154,13 @@ function closeCreateForm() {
 }
 
 createService.addEventListener('click', () => {
-    openCreateForm()
+    if (createContainer.style.display == 'block') {
+        closeCreateForm()
+    } else {
+
+        openCreateForm()
+    }
+
 })
 
 cancelButtonForCreate.addEventListener('click', () => {
@@ -161,9 +168,19 @@ cancelButtonForCreate.addEventListener('click', () => {
 })
 
 createButton.addEventListener('click', () => {
+    closeCreateForm()
     const name = document.getElementById('name').value
     const description = document.getElementById('description').value
     const price = document.getElementById('price').value
+    // console.log(typeof price);
+    if (typeof price !== 'number') {
+        priceInvalid.style.display = 'block';
+        setTimeout(() => {
+            priceInvalid.style.display = 'none';
+        }, 1500);
+        closeCreateForm()
+        return
+    }
     const imageFile = document.getElementById('image')
 
     const image = imageFile.files[0]

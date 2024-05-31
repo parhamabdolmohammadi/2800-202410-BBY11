@@ -58,7 +58,7 @@ color: #003249;">
 
         <div>
           <img src="/email.png" style="width: 20px" alt="" />
-          <span>Email:</span>
+          <span>Email: <%- user.applied_email %> </span>
         </div>
         <div>
           <img src="/gender.png" style="width: 20px" alt="" />
@@ -143,7 +143,10 @@ color: #003249;">
   </div>
   <% } %> <% }); %>
 
-<script>function PromoteToBusinessOwner(user) {
+<script>
+
+
+function PromoteToBusinessOwner(user) {
     console.log("hello" + user);
 
 document.getElementById('id-'+ user).value = user;
