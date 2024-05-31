@@ -1,5 +1,15 @@
-console.log(distance1);
-console.log(IDCard);
+
+
+
+/**
+   
+   * I Learned this dynamically card generating algorithm in comp 1800 but I claim it as my work because it's right now my knowledge as well.
+   *  
+   * @author Parham Abdolmohammadi, BCIT
+   */
+
+
+
 fillCard(station);
 function fillCard(stat) {
    document.getElementById('card-address').innerHTML = stat.address;
