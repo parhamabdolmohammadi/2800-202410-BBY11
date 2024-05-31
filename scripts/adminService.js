@@ -28,6 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 
 
+// Create a card that contains name, description, and price 
+// The values are received from index.js
 function createCards(services) {
 
     services.forEach((service, index) => {
@@ -62,9 +64,11 @@ function createCards(services) {
 }
 
 
-
+// 
 let currentServiceIndex = null;
 
+
+// This is for updating service information 
 function openModal(service, index) {
     modal.style.display = 'block';
     modalName.textContent = document.querySelectorAll('.serviceName')[index].textContent
