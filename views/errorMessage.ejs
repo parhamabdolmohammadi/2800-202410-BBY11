@@ -1,6 +1,6 @@
 <%- include("templates/header") %>
-<style>
-  body {
+  <style>
+    .forError {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -10,31 +10,36 @@
       background-color: #f8f9fa;
       color: #343a40;
       text-align: center;
-  }
-  .container {
+    }
+
+    .container {
       max-width: 600px;
-  }
-  .error-code {
+    }
+
+    .error-code {
       font-size: 96px;
       font-weight: bold;
-  }
-  .error-message {
+    }
+
+    .error-message {
       font-size: 24px;
       margin-top: 20px;
-  }
-  .smaller-text {
+    }
+
+    .smaller-text {
       font-size: 16px;
       margin-top: 10px;
       color: #6c757d;
-  }
-</style>
-</head>
-<body>
-  <div class="container">
-    <div class="error-code">401</div>
-    <div class="error-message"><%= error %></div>
-    <div class="smaller-text">Sorry, you are not authorized.</div>
+    }
+  </style>
+  </head>
+  <div class="forError">
+    <div class="container">
+      <div class="error-code">401</div>
+      <div class="error-message">
+        <%= error %>
+      </div>
+      <div class="smaller-text">Sorry, you are not authorized.</div>
+    </div>
   </div>
-<%- include("templates/footer") %>
-</body>
-</html>
+  <%- include("templates/footer") %>
