@@ -13,8 +13,8 @@
 
     /* To move the show password element icon into the password input form field (for both signup and login pages)*/
     position: absolute;
-    top: 45%;
-    right: 6%;
+    top: 105%;
+    right: 0%;
 }
 
 /* For the signup and login pages, Jason can change the class name later if needed */
