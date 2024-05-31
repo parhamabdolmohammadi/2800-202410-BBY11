@@ -26,13 +26,21 @@ document.getElementById('checkoutButton').innerHTML=`<a class="link-style" href=
             </span></a
             >`
 } else {
-   document.getElementById('checkoutButton').innerHTML=``
- document.getElementById('card-availability').innerHTML = "Out of Stock";
+   document.getElementById('checkoutButton').innerHTML=`<a class="link-style"> 
+   <span style="opacity:40%" class="icon-container">
+   <p style="margin-bottom: 0">Empty</p>
+   </span></a
+   >`;
+   document.getElementById('card-availability').innerHTML = "Out of Stock";
    document.getElementById('card-availability').style.color = "red";   
 }
 
 if(station.robots_total_stock == 20) {
-   document.getElementById('addButton').innerHTML=``
+   document.getElementById('addButton').innerHTML=`<a class="link-style"> 
+   <span style="opacity:40%" class="icon-container">
+   <p style="margin-bottom: 0">Full</p>
+   </span></a
+   >`
    document.getElementById('card-availability').style.color = "red";  
    }
 
