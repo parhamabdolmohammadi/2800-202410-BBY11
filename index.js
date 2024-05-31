@@ -7,7 +7,6 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-// const MongoClient = require('mongodb');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
 
@@ -16,14 +15,9 @@ const saltRounds = 12;
 // @author https://chat.openai.com/
 
 const CryptoJS = require('crypto-js')
-// const secretKey = "mySecretKey";
-// const iv = CryptoJS.lib.WordArray.random(16);
-// const salt = CryptoJS.enc.Hex.parse('')
 var key = CryptoJS.enc.Utf8.parse('b75524255a7f54d2726a951bb39204df');
 var iv = CryptoJS.enc.Utf8.parse('1583288699248111');
-// const ObjectId = require('mongodb').ObjectId;
 var iv = CryptoJS.enc.Utf8.parse('1583288699248111');
-// const ObjectId = require('mongodb').ObjectId;
 const nodemailer = require('nodemailer');
 //Edit-profile
 const bodyParser = require('body-parser');
@@ -66,7 +60,7 @@ app.use("/", (req, res, next) => {
 })
 
 
-const expireTime = 60 * 60 * 1000; //expires after 1 day  (hours * minutes * seconds * millis)
+const expireTime = 60 * 60 * 1000; //expires after 1 hour  (minutes * seconds * millis)
 
 /* secret information section */
 const mongodb_host = process.env.MONGODB_HOST;
@@ -78,6 +72,7 @@ const mongodb_database2 = process.env.MONGODB_DATABASE2;
 
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* END secret section */
+
 const ordersCollection = database.db(mongodb_database).collection('orders');
 
 const userCollection = database.db(mongodb_database).collection('users');
@@ -100,7 +95,7 @@ var mongoStore = MongoStore.create({
     }
 })
 
-// WILL NEED TO REMOVE THESE TWO IF WE PUT CSS AND IMAGES FOLDER INTO PUBLIC FOLDER, see footer.ejs line 30 for how to link-------------------------------------------------
+// NEED TO REMOVE THESE TWO IF WE PUT CSS AND IMAGES FOLDER INTO PUBLIC FOLDER
 app.use(express.static(__dirname + "/css"));
 app.use(express.static(__dirname + "/images"));
 app.use(express.static(__dirname + "/js"));
@@ -108,7 +103,6 @@ app.use(express.static(__dirname + "/audio"));
 
 // Map the file system paths to the app's virtual paths
 // Parameters: The root parameter describes the root directory from which to serve static assets.
-
 app.use(express.static(__dirname + "/scripts"));
 
 app.use(express.static(__dirname + "/public"));
@@ -116,7 +110,7 @@ app.use(express.static(__dirname + "/public"));
 app.use("/js", express.static("./public/js")); // Need this middleware since js files are not accessible unless they are in a folder called "public"
 app.use("/img", express.static("./public/img"));
 
-// WILL NEED TO UNCOMMENT THESE TWO IF WE PUT CSS AND IMAGES FOLDER INTO PUBLIC FOLDER, see footer.ejs line 30 for how to link-------------------------------------------------
+// NEED TO UNCOMMENT THESE TWO IF WE PUT CSS AND IMAGES FOLDER INTO PUBLIC FOLDER
 // app.use("/css", express.static("./public/css"));
 // app.use("/img", express.static("./public/images"));
 
@@ -177,7 +171,6 @@ app.get('/terms-and-conditions', (req, res) => {
     res.render('terms-and-conditions', { username: req.session.username });
 });
 
-
 app.get('/auth/google', (req, res, next) => {
     const signup = req.query.signup === 'true';
     passport.authenticate('google', {
@@ -216,7 +209,6 @@ app.get('/', (req, res) => {
         atIndexPage = false;
 
     } else {
-        // console.log(req.session.user_type);
         res.redirect("/main");
     }
 
@@ -230,8 +222,7 @@ app.get('/signup', async (req, res) => {
 
         userEmail = req.user.emails[0].value;
         username = req.user.displayName;
-        console.log(userEmail);
-        console.log(username);
+
     }
 
     const services = await general.find({}).project({ _id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
@@ -284,7 +275,6 @@ app.post('/submitUser', async (req, res) => {
     const validationResult = signupSchema.validate({ username, password, email }, { abortEarly: false });
 
     if (validationResult.error != null) { // If error occured
-        console.log(validationResult.error);
         res.redirect("/signup");
         return;
     }
@@ -298,44 +288,17 @@ app.post('/submitUser', async (req, res) => {
         await checkIfEmailExists(email, userCollection, key, iv);
 
     } catch (emailExistsError) { // If a user in the db with the same email was found
-        // console.log(emailExistsError);
-        console.log("(USER ERROR) The email that the user entered already exists in the database");
         res.redirect("/signupSubmit?problem=EmailExists");
         return;
     }
-
-    ///////////////
-
-    // try {
-    //     // Get all of the users from the 'users' collection in db using .find with empty query '{}'
-    //     const dbUserEmails = await userCollection.find({}).project({email: 1, _id: 1}).toArray();
-
-    //     // Decrypt each email, comparing each with the user entered email in sign up page
-    //     dbUserEmails.forEach((dbEmail) => {
-
-    //         const decryptedDbEmail = CryptoJS.AES.decrypt(dbEmail.email, key, { iv: iv}).toString(CryptoJS.enc.Utf8);
-
-    //         // If the user entered email matches an email in the database
-    //         if (email == decryptedDbEmail) {
-    //             throw new Error("(USER ERROR) The email that the user entered already exists in the database");
-    //         }
-    //     });
-
-    // } catch (emailExistsError) { // If a user in the db with the same email was found
-    //     console.log(emailExistsError);
-    //     res.redirect("/signupSubmit?problem=EmailExists");
-    //     return;
-    // }
 
     var hashedPassword = await bcrypt.hash(password, saltRounds);
     var encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString();
     var _id = new ObjectId();
     await userCollection.insertOne({ _id: _id, username: username, password: hashedPassword, email: encryptedEmail, user_type: "user", bookmarks: [""] });
     console.log("Inserted user");
-    // console.log(CryptoJS.AES.decrypt(encryptedEmail, key, { iv: iv}).toString(CryptoJS.enc.Utf8));
 
     var html = "successfully created usgiter";
-    console.log(html);
 
     req.session._id = _id;
     req.session.email = encryptedEmail;
@@ -361,7 +324,6 @@ app.get('/login', async (req, res) => {
 
         userEmail = req.user.emails[0].value;
         username = req.user.displayName;
-        console.log(userEmail);
     }
     const services = await general.find({}).project({ _id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
     const stations = await stationsCollection.find({}).toArray();
@@ -394,7 +356,6 @@ app.post('/loggingin', async (req, res) => {
     }
 
     var encryptedEmail = CryptoJS.AES.encrypt(email, key, { iv: iv }).toString()
-    // console.log(encryptedEmail === 'WTfm6CGGEKx6XwoGKopaRg==');
 
     // Check if a user account with the entered email and password exists in the MongoDB database
     const result = await userCollection.find({ email: encryptedEmail }).project({ username: 1, email: 1, password: 1, user_type: 1, _id: 1 }).toArray();
@@ -432,7 +393,6 @@ app.post('/loggingin', async (req, res) => {
 });
 
 app.get("/loginSubmit", (req, res) => {
-    //var loginErrorResults = {validationError: validationError, userDoesNotExist: userDoesNotExist, incorrectFields: incorrectFields}
     res.render("loginSubmit", { username: req.session.username });
 });
 
@@ -831,62 +791,6 @@ app.get('/main', async (req, res) => {
 
 
 });
-
-// app.post('/main/ai-assistance', async (req, res) => {
-//     // Get message from user
-//     const AIRequestMsg = req.body.aiAssistanceInput;
-
-//     // Get list of services from the database, store the names in an array
-//     var listOfServices = await general.find({}).project({_id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
-
-//     var filteredServices = [];
-
-//     var aiResponseHTML;
-
-//     var aiFoundServices = false;
-
-//     console.log("AIRequestMsg: " + AIRequestMsg);
-
-//     // Make AI request, passing in the user text message and the list of services. Save the AI response text
-//     var AIResponse = await makeAiReqAndRes(AIRequestMsg, listOfServices);
-
-//     console.log("AIResponse: " + AIResponse);
-
-//     //--------------------
-
-//     // If any applicable services were found in the list of services ('I'm sorry' is NOT contained in the response String)
-//     if (!(AIResponse.includes("I'm sorry"))) {
-
-//     aiFoundServices = true;
-
-//     var listOfAIRecommendedServices = [];
-
-//     // Parse the AI-generated response - divide listOfAIRecommendedServices 
-//     // into an array of Strings, using '/' as delimeter
-//     listOfAIRecommendedServices = AIResponse.split('/');
-
-//     // Remove first and last empty string elements (first and last = '')
-//     listOfAIRecommendedServices.shift();
-//     listOfAIRecommendedServices.pop();
-
-//     // Filter the listOfServices array (only include the ones that have name values in the listOfAIRecommendedServices array)
-//     filteredServices = listOfServices.filter(service => listOfAIRecommendedServices.includes(service.name));
-
-//     aiResponseHTML = "Here are some of our services that I can recommend based on your request:";
-
-//     } else {
-//         // only send the generated apology message
-//         // Remove '/' characters if they were included in the not found response
-//         if (AIResponse.includes('/')) {
-//             AIResponse = AIResponse.replace(/\//g, '');
-//         }
-//         aiFoundServices = false;
-//         aiResponseHTML = AIResponse;
-//     }
-
-//     // Send the filteredServices (array of json objects) back to the main page as a json object
-//     res.json({aiResponseHTML, filteredServices, aiFoundServices});
-// });
 
 app.get('/checkout', sessionValidation, async (req, res) => {
     req.session.order = null;
@@ -1645,5 +1549,5 @@ app.get("*", (req, res) => {
 })
 
 app.listen(port, () => {
-    console.log("Node application listening on port " + port);
+    console.log("Node application listening on port " + port); // PLEASE DO NOT REMOVE
 }); 
