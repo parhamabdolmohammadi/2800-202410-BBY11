@@ -215,7 +215,7 @@
     gap: 10px;
 }
 
-#created , #invalid, #deleted, #png{
+#created , #invalid, #deleted, #priceInvalid{
     position: fixed;
     top: 50%;
     left: 50%;
@@ -247,6 +247,6 @@
     margin-bottom: 30px;   
 }
 
-#deleted, #png {
+#deleted, #priceInvalid {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
 }
