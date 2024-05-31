@@ -5,7 +5,6 @@ const past_orders = document.querySelector('#past-orders')
 const orders_btn = document.querySelectorAll('.orders-btn');
 const active_orders_number = document.querySelector('#active-orders-number')
 const past_orders_number = document.querySelector('#past-orders-number')
-// const nothing = document.querySelector('.nothing')
 const notAvailable = document.querySelector('#not-available')
 const activeOrders = []
 const pastOrders = []
@@ -28,12 +27,12 @@ past_orders.addEventListener('click', () => {
     generateCards(pastOrders, historyUrl)
 })
 
-//{data.name.trim().replace(/\s+/g, '')}.png
+
 
 function generateCards(orders, historyUrl) {
     content.innerHTML = ''
     if (orders.length == 0) {
-        // content.appendChild(nothing)
+
         notAvailable.style.display = 'block'
     } else {
         notAvailable.style.display = 'none'
@@ -52,7 +51,7 @@ function generateCards(orders, historyUrl) {
                 backUrl = url.background
             }
         })
-        //  backUrl = each.service.trim().replace(/\s+/g, '') + '.png'
+ 
         const img = document.createElement('img')
         img.src = backUrl
 
@@ -106,7 +105,7 @@ function fillDetail(each, detail) {
     total.classList.add('total')
     detail.appendChild(total)
 
-    // return detail
+
 
 }
 console.log(historyUrl);
@@ -114,7 +113,7 @@ console.log(historyUrl);
 document.addEventListener('DOMContentLoaded', () => {
     active_orders.click()
     sortHistory(history) // active orders and past orders are filled 
-    // console.log(history);
+
     generateCards(activeOrders, historyUrl)
 
 })
@@ -122,21 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function sortHistory(history) {
 
     history.forEach(each => {
-        // const currentDate = new Date()
-        // const eachTimeStamp = new Date(each.timestamp)
 
-        // // 1 hour is default duration of service. After storing duration of service in database, I can modify the logic accordingly 
-        // let expiryHour = eachTimeStamp.getHours() + 1;
-        // let expiryMinutes = eachTimeStamp.getMinutes();
-
-        // if (expiryHour > currentDate.getHours()) {
-        //     activeOrders.push(each);
-        // } else if (expiryHour == currentDate.getHours() && expiryMinutes >= currentDate.getMinutes()) {
-        //     activeOrders.push(each);
-        // }
-        // else {
-        //     pastOrders.push(each);
-        // }
         const currentDate = new Date();
         const eachTimeStamp = new Date(each.timestamp);
 
