@@ -51,7 +51,6 @@ function createCards(services) {
         servicePrice.textContent = service.price
 
         serviceCard.addEventListener('click', () => {
-            // console.log('this is index' + index);
             openModal(service, index);
         })
 
@@ -76,8 +75,7 @@ function openModal(service, index) {
     modalPrice.textContent = document.querySelectorAll('.servicePrice')[index].textContent
     currentServiceIndex = index;
     modalId = service._id
-    // console.log(modalId);
-    // console.log(currentServiceIndex);
+
 }
 
 function closeModal() {
@@ -96,8 +94,6 @@ saveButton.addEventListener('click', () => {
             description: modalDescription.textContent,
             price: modalPrice.textContent
         };
-        // console.log(currentServiceIndex);
-        // services[currentServiceIndex] = updatedService;
         updateServiceCard(currentServiceIndex, updatedService);
         closeModal();
 
@@ -181,10 +177,9 @@ createButton.addEventListener('click', () => {
     const name = document.getElementById('name').value
     const description = document.getElementById('description').value
     const price = document.getElementById('price').value
-    // console.log(typeof price);
-    // console.log();
+
     if (isNaN(parseFloat(price))) {
-        // console.log('this is nto number');
+
         priceInvalid.style.display = 'block';
         setTimeout(() => {
             priceInvalid.style.display = 'none';
@@ -223,9 +218,9 @@ createButton.addEventListener('click', () => {
             }
         })
         .then(data => {
-            // console.log(data.message);
+
             if (data.message === 'Entry created successfully.') {
-                // Handle success
+
                 closeCreateForm();
                 createdPopUp.style.display = 'block';
                 setTimeout(() => {
@@ -236,14 +231,12 @@ createButton.addEventListener('click', () => {
                 }, 1000);
 
             } else {
-                // Handle other messages
-                // Example: display an error message to the user
+
                 console.error('Unexpected message from server:', data.message);
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            // Handle network errors or other unexpected errors
         });
 
 
@@ -263,10 +256,8 @@ deleteService.addEventListener('click', () => {
             deleteButtonForEntry.classList.add('deleteButtonForEntry')
             deleteButtonForEntry.textContent = 'Delete'
             deleteButtonForEntry.addEventListener('click', () => {
-                // console.log('clicked');
                 const previousCard = deleteButtonForEntry.previousElementSibling;
-                // console.log(previousCard);
-                // console.log(previousCard.querySelector('.serviceName').textContent);
+
                 const cardName = previousCard.querySelector('.serviceName').textContent
                 fetch('/delete', {
                     method: "POST",
