@@ -1,4 +1,4 @@
-.prompt-message {
+.prompt-message-container {
     height: 100vh;
     display: flex;
     align-items: center;
@@ -10,13 +10,14 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
 }
-.prompt-message p {
+
+.prompt-message-container .prompt-message p {
     margin: 0 0 10px;
     color: #003249;
-    font-weight: bold;
+    font-weight: 600;
 }
 
-.prompt-message .btn {
+.prompt-message-container .prompt-message .btn {
     display: inline-block;
     padding: 10px 20px;
     background-color: #003249 !important;
@@ -24,4 +25,14 @@
     text-decoration: none;
     border-radius: 4px;
     transition: background-color 0.3s ease;
+}
+
+
+.prompt-message {
+    padding: 20px;
+    border: 1px solid #003249;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 0;
 }

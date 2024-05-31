@@ -1,12 +1,15 @@
 <%- include("templates/header") %>
 
-<div class="prompt-message">
-  <% if (problem == "EmailExists") { %>
-    <p>The email you entered already exists</p>
-  <% } else { %>
-    <p><%= problem %> is required</p>
-  <% } %>
-  <a href='/signup' class="btn" style="background-color: #003249 !important; color: white;">Try again</a>
+<div class="prompt-message-container">
+  <div class="prompt-message">
+    <% if (problem == "EmailExists") { %>
+      <p>The email you entered already exists</p>
+    <% } else { %>
+      <p><%= problem %> is required</p>
+    <% } %>
+    <a href='/signup' class="btn" style="background-color: #003249 !important; color: white;">Try again</a>
+  </div>
+
 </div>
 
 
