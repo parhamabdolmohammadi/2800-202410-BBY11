@@ -10,3 +10,7 @@ Team Members:
 ## More details to come
 TBA
 Coda's feature branch
+## Sources
+Sweet alert - https://sweetalert2.github.io/
+Before launch page - https://github.com/nipanimaju/coming-soon
+Chat GPT - https://chat.openai.com/

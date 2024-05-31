@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
       let price = localStorage.getItem('ServicePrice');
   
       if (!price) {
-        console.error('ServicePrice not found in localStorage');
         return;
       }
   
