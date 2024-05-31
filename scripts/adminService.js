@@ -154,7 +154,13 @@ function closeCreateForm() {
 }
 
 createService.addEventListener('click', () => {
-    openCreateForm()
+    if (createContainer.style.display == 'block') {
+        closeCreateForm()
+    } else {
+
+        openCreateForm()
+    }
+
 })
 
 cancelButtonForCreate.addEventListener('click', () => {
