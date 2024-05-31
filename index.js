@@ -277,11 +277,11 @@ app.post('/submitUser', async (req, res) => {
     }
 
     // Check if the entered email for signup already exists in the database:
-    try {
+
     // Import the and call function to search through db and compare user email with the current ones
     const { checkIfEmailExists } = include('scripts/LoginSignUpValidation/databaseEmailValidation');
 
-
+    try {
         await checkIfEmailExists(email, userCollection, key, iv);
 
     } catch (emailExistsError) { // If a user in the db with the same email was found
