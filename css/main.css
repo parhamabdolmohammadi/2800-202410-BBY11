@@ -572,10 +572,12 @@ border: 1px solid white;
 
 .description:hover {
   color: #80ced7;
+  cursor: pointer;
 }
 
 .description2:hover {
   color: #80ced7;
+  cursor: pointer;
 }
 
 .flipped {
@@ -676,8 +678,8 @@ border: 1px solid white;
 .reset-search {
   display: inline-block;
   padding: 10px 20px;
-  color: white;
-  background-color: #9ad1d4;
+  color: rgb(255, 255, 255);
+  background-color: #00bac4;
   border: none;
   border-radius: 5px;
   cursor: pointer;
