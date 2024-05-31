@@ -1459,7 +1459,7 @@ async function sendAllEmails() {
                 from: 'roborental.team@gmail.com',
                 to: email,
                 subject: 'Robo Rental Launched',
-                text: `We are thrilled to announce that Robo Rental, the app that makes it easy to rent robots for various services, has officially launched!
+                text: `We are thrilled to announce that Robo Rental, the app that makes it easy to rent robots for various services, has officially launched!\nhttps://two800-202410-bby11-1-dogh.onrender.com\n
 
 With Robo Rental, you can seamlessly rent robots to assist with a variety of tasks, providing you with innovative solutions for your needs. Our app is designed to offer you convenience and efficiency at your fingertips.
 
