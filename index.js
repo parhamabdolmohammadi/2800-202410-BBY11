@@ -1440,14 +1440,18 @@ app.get('/history', async (req, res) => {
 
 // Before accessing to admin page, the user will be evaluated whether they are administrator or not.
 app.get('/adminService', adminAuthorization, async (req, res) => {
-    
-    //Fetch services from database.
-    const services = await general.find({}).project({}).toArray();
+    try {
+        // Fetch services from the database.
+        const services = await general.find({}).project({ _id: 1, name: 1, description: 1, background: 1, price: 1 }).toArray();
+        console.log(services);
 
-    // Render adminService.ejs with services, and user name data.
-    res.render('adminService', { services, username: req.session.username })
-})
-
+        // Render adminService.ejs with services, and user name data.
+        res.render('adminService', { services1: services, username: req.session.username });
+    } catch (error) {
+        console.error('Error fetching services:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 // Update service information.
 app.post('/update', async (req, res) => {
 
